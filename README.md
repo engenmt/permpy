@@ -1,0 +1,4 @@
+permclass
+=========
+
+Python Permutations Class
