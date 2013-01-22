@@ -1,6 +1,7 @@
 import math
-import shuffle
+import random
 import fractions
+
 
 
 
@@ -31,6 +32,7 @@ class Perm(list):
       for k in range(math.factorial(n)):
         L.append(Perm(k,n))
       return L
+
   
   @staticmethod
   def standardize(L):
@@ -91,8 +93,9 @@ class Perm(list):
     return s
 
   def cycles(self):
-    pass
-    #return ' '.join(['( ' + ' '.join(map(str,map(lambda x: x+1,cyc))) + ' )' for cyc in self.cycle_decomp()])
+    stringlist = ['( ' + ' '.join([str(x+1) for x in cyc]) + ' )' 
+                                    for cyc in self.cycle_decomp()]
+    return ' '.join(stringlist)
 
   def __repr__(self):
     '''tells python how to display a permutation object'''
@@ -108,8 +111,6 @@ class Perm(list):
     permutations'''
     return (self.perm2ind(), self.__len__()).__hash__()
 
-# fixed up to here 
-# ====================================================================== #
 
 
   def __mul__(self,other):
@@ -133,7 +134,7 @@ class Perm(list):
     return not self == other
 
   def __pow__(self, power):
-    assert isinstance(power, Int) and power >= 0
+    assert isinstance(power, int) and power >= 0
     if power == 0:
       return Perm(range(len(self)))
     else:

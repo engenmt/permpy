@@ -1,4 +1,4 @@
-from .permutation import Perm
+import permutation
 
 
 
@@ -6,10 +6,16 @@ class PermSet(set):
   ''' Provides functions for dealing with sets of Perm objects '''
 
   def __repr__(self):
-    print('Set of %d permutations', len(self))
+    return 'Set of %d permutations' % len(self)
+
+  @staticmethod
+  def all(n):
+    ''' builds the set of all n permutations '''
+    return PermSet(permutation.Perm.listall(n))
+
 
   def total_statistic(self, statistic):
-    return sum([Perm.statistic(p) for p in self])
+    return sum([statistic(p) for p in self])
 
   def list(self, n):
     return [p for p in self]
@@ -23,7 +29,7 @@ class PermSet(set):
       for i in range(n-2):
         for j in range(i+1,n-1):
           for k in range(j+1,n):
-            std = Perm.standardize([p[i], p[j], p[k]])
+            std = permutation.Perm.standardize([p[i], p[j], p[k]])
             patnums[''.join([str(x + 1) for x in std])] += 1
     return patnums
 
@@ -43,6 +49,6 @@ class PermSet(set):
         for j in range(i+1,n-2):
           for k in range(j+1,n-1):
             for m in range(k+1,n):
-              std = Perm.standardize([p[i], p[j], p[k], p[m]])
+              std = permutation.Perm.standardize([p[i], p[j], p[k], p[m]])
               patnums[''.join([str(x + 1) for x in std])] += 1
     return patnums
