@@ -2,10 +2,8 @@ import math
 from math import factorial as fac
 from random import shuffle
 from fractions import gcd
+import sys
 
-
-
-  
 
 
 # a class for creating permutation objects
@@ -90,8 +88,8 @@ class Perm(list):
     return s
 
   def cycles(self):
-    return ' '.join(['( ' + ' '.join(map(str,map(lambda x: x+1,cyc))) + ' )' 
-                     for cyc in self.cycle_decomp()])
+    pass
+    #return ' '.join(['( ' + ' '.join(map(str,map(lambda x: x+1,cyc))) + ' )' for cyc in self.cycle_decomp()])
 
   def __repr__(self):
     '''tells python how to display a permutation object'''
@@ -112,30 +110,34 @@ class Perm(list):
 
 
   def __mul__(self,other):
+    ''' multiplies two permutations '''
+    assert len(self) == len(other)
     L = other[:]
     for i in range(len(L)):
       L[i] = self.__call__(L[i])
     return Perm(L)
        
   def __eq__(self,other):
-    same = True
-    for i in range(len(L1)):
+    ''' checks if two permutations are equal '''
+    if len(self) != len(other):
+      return False
+    for i in range(len(self)):
       if self[i] != other[i]:
-        same = False
-        break
+        return False
     return same
 
   def __ne__(self,other):
     return not self == other
 
-  def __neq__(self,other):
-    return not __eq__(self,other)
-
   def __pow__(self, power):
-    ans = self 
-    for i in range(power - 1):
-      ans *= self
-    return ans
+    assert isinstance(power, Int) and power >= 0
+    if power == 0:
+      return Perm(range(len(self)))
+    else:
+      ans = self 
+      for i in range(power - 1):
+        ans *= self
+      return ans
 
 
   def perm2ind(self):      
@@ -558,12 +560,7 @@ def permlist(S,n):
 
 # a list of the available statistics 
 statistics = [Perm.fixedpoints, Perm.numcycles, Perm.descents, Perm.ascents, Perm.bends, Perm.trivial, Perm.inversions, Perm.bonds, Perm.majorindex, Perm.fixedptsplusbonds, Perm.longestrunA, Perm.longestrunD, Perm.longestrun, Perm.christiecycles, Perm.othercycles, Perm.sumcycles, Perm.maxcycles]
-    
-    
-    
 
-    
-    
-    
-    
-    
+
+
+
