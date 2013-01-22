@@ -23,9 +23,8 @@ class PermSet(set):
       for i in range(n-2):
         for j in range(i+1,n-1):
           for k in range(j+1,n):
-            # good luck with this
-            patnums[''.join(map(lambda x: 
-                                str(x+1),Perm([p[i], p[j], p[k]]).p))] += 1
+            std = Perm.standardize([p[i], p[j], p[k]])
+            patnums[''.join([str(x + 1) for x in std])] += 1
     return patnums
 
   def fourpats(self):
@@ -44,7 +43,6 @@ class PermSet(set):
         for j in range(i+1,n-2):
           for k in range(j+1,n-1):
             for m in range(k+1,n):
-              # good luck with this
-              patnums[''.join(map(lambda x: 
-                        str(x+1),Perm([p[i], p[j], p[k], p[m]]).p))] += 1
+              std = Perm.standardize([p[i], p[j], p[k], p[m]])
+              patnums[''.join([str(x + 1) for x in std])] += 1
     return patnums

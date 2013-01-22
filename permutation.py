@@ -1,7 +1,6 @@
 import math
-from math import factorial as fac
-from random import shuffle
-from fractions import gcd
+import shuffle
+import fractions
 
 
 
@@ -19,7 +18,7 @@ class Perm(list):
   def random(n):
     '''outputs a random permutation of length n'''
     L = range(n)
-    shuffle(L)
+    random.shuffle(L)
     return Perm(L)
 
   @staticmethod
@@ -29,10 +28,17 @@ class Perm(list):
       return []
     else:
       L = []
-      for k in range(fac(n)):
+      for k in range(math.factorial(n)):
         L.append(Perm(k,n))
       return L
   
+  @staticmethod
+  def standardize(L):
+    # copy by value
+    assert len(set(L)) == len(L), 'make sure elements are distinct!'
+    ordered = L[:] 
+    ordered.sort()
+    return [ordered.index(x) for x in L]
 
   @staticmethod
   def change_repr():
@@ -68,10 +74,8 @@ class Perm(list):
       if isinstance(p, tuple):
         p = list(p)
       if not n:
-        assert len(set(p)) == len(p), 'make sure elements are distinct!'
-        entries = p[:]
-        entries.sort()
-        list.__init__(self,map(lambda e: entries.index(e), p))
+        std = Perm.standardize(p)
+        list.__init__(self, std)
       else:
         list.__init__(self,Perm.ind2perm(p,n))
     
@@ -291,7 +295,7 @@ class Perm(list):
 
   def order(self):
     L = map(len, self.cycle_decomp())
-    return reduce(lambda x,y: x*y / gcd(x,y), L) 
+    return reduce(lambda x,y: x*y / fractions.gcd(x,y), L) 
   
   def ltrmin(self):
     p = self[:]
@@ -484,41 +488,11 @@ class Perm(list):
 
 
 
-class AvClass(list):
-  
-  def __init__(self, n = 8): 
-    list.__init__(self, [PermSet(Perm.listall(i)) for i in range(n + 1)])
-    self.avoids = []
-    self.length = n
-
-  def __len__(self):
-    return self.length
-    
-
-  def avoid(self, perm):
-    n = self.__len__()
-    k = len(perm)
-    upset = perm.buildupset(n + 1)
-    for i in range(k, n+1):
-      self[i] = self[i].difference(upset[i])
-    self.avoids.append(perm)
-      
 
       
-
-  # def avset(self, length):
-  #   if length < len(self):
-  #     return Perm.listall(length)
-  #   else:
-  #     for i in range(length, len(self)):
-        
     
 
 
-
-
-# a list of the available statistics 
-statistics = [Perm.fixedpoints, Perm.numcycles, Perm.descents, Perm.ascents, Perm.bends, Perm.trivial, Perm.inversions, Perm.bonds, Perm.majorindex, Perm.fixedptsplusbonds, Perm.longestrunA, Perm.longestrunD, Perm.longestrun, Perm.christiecycles, Perm.othercycles, Perm.sumcycles, Perm.maxcycles]
 
 
 
