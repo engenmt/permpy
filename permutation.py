@@ -32,7 +32,6 @@ class Perm(list):
       for k in range(math.factorial(n)):
         L.append(Perm(k,n))
       return L
-
   
   @staticmethod
   def standardize(L):
