@@ -128,7 +128,7 @@ class Perm(list):
     for i in range(len(self)):
       if self[i] != other[i]:
         return False
-    return same
+    return True
 
   def __ne__(self,other):
     return not self == other

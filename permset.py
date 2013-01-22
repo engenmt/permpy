@@ -13,12 +13,11 @@ class PermSet(set):
     ''' builds the set of all n permutations '''
     return PermSet(permutation.Perm.listall(n))
 
+  def show_all(self):
+    return set.__repr__(self)
 
   def total_statistic(self, statistic):
     return sum([statistic(p) for p in self])
-
-  def list(self, n):
-    return [p for p in self]
 
   def threepats(self):
     patnums = {'123' : 0, '132' : 0, '213' : 0, 

@@ -38,4 +38,37 @@ Easily extensible.
 >>> 
 >>> S.total_statistic(Perm.descents)
  1800
+>>> 
+
+>>> 
+>>> A = pp.AvClass(8)
+>>> 
+>>> A
+<<< 
+[Set of 0 permutations,
+ Set of 1 permutations,
+ Set of 2 permutations,
+ Set of 6 permutations,
+ Set of 24 permutations,
+ Set of 120 permutations,
+ Set of 720 permutations,
+ Set of 5040 permutations,
+ Set of 40320 permutations]
+>>> 
+>>> 
+>>> A.avoid( pp.Perm([2,3,1]) )
+>>> 
+>>> A
+<<< 
+[Set of 0 permutations,
+ Set of 1 permutations,
+ Set of 2 permutations,
+ Set of 5 permutations,
+ Set of 14 permutations,
+ Set of 42 permutations,
+ Set of 132 permutations,
+ Set of 429 permutations,
+ Set of 1430 permutations]
+>>> 
+>>> 
 ```
