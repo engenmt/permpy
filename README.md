@@ -1,6 +1,7 @@
-permclass
-=========
+pyperm
+=======
 
-Python Permutations Class
+## A Python Permutations Class
 
-Various tools for working interactively with permutaions. Easily extensible.
+Contains Various tools for working interactively with permutaions. 
+Easily extensible.
