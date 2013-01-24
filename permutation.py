@@ -2,6 +2,7 @@ import math
 import random
 import fractions
 
+__author__ = 'cheyne.homberger@gmail.com'
 
 
 
