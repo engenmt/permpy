@@ -9,7 +9,7 @@ Easily extensible.
 ### Examples:
 ```python
 >>>
->>> import pyperm as pp
+>>> import permpy as pp
 >>> 
 >>> 
 >>> p = pp.Perm.random(8)
