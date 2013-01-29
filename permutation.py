@@ -70,17 +70,20 @@ class Permutation(tuple):
 
   def __new__(cls, p, n = None):
     ''' Initializes a permutation object, internal indexing starts at zero. '''
-    if isinstance(p, Permutation):
-      return tuple.__new__(cls, p)
-    elif isinstance(p, tuple):
-      entries = list(p)[:]
-    elif isinstance(p, list):
-      entries = p[:]
-    # standardizes, starting at zero
-    assert len(set(entries)) == len(entries), 'make sure elements are distinct!'
-    entries.sort()
-    standardization =  map(lambda e: entries.index(e), p)
-    return tuple.__new__(cls, standardization)
+    if n:
+      return Permutation.ind2perm(p, n) 
+    else: 
+      if isinstance(p, Permutation):
+        return tuple.__new__(cls, p)
+      elif isinstance(p, tuple):
+        entries = list(p)[:]
+      elif isinstance(p, list):
+        entries = p[:]
+      # standardizes, starting at zero
+      assert len(set(entries)) == len(entries), 'make sure elements are distinct!'
+      entries.sort()
+      standardization =  map(lambda e: entries.index(e), p)
+      return tuple.__new__(cls, standardization)
 
   # def __init__(self,p,n=None):
   #   '''initializes a permutation object'''
