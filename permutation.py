@@ -2,12 +2,12 @@ import math
 import random
 import fractions
 
-__author__ = 'cheyne.homberger@gmail.com'
+__author__ = 'Cheyne Homberger, Jay Pantone'
 
 
 
 # a class for creating permutation objects
-class Perm(list):
+class Permutation(tuple):
   'can be initialized with either (index,length) or a list of entries'
 
   # static class variable, controls permutation representation
@@ -68,18 +68,32 @@ class Perm(list):
   #================================================================#
   # overloaded built in functions:
 
-  def __init__(self,p,n=None):
-    '''initializes a permutation object'''
-    if isinstance(p, Perm):
-      list.__init__(self, p)
-    else:
-      if isinstance(p, tuple):
-        p = list(p)
-      if not n:
-        std = Perm.standardize(p)
-        list.__init__(self, std)
-      else:
-        list.__init__(self,Perm.ind2perm(p,n))
+  def __new__(cls, p, n = None):
+    ''' Initializes a permutation object, internal indexing starts at zero. '''
+    if isinstance(p, Permutation):
+      return tuple.__new__(cls, p)
+    elif isinstance(p, tuple):
+      entries = list(p)[:]
+    elif isinstance(p, list):
+      entries = p[:]
+    # standardizes, starting at zero
+    assert len(set(entries)) == len(entries), 'make sure elements are distinct!'
+    entries.sort()
+    standardization =  map(lambda e: entries.index(e), p)
+    return tuple.__new__(cls, standardization)
+
+  # def __init__(self,p,n=None):
+  #   '''initializes a permutation object'''
+  #   if isinstance(p, Perm):
+  #     list.__init__(self, p)
+  #   else:
+  #     if isinstance(p, tuple):
+  #       p = list(p)
+  #     if not n:
+  #       std = Perm.standardize(p)
+  #       list.__init__(self, std)
+  #     else:
+  #       list.__init__(self,Perm.ind2perm(p,n))
     
   def __call__(self,i):
     '''allows permutations to be used as functions 
@@ -106,12 +120,22 @@ class Perm(list):
     else: 
       return '\n '.join([self.oneline(), self.cycles()])
 
-  def __hash__(self):
-    '''allows fast comparisons of permutations, and allows sets of
-    permutations'''
-    return (self.perm2ind(), self.__len__()).__hash__()
+  # def __hash__(self):
+  #   '''allows fast comparisons of permutations, and allows sets of
+  #   permutations'''
+  #   return (self.perm2ind(), self.__len__()).__hash__()
 
+  # def __eq__(self,other):
+  #   ''' checks if two permutations are equal '''
+  #   if len(self) != len(other):
+  #     return False
+  #   for i in range(len(self)):
+  #     if self[i] != other[i]:
+  #       return False
+  #   return True
 
+  # def __ne__(self,other):
+  #   return not self == other
 
   def __mul__(self,other):
     ''' multiplies two permutations '''
@@ -120,18 +144,6 @@ class Perm(list):
     for i in range(len(L)):
       L[i] = self.__call__(L[i])
     return Perm(L)
-       
-  def __eq__(self,other):
-    ''' checks if two permutations are equal '''
-    if len(self) != len(other):
-      return False
-    for i in range(len(self)):
-      if self[i] != other[i]:
-        return False
-    return True
-
-  def __ne__(self,other):
-    return not self == other
 
   def __pow__(self, power):
     assert isinstance(power, int) and power >= 0
@@ -143,10 +155,9 @@ class Perm(list):
         ans *= self
       return ans
 
-
   def perm2ind(self):      
-    '''helper functions: index and unindex permutations'''
-    q = self[:]
+    ''' De-indexes a permutation. '''
+    q = list(self)
     n = self.__len__()
     def swap(i,j):
       t = q[i]
@@ -160,18 +171,13 @@ class Perm(list):
       swap(i, q.index(i))
     return result
 
-      
   def delete(self,i):
-    p = self[:]
-    k = p[i]
+    p = list(self)
     del p[i]
-    for i in range(len(p)):
-      if p[i] >k:
-        p[i] -= 1
     return Perm(p)
 
   def ins(self,i,j):
-    p = self[:]
+    p = list(self)
     for k in range(len(p)):
       if p[k] >= j:
         p[k] += 1
@@ -186,17 +192,28 @@ class Perm(list):
     
   # returns the reverse of the permutation  
   def reverse(self):
-    q = self[:]
+    q = list(self)
     q.reverse()
     return Perm(q)
 
   def inverse(self):
-    p = self[:]
+    p = list(self)
     n = self.__len__()
     q = [0 for j in range(n)]
     for i in range(n):
       q[p[i]] = i
     return Perm(q)
+
+  def plot(self):
+    ''' Draws a plot of the given Permutation. '''
+    n = self.__len__()
+    array = [[' ' for i in range(n)] for j in range(n)]
+    for i in range(n):
+      array[self[i]][i] = '*'
+    array.reverse()
+    s = '\n'.join( (''.join(l) for l in array)) 
+    # return s
+    print s
 
   def cycle_decomp(self):
     n = self.__len__()
@@ -229,7 +246,7 @@ class Perm(list):
     
 
   def decomposable(self):
-    p = self[:]
+    p = list(self)
     n = self.__len__()
     for i in range(1,n):
       if set(range(n-i,n)) == set(p[0:i]):
@@ -252,7 +269,7 @@ class Perm(list):
     return num
       
   def descents(self):
-    p = self[:]
+    p = list(self)
     n = self.__len__()
     numd = 0
     for i in range(1,n):
@@ -271,7 +288,7 @@ class Perm(list):
         # bend(p)+1 monotone segments.
     b = 0
     curr_seg = 0
-    p = self[:]
+    p = list(self)
         # curr_seq is +1 if the current segment is increasing, -1 for
         # decreasing, and 0 if the current seqment has a single entry
         # in it (and thus could go either way)
@@ -299,7 +316,7 @@ class Perm(list):
     return reduce(lambda x,y: x*y / fractions.gcd(x,y), L) 
   
   def ltrmin(self):
-    p = self[:]
+    p = list(self)
     n = self.__len__()
     L = []
     for i in range(n):
@@ -311,7 +328,7 @@ class Perm(list):
     return L
 
   def numltrmin(self):
-    p = self[:]
+    p = list(self)
     n = self.__len__()
     num = 1
     m = p[0]
@@ -322,7 +339,7 @@ class Perm(list):
     return num
 
   def inversions(self):
-    p = self[:]
+    p = list(self)
     n = self.__len__()
     inv = 0
     for i in range(n):
@@ -332,7 +349,7 @@ class Perm(list):
     return inv
 
   def noninversions(self):
-    p = self[:]
+    p = list(self)
     n = self.__len__()
     inv = 0
     for i in range(n):
@@ -343,7 +360,7 @@ class Perm(list):
     
   def bonds(self):
     numbonds = 0
-    p = self[:]
+    p = list(self)
     for i in range(1,len(p)):
       if p[i] - p[i-1] == 1 or p[i] - p[i-1] == -1:
         numbonds+=1
@@ -351,7 +368,7 @@ class Perm(list):
     
   def majorindex(self):
     sum = 0
-    p = self[:]
+    p = list(self)
     n = self.__len__()
     for i in range(0,n-1):
       if p[i] > p[i+1]:
@@ -362,7 +379,7 @@ class Perm(list):
     return self.fixedpoints() + self.bonds()
  
   def longestrunA(self):
-    p = self[:]
+    p = list(self)
     n = self.__len__()
     maxi = 0
     length = 1
@@ -379,10 +396,11 @@ class Perm(list):
   
   def longestrun(self):
     return max(self.longestrunA(),self.longestrunD())
-    
-    
-  def christiecycles(self): # builds a permutation induced by the black and gray edges separately, and counts the number of cycles in their product
-    p = self[:]
+  
+  def christiecycles(self): 
+    # builds a permutation induced by the black and gray edges separately, and
+    # counts the number of cycles in their product. used for transpositions
+    p = list(self)
     n = self.__len__()
     q = [0] + [p[i] + 1 for i in range(n)]
     grayperm = range(1,n+1) + [0]
@@ -397,8 +415,10 @@ class Perm(list):
       newperm.append(j)
     return Perm(newperm).numcycles()
   
-  def othercycles(self): # builds a permutation induced by the black and gray edges separately, and counts the number of cycles in their product
-    p = self[:]
+  def othercycles(self): 
+    # builds a permutation induced by the black and gray edges separately, and
+    # counts the number of cycles in their product
+    p = list(self)
     n = self.__len__()
     q = [0] + [p[i] + 1 for i in range(n)]
     grayperm = [n] + range(n)
@@ -420,20 +440,19 @@ class Perm(list):
     return max(self.othercycles() - 1,self.christiecycles())
 
   def threepats(self):
-    p = self[:]
+    p = list(self)
     n = self.__len__()
     patnums = {'123' : 0, '132' : 0, '213' : 0, 
                '231' : 0, '312' : 0, '321' : 0}
     for i in range(n-2):
       for j in range(i+1,n-1):
         for k in range(j+1,n):
-          # good luck with this
           patnums[''.join(map(lambda x: 
                               str(x+1),Perm([p[i], p[j], p[k]])))] += 1
     return patnums
 
   def fourpats(self):
-    p = self[:]
+    p = list(self)
     n = self.__len__()
     patnums = {'1234' : 0, '1243' : 0, '1324' : 0, 
                '1342' : 0, '1423' : 0, '1432' : 0,
@@ -448,7 +467,6 @@ class Perm(list):
       for j in range(i+1,n-2):
         for k in range(j+1,n-1):
           for m in range(k+1,n):
-            # good luck with this
             patnums[''.join(map(lambda x: 
                       str(x+1),Perm([p[i], p[j], p[k], p[m]]).p))] += 1
     return patnums
@@ -460,11 +478,6 @@ class Perm(list):
       if self[i+2] < self[i+1] < self[i] < self[i+3]:
         number += 1
     return number
-      
-
-  def spread(self): # for expect
-    print '132, 213, inv'
-    print self.num132(),'  ', self.num213(),'  ', self.inversions()
 
   def coveredby(self):
     S = set()
