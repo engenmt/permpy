@@ -4,7 +4,7 @@ import permset
 class AvClass(list):
   
   def __init__(self, n = 8): 
-    list.__init__(self, [permset.PermSet(permutation.Perm.listall(i)) for i in range(n + 1)])
+    list.__init__(self, [permset.PermSet(permutation.Permutation.listall(i)) for i in range(n + 1)])
     self.avoids = []
     self.length = n
 

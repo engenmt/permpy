@@ -3,7 +3,7 @@ import permutation
 
 
 class PermSet(set):
-  ''' Provides functions for dealing with sets of Perm objects '''
+  ''' Provides functions for dealing with sets of Permutation objects '''
 
   def __repr__(self):
     return 'Set of %d permutations' % len(self)
@@ -11,7 +11,7 @@ class PermSet(set):
   @staticmethod
   def all(n):
     ''' builds the set of all n permutations '''
-    return PermSet(permutation.Perm.listall(n))
+    return PermSet(permutation.Permutation.listall(n))
 
   def show_all(self):
     return set.__repr__(self)
@@ -28,7 +28,7 @@ class PermSet(set):
       for i in range(n-2):
         for j in range(i+1,n-1):
           for k in range(j+1,n):
-            std = permutation.Perm.standardize([p[i], p[j], p[k]])
+            std = permutation.Permutation.standardize([p[i], p[j], p[k]])
             patnums[''.join([str(x + 1) for x in std])] += 1
     return patnums
 
@@ -48,6 +48,6 @@ class PermSet(set):
         for j in range(i+1,n-2):
           for k in range(j+1,n-1):
             for m in range(k+1,n):
-              std = permutation.Perm.standardize([p[i], p[j], p[k], p[m]])
+              std = permutation.Permutation.standardize([p[i], p[j], p[k], p[m]])
               patnums[''.join([str(x + 1) for x in std])] += 1
     return patnums

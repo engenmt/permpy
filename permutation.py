@@ -21,7 +21,7 @@ class Permutation(tuple):
     '''outputs a random permutation of length n'''
     L = range(n)
     random.shuffle(L)
-    return Perm(L)
+    return Permutation(L)
 
   @staticmethod
   def listall(n):
@@ -31,7 +31,7 @@ class Permutation(tuple):
     else:
       L = []
       for k in range(math.factorial(n)):
-        L.append(Perm(k,n))
+        L.append(Permutation(k,n))
       return L
   
   @staticmethod
@@ -49,7 +49,7 @@ class Permutation(tuple):
     L = ['oneline', 'cycles', 'both']
     k = input('1 for oneline, 2 for cycles, 3 for both\n ')
     k -= 1
-    Perm._REPR = L[k]
+    Permutation._REPR = L[k]
 
   @staticmethod
   def ind2perm(k, n):   
@@ -63,7 +63,7 @@ class Permutation(tuple):
       j = k % i
       swap(i-1,j)
       k /= i
-    return Perm(result)
+    return Permutation(result)
 
   #================================================================#
   # overloaded built in functions:
@@ -84,16 +84,16 @@ class Permutation(tuple):
 
   # def __init__(self,p,n=None):
   #   '''initializes a permutation object'''
-  #   if isinstance(p, Perm):
+  #   if isinstance(p, Permutation):
   #     list.__init__(self, p)
   #   else:
   #     if isinstance(p, tuple):
   #       p = list(p)
   #     if not n:
-  #       std = Perm.standardize(p)
+  #       std = Permutation.standardize(p)
   #       list.__init__(self, std)
   #     else:
-  #       list.__init__(self,Perm.ind2perm(p,n))
+  #       list.__init__(self,Permutation.ind2perm(p,n))
     
   def __call__(self,i):
     '''allows permutations to be used as functions 
@@ -113,9 +113,9 @@ class Permutation(tuple):
 
   def __repr__(self):
     '''tells python how to display a permutation object'''
-    if Perm._REPR == 'oneline':
+    if Permutation._REPR == 'oneline':
       return self.oneline()
-    if Perm._REPR == 'cycles':
+    if Permutation._REPR == 'cycles':
       return self.cycles()
     else: 
       return '\n '.join([self.oneline(), self.cycles()])
@@ -143,12 +143,12 @@ class Permutation(tuple):
     L = other[:]
     for i in range(len(L)):
       L[i] = self.__call__(L[i])
-    return Perm(L)
+    return Permutation(L)
 
   def __pow__(self, power):
     assert isinstance(power, int) and power >= 0
     if power == 0:
-      return Perm(range(len(self)))
+      return Permutation(range(len(self)))
     else:
       ans = self 
       for i in range(power - 1):
@@ -174,7 +174,7 @@ class Permutation(tuple):
   def delete(self,i):
     p = list(self)
     del p[i]
-    return Perm(p)
+    return Permutation(p)
 
   def ins(self,i,j):
     p = list(self)
@@ -182,19 +182,19 @@ class Permutation(tuple):
       if p[k] >= j:
         p[k] += 1
     p = p[:i] + [j] + p[i:]
-    return Perm(p)
+    return Permutation(p)
 
   # returns the complement of the permutation
   def complement(self):
     n = self.__len__()
     L = [n-1-i for i in self]
-    return Perm(L)
+    return Permutation(L)
     
   # returns the reverse of the permutation  
   def reverse(self):
     q = list(self)
     q.reverse()
-    return Perm(q)
+    return Permutation(q)
 
   def inverse(self):
     p = list(self)
@@ -202,7 +202,7 @@ class Permutation(tuple):
     q = [0 for j in range(n)]
     for i in range(n):
       q[p[i]] = i
-    return Perm(q)
+    return Permutation(q)
 
   def plot(self):
     ''' Draws a plot of the given Permutation. '''
@@ -413,7 +413,7 @@ class Permutation(tuple):
       k = blackperm[i]
       j = grayperm[k]
       newperm.append(j)
-    return Perm(newperm).numcycles()
+    return Permutation(newperm).numcycles()
   
   def othercycles(self): 
     # builds a permutation induced by the black and gray edges separately, and
@@ -431,7 +431,7 @@ class Permutation(tuple):
       k = blackperm[i]
       j = grayperm[k]
       newperm.append(j)
-    return Perm(newperm).numcycles()
+    return Permutation(newperm).numcycles()
     
   def sumcycles(self):
     return self.othercycles() + self.christiecycles()
@@ -448,7 +448,7 @@ class Permutation(tuple):
       for j in range(i+1,n-1):
         for k in range(j+1,n):
           patnums[''.join(map(lambda x: 
-                              str(x+1),Perm([p[i], p[j], p[k]])))] += 1
+                              str(x+1),Permutation([p[i], p[j], p[k]])))] += 1
     return patnums
 
   def fourpats(self):
@@ -468,7 +468,7 @@ class Permutation(tuple):
         for k in range(j+1,n-1):
           for m in range(k+1,n):
             patnums[''.join(map(lambda x: 
-                      str(x+1),Perm([p[i], p[j], p[k], p[m]]).p))] += 1
+                      str(x+1),Permutation([p[i], p[j], p[k], p[m]]).p))] += 1
     return patnums
 
   def num_consecutive_3214(self):
