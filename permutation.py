@@ -265,7 +265,7 @@ class Perm(list):
     
   def bends(self):
         # Bends measures the number of times the permutation p
-        # "changes direction".  Bends is alsi the number of
+        # "changes direction".  Bends is also the number of
         # non-monotone consecutive triples in p.
         # The permutation p can be expressed as the concatenation of
         # bend(p)+1 monotone segments.
