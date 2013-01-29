@@ -1,4 +1,4 @@
-pyperm
+permpy
 =======
 
 ## A Python Permutations Class
@@ -44,7 +44,6 @@ Easily extensible.
 >>> A = pp.AvClass(8)
 >>> 
 >>> A
-<<< 
 [Set of 0 permutations,
  Set of 1 permutations,
  Set of 2 permutations,
@@ -59,7 +58,6 @@ Easily extensible.
 >>> A.avoid( pp.Perm([2,3,1]) )
 >>> 
 >>> A
-<<< 
 [Set of 0 permutations,
  Set of 1 permutations,
  Set of 2 permutations,
