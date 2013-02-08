@@ -11,7 +11,10 @@ class Permutation(tuple):
   'can be initialized with either (index,length) or a list of entries'
 
   # static class variable, controls permutation representation
-  _REPR = 'oneline'  
+  _REPR = 'oneline'
+  lower_bound = [] 
+  upper_bound = []
+  bounds_set = False;
 
   #===============================================================%
   # some useful functions for playing with permutations
@@ -501,6 +504,58 @@ class Permutation(tuple):
         newS = newS.union(perm.coveredby())
       L.append(newS)
     return L
+
+  def set_up_bounds(self):
+    L = list(self)
+    n = len(L)
+    upper_bound = [-1]*n
+    lower_bound = [-1]*n
+    for i in range(0,n):
+      min_above = -1
+      max_below = -1
+      for j in range(0,i):
+        if L[j] < L[i]:
+          if L[j] > max_below:
+            max_below = L[j]
+            lower_bound[i] = j
+        else:
+          if L[j] < min_above or min_above == -1:
+            min_above = L[j]
+            upper_bound[i] = j
+    return (lower_bound, upper_bound)
+
+  def involved_in(self, P):
+    if not self.bounds_set:
+      (self.lower_bound, self.upper_bound) = self.set_up_bounds()
+      self.bounds_set = True
+    L = list(self)
+    n = len(L)
+    p = len(P)
+    if n <= 1 and n <= p:
+      return True
+
+    indices = [0]*n
+    
+    while indices[0] < p:
+      if self.involvement_check(self.upper_bound, self.lower_bound, indices, P, 1):
+        return True
+      indices[0] += 1
+
+    return False
+
+  def involvement_check(self, upper_bound, lower_bound, indices, q, next):
+    if next == len(indices):
+      return True
+    lq = len(q)
+    indices[next] = indices[next-1]+1
+    while indices[next] < lq:
+      if self.involvement_fits(upper_bound, lower_bound, indices, q, next) and self.involvement_check(upper_bound, lower_bound, indices, q, next+1):
+        return True
+      indices[next] += 1
+    return False
+
+  def involvement_fits(self, upper_bound, lower_bound, indices, q, next):
+    return (lower_bound[next] == -1 or q[indices[next]] > q[indices[lower_bound[next]]]) and (upper_bound[next] == -1 or q[indices[next]] < q[indices[upper_bound[next]]])
 
 
 
