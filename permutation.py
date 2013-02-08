@@ -143,7 +143,7 @@ class Permutation(tuple):
   def __mul__(self,other):
     ''' multiplies two permutations '''
     assert len(self) == len(other)
-    L = other[:]
+    L = list(other)
     for i in range(len(L)):
       L[i] = self.__call__(L[i])
     return Permutation(L)
