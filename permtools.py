@@ -54,31 +54,31 @@ def right_extensions(P):
     L.append(Permutation(A))
   return L
 
-def generate_permutations_in_geometric_grid_class(M, max_length):
-  ''' Need to check that the cell graph of M is a forest. '''
-  L = [PermSet() for i in range(0, max_length+1)]
-  L[1].add(Permutation([1]))
+# def generate_permutations_in_geometric_grid_class(M, max_length):
+#   ''' Need to check that the cell graph of M is a forest. '''
+#   L = [PermSet() for i in range(0, max_length+1)]
+#   L[1].add(Permutation([1]))
 
-  alphabet_size = sum([(1 if M[i][j] != 0 else 0) for i in range(0,len(M)) for j in range(0,len(M[i]))])
-  alphabet = [(i,j) for i in range(0, len(M)) for j in range(0,len(M[i])) if M[i][j] != 0]
-  commuting_pairs = []
+#   alphabet_size = sum([(1 if M[i][j] != 0 else 0) for i in range(0,len(M)) for j in range(0,len(M[i]))])
+#   alphabet = [(i,j) for i in range(0, len(M)) for j in range(0,len(M[i])) if M[i][j] != 0]
+#   commuting_pairs = []
   
-  for (i,l) in enumerate(alphabet):
-	  for j in range(i,len(alphabet)):
-		  if alphabet[i][0] != alphabet[j][0] and alphabet[i][1] != alphabet[j][1]:
-			  commuting_pairs.append((i,j))
+#   for (i,l) in enumerate(alphabet):
+# 	  for j in range(i,len(alphabet)):
+# 		  if alphabet[i][0] != alphabet[j][0] and alphabet[i][1] != alphabet[j][1]:
+# 			  commuting_pairs.append((i,j))
 	
-  alphabet_indices = [i for i in range(0,len(alphabet))]		  
+#   alphabet_indices = [i for i in range(0,len(alphabet))]		  
   
-  for length in (2,max_length+1):
-    ''' Try all words of length 'length' with alphabet 
-    equal to the cell alphabet of M.'''
-    distance = 1/(length+1)
-    all_words = itertools.product(alphabet_indices,repeat=length)
+#   for length in (2,max_length+1):
+#     ''' Try all words of length 'length' with alphabet 
+#     equal to the cell alphabet of M.'''
+#     distance = 1/(length+1)
+#     all_words = itertools.product(alphabet_indices,repeat=length)
     
-    ''' todo: MAKE BASE POINTS '''
+#     ''' todo: MAKE BASE POINTS '''
     
-    for word in all_words:
-      if is_valid_word(w, commuting_pairs):
-		  points = []
+#     for word in all_words:
+#       if is_valid_word(w, commuting_pairs):
+# 		  points = []
 		
