@@ -219,7 +219,7 @@ class Permutation(tuple):
     array.reverse()
     s = '\n'.join( (''.join(l) for l in array)) 
     # return s
-    print s
+    print(s)
 
   def cycle_decomp(self):
     n = self.__len__()

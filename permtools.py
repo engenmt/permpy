@@ -87,7 +87,7 @@ def generate_permutations_in_geometric_grid_class(M, max_length, column_signs, r
     
     for word in all_words:
       if not is_valid_word(word, commuting_pairs):
-		    continue
+        continue
       points = []
       for (position, letter) in enumerate(word):
         if column_signs[alphabet[letter][0]] == 1:
