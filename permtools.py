@@ -20,11 +20,11 @@ def juxtaposition_basis(S):
             if len(a) + len(b) == n:
               if (Permutation(a) == Permutation(P[0:len(a)]) and 
                           Permutation(b) == Permutation(P[len(a):n])):
-                A.append(list(P))
+                A.append(Permutation(list(P)))
             elif len(a) + len(b) - 1 == n:
               if (Permutation(a) == Permutation(P[0:len(a)]) and 
                           Permutation(b) == Permutation(P[len(a)-1:n])):
-                A.append(list(P))
+                A.append(Permutation(list(P)))
 
       
     if len(S) > 2:
