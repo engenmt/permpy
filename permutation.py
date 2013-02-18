@@ -557,15 +557,26 @@ class Permutation(tuple):
   def involvement_fits(self, upper_bound, lower_bound, indices, q, next):
     return (lower_bound[next] == -1 or q[indices[next]] > q[indices[lower_bound[next]]]) and (upper_bound[next] == -1 or q[indices[next]] < q[indices[upper_bound[next]]])
 
+  def all_intervals(self):
+    blocks = [[],[]]
+    for i in range(2, len(self)):
+      blocks.append([])
+      for j in range (0,len(self)-i+1):
+        if max(self[j:j+i]) - min(self[j:j+i]) == i-1:
+          blocks[i].append(j)
+    return blocks
 
+  def simple_location(self):
+    mins = list(self)
+    maxs = list(self)
+    for i in range(1,len(self)-1):
+      for j in reversed(range(i,len(self))):
+        mins[j] = min(mins[j-1], self[j])
+        maxs[j] = max(maxs[j-1], self[j])
+        if maxs[j] - mins[j] == i:
+          return (i,j)
+    return (0,0)
 
-
-
-      
-    
-
-
-
-
-
-
+  def is_simple(self):
+    (i,j) = self.simple_location()
+    return i == 0
