@@ -1,6 +1,4 @@
-import permutation
-
-
+from .permutation import *
 
 class PermSet(set):
   ''' Provides functions for dealing with sets of Permutation objects '''
@@ -10,11 +8,53 @@ class PermSet(set):
 
   @staticmethod
   def all(n):
-    ''' builds the set of all n permutations '''
+    ''' builds the set of all permutations of length n'''
     return PermSet(permutation.Permutation.listall(n))
 
   def show_all(self):
     return set.__repr__(self)
+
+  def minimal_elements(self):
+    B = list(self)
+    B = sorted(B, key=len)
+    C = B[:]
+    n = len(B)
+    for (i,b) in enumerate(B):
+      if b not in C:
+        continue
+      for j in range(i+1,n):
+        if B[j] not in C:
+          continue
+        if b.involved_in(B[j]):
+          C.remove(B[j])
+    return PermSet(C)
+
+  def layer_down(self):
+    S = PermSet()
+    i = 1
+    n = len(self)
+    for P in self:
+      if i % 10000 == 0:
+        print '\t',i,'of',n,'. Now with',len(S),'.'
+      S.update(P.shrink_by_one())
+      i += 1
+    return S
+
+  def downset(self):
+    bottom_edge = PermSet()
+    bottom_edge.update(self)
+
+    done = PermSet(bottom_edge)
+    while len(bottom_edge) > 0:
+      oldsize = len(done)
+      next_layer = bottom_edge.layer_down()
+      done.update(next_layer)
+      del bottom_edge
+      bottom_edge = next_layer
+      del next_layer
+      newsize = len(done)
+      print '\t\tDownset currently has',newsize,'permutations, added',(newsize-oldsize),'in the last run.'
+    return done
 
   def total_statistic(self, statistic):
     return sum([statistic(p) for p in self])
@@ -28,7 +68,7 @@ class PermSet(set):
       for i in range(n-2):
         for j in range(i+1,n-1):
           for k in range(j+1,n):
-            std = permutation.Permutation.standardize([p[i], p[j], p[k]])
+            std = Permutation.standardize([p[i], p[j], p[k]])
             patnums[''.join([str(x + 1) for x in std])] += 1
     return patnums
 
@@ -48,6 +88,6 @@ class PermSet(set):
         for j in range(i+1,n-2):
           for k in range(j+1,n-1):
             for m in range(k+1,n):
-              std = permutation.Permutation.standardize([p[i], p[j], p[k], p[m]])
+              std = Permutation.standardize([p[i], p[j], p[k], p[m]])
               patnums[''.join([str(x + 1) for x in std])] += 1
     return patnums
