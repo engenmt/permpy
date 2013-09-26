@@ -1,3 +1,5 @@
 *.py[cod]
 *.sublime*
 .DS_STORE
+avoidencegrid.py
+OLD_permtools.py

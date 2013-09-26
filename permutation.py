@@ -5,7 +5,6 @@ import fractions
 __author__ = 'Cheyne Homberger, Jay Pantone'
 
 
-
 # a class for creating permutation objects
 class Permutation(tuple):
   'can be initialized with either (index,length) or a list of entries'
@@ -73,6 +72,7 @@ class Permutation(tuple):
 
   def __new__(cls, p, n = None):
     ''' Initializes a permutation object, internal indexing starts at zero. '''
+    entries = []
     if n:
       return Permutation.ind2perm(p, n) 
     else: 
@@ -82,8 +82,12 @@ class Permutation(tuple):
         entries = list(p)[:]
       elif isinstance(p, list):
         entries = p[:]
+      elif isinstance(p, int):
+        p = str(p)
+        entries = list(p)
       # standardizes, starting at zero
-      assert len(set(entries)) == len(entries), 'make sure elements are distinct!'
+      assert len(set(entries)) == len(entries), 'elements not distinct'
+      assert len(entries) > 0 or p==list() or p==set() or p==tuple(), 'invalid permutation'
       entries.sort()
       standardization =  map(lambda e: entries.index(e), p)
       return tuple.__new__(cls, standardization)
@@ -243,19 +247,27 @@ class Permutation(tuple):
 
 # Permutation Statistics - somewhat self-explanatory
   
-  def fixedpoints(self):
+  def fixed_points(self):
     sum = 0
     for i in range(self.__len__()):
       if self(i) == i:
-        sum+=1
+        sum += 1
     return sum
     
 
-  def decomposable(self):
+  def skew_decomposable(self):
     p = list(self)
     n = self.__len__()
     for i in range(1,n):
       if set(range(n-i,n)) == set(p[0:i]):
+        return True
+    return False
+  
+  def sum_decomposable(self):
+    p = list(self)
+    n = self.__len__()
+    for i in range(1,n):
+      if set(range(0,i)) == set(p[0:i]):
         return True
     return False
 
@@ -285,34 +297,36 @@ class Permutation(tuple):
    
   def ascents(self):
     return self.__len__()-1-self.descents()
-    
-  def bends(self):
-        # Bends measures the number of times the permutation p
-        # "changes direction".  Bends is also the number of
-        # non-monotone consecutive triples in p.
-        # The permutation p can be expressed as the concatenation of
-        # bend(p)+1 monotone segments.
-    b = 0
-    curr_seg = 0
-    p = list(self)
-        # curr_seq is +1 if the current segment is increasing, -1 for
-        # decreasing, and 0 if the current seqment has a single entry
-        # in it (and thus could go either way)
-    for i in range(1, len(p)):
-      if curr_seg == 0:
-        if p[i] > p[i-1]:
-          curr_seg = 1
-        else:
-          curr_seg = -1
-      elif curr_seg == 1:
-        if p[i] < p[i-1]:
-          b += 1
-          curr_seg = 0
-      elif curr_seg == -1:
-        if p[i] > p[i-1]:
-          b += 1
-          curr_seg = 0
-    return b
+
+  # NEEDS TO BE FIXED
+  #    
+  # def bends(self):
+  #       # Bends measures the number of times the permutation p
+  #       # "changes direction".  Bends is also the number of
+  #       # non-monotone consecutive triples in p.
+  #       # The permutation p can be expressed as the concatenation of
+  #       # bend(p)+1 monotone segments.
+  #   b = 0
+  #   curr_seg = 0
+  #   p = list(self)
+  #       # curr_seq is +1 if the current segment is increasing, -1 for
+  #       # decreasing, and 0 if the current seqment has a single entry
+  #       # in it (and thus could go either way)
+  #   for i in range(1, len(p)):
+  #     if curr_seg == 0:
+  #       if p[i] > p[i-1]:
+  #         curr_seg = 1
+  #       else:
+  #         curr_seg = -1
+  #     elif curr_seg == 1:
+  #       if p[i] < p[i-1]:
+  #         b += 1
+  #         curr_seg = 0
+  #     elif curr_seg == -1:
+  #       if p[i] > p[i-1]:
+  #         b += 1
+  #         curr_seg = 0
+  #   return b
   
   def trivial(self):
     return 0
@@ -445,6 +459,9 @@ class Permutation(tuple):
   def maxcycles(self):
     return max(self.othercycles() - 1,self.christiecycles())
 
+  def is_involution(self):
+    return self == self.inverse()
+
   def threepats(self):
     p = list(self)
     n = self.__len__()
@@ -557,16 +574,63 @@ class Permutation(tuple):
   def involvement_fits(self, upper_bound, lower_bound, indices, q, next):
     return (lower_bound[next] == -1 or q[indices[next]] > q[indices[lower_bound[next]]]) and (upper_bound[next] == -1 or q[indices[next]] < q[indices[upper_bound[next]]])
 
-  def all_intervals(self):
+  def all_intervals(self, return_patterns=False):
     blocks = [[],[]]
     for i in range(2, len(self)):
       blocks.append([])
       for j in range (0,len(self)-i+1):
         if max(self[j:j+i]) - min(self[j:j+i]) == i-1:
           blocks[i].append(j)
-    return blocks
+    if return_patterns:
+      patterns = []
+      for length in range(0, len(blocks)):
+        for start_index in blocks[length]:
+          patterns.append(Permutation(self[start_index:start_index+length]))
+      return patterns
+    else:
+      return blocks
+
+  def all_monotone_intervals(self):
+    mi = []
+    difference = 0
+    c_start = 0
+    c_length = 0
+    for i in range(0,len(self)-1):
+      if math.fabs(self[i] - self[i+1]) == 1 and (c_length == 0 or self[i] - self[i+1] == difference):
+        if c_length == 0:
+          c_start = i
+        c_length += 1
+        difference = self[i] - self[i+1]
+      else:
+        if c_length != 0:
+          mi.append((c_start, c_start+c_length))
+        c_start = 0
+        c_length = 0
+        difference = 0
+    if c_length != 0:
+      mi.append((c_start, c_start+c_length))
+    return mi
+    
+  def maximal_interval(self):
+    ''' finds the biggest interval, and returns (i,j) is one is found,
+			where is the size of the interval, and j is the index
+			of the first entry in the interval
+			
+		returns (0,0) if no interval is found, i.e., if the permutation
+			is simple'''
+    for i in range(2, len(self))[::-1]:
+      for j in range (0,len(self)-i+1):
+        if max(self[j:j+i]) - min(self[j:j+i]) == i-1:
+          return (i,j)
+    return (0,0)
 
   def simple_location(self):
+    ''' searches for an interval, and returns (i,j) if one is found,
+			where i is the size of the interval, and j is the
+			first index of the interval
+			
+		returns (0,0) if no interval is found, i.e., if the permutation
+			is simple'''
     mins = list(self)
     maxs = list(self)
     for i in range(1,len(self)-1):
@@ -578,5 +642,66 @@ class Permutation(tuple):
     return (0,0)
 
   def is_simple(self):
+    ''' returns True is this permutation is simple, False otherwise'''
     (i,j) = self.simple_location()
     return i == 0
+    
+  def decomposition(self):
+    base = Permutation(self)
+    components = [Permutation([1])for i in range(0,len(base))]
+    while not base.is_simple():
+      assert len(base) == len(components)
+      (i,j) = base.maximal_interval()
+      assert i != 0
+      interval = list(base[j:i+j])
+      new_base = list(base[0:j])
+      new_base.append(base[j])
+      new_base.extend(base[i+j:len(base)])
+      new_components = components[0:j]
+      new_components.append(Permutation(interval))
+      new_components.extend(components[i+j:len(base)])
+      base = Permutation(new_base)
+      components = new_components
+    return (base, components)
+
+  def inflate(self, components):
+    assert len(self) == len(components), 'number of components must equal length of base'
+    L = list(self)
+    NL = list(self)
+    current_entry = 0
+    for entry in range(0, len(self)):
+      index = L.index(entry)
+      NL[index] = [components[index][i]+current_entry for i in range(0, len(components[index]))]
+      current_entry += len(components[index])
+    NL_flat = [a for sl in NL for a in sl]
+    return Permutation(NL_flat)
+
+  def right_extensions(self):
+    L = []
+    for i in range(0,len(self)+1):
+      A = list(self[:])
+      A = [A[j] + (1 if A[j] > i-1 else 0) for j in range(0,len(self))]
+      A.append(i)
+      L.append(Permutation(A))
+    return L
+
+  # def all_right_extensions(self, max_length, l, S):
+  #   if l == max_length:
+  #     return S
+  #   else:
+  #     re = self.right_extensions()
+  #     for p in re:
+  #       S.add(p)
+  #       S = p.all_right_extensions(max_length, l+1, S)
+  #   return S
+
+  def all_extensions(self):
+    S = set()
+    for i in range(0, len(self)+1):
+      for j in range(0, len(self)+1):
+        # insert (i-0.5) after entry j (i.e., first when j=0)
+        l = list(self[:])
+        l.insert(j, i-0.5)
+        S.add(Permutation(l))
+    return S
+
