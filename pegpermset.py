@@ -299,6 +299,7 @@ class PegPermSet(PermSet):
 
       i = 0
       num_built = 0
+      t = time.time()
       while len(bottom_edge) > 0:
         i += 1
         P = bottom_edge.pop()
@@ -306,7 +307,8 @@ class PegPermSet(PermSet):
         del P
         if i % 100000 == 0:
           clear_cache()
-          print '\t',i,'of',n,'. Now with',len(next_layer),'.'
+          print '\t',i,'of',n,'. Now with',len(next_layer),'. Took',(time.time()-t),'seconds.'
+          t = time.time()
 
 
       del bottom_edge
