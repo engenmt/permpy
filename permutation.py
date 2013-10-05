@@ -242,6 +242,9 @@ class Permutation(tuple):
     cyclelist.reverse()
     return cyclelist
 
+  def num_disjoint_cycles(self):
+    return len(self.cycle_decomp())
+
 
     
 
