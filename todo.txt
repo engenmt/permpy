@@ -3,3 +3,5 @@ TODO:
 Geometric Grid Classes should automatically pick row and column signs (and expand [and warn user] when necessary)
 
 Implement Albert's algorithms for permutation (and involution) classes
+
+Support Python 3
