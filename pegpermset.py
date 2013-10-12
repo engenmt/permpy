@@ -185,11 +185,11 @@ class PegPermSet(PermSet):
     gf = 0
     n = len(S)
     t = time.time()
-    print '\t\tComputing GF.'
+    print('\t\tComputing GF.')
     for PP in S:
       i += 1
       if i % 100000 == 0 and i > 0:
-        print '\t\t\t',i,'of',n,'\ttook',(time.time()-t),'seconds.'
+        print('\t\t\t',i,'of',n,'\ttook',(time.time()-t),'seconds.')
         t = time.time()
       if not PP.is_compact():
         continue
@@ -307,7 +307,7 @@ class PegPermSet(PermSet):
         del P
         if i % 100000 == 0:
           clear_cache()
-          print '\t',i,'of',n,'. Now with',len(next_layer),'. Took',(time.time()-t),'seconds.'
+          print('\t',i,'of',n,'. Now with',len(next_layer),'. Took',(time.time()-t),'seconds.')
           t = time.time()
 
 
@@ -315,14 +315,14 @@ class PegPermSet(PermSet):
       clear_cache()
       n += len(next_layer)
       
-      print '\t\tScanning permutations for cleanliness!'
+      print('\t\tScanning permutations for cleanliness!')
       i = 0
       num_unclean = 0
       nll = len(next_layer)
       for PP in next_layer:
         i += 1
         if i % 200000 == 0:
-          print '\t\t\tScanned',i,'of',nll,'.'
+          print('\t\t\tScanned',i,'of',nll,'.')
         if PP.is_compact() and not PP.is_compact_and_clean():
           cleaned = PP.clean()
           num_unclean += 1
@@ -332,17 +332,17 @@ class PegPermSet(PermSet):
             unclean[cleaned] = PegPermSet([PP])
             keyssofar.add(cleaned)
 
-      print '\t\tScanning permutations for unnecessary uncleans!'
+      print('\t\tScanning permutations for unnecessary uncleans!')
       i = 0
       nll = len(next_layer)
       for PP in next_layer:
         i += 1
         if i % 200000 == 0:
-          print '\t\t\tScanned',i,'of',nll,'.'
+          print('\t\t\tScanned',i,'of',nll,'.')
         if unclean.get(PP):
           del unclean[PP]
 
-      print '\tOut of',len(next_layer),'permutations in this layer,',num_unclean,'were unclean.'
+      print('\tOut of',len(next_layer),'permutations in this layer,',num_unclean,'were unclean.')
       gf += self.sum_gfs_no_basis(next_layer, only_clean=True)
 
       
@@ -350,7 +350,7 @@ class PegPermSet(PermSet):
       del next_layer
       clear_cache()
       newsize = n
-      print '\t\tDownset currently has',newsize,'permutations.'
+      print('\t\tDownset currently has',newsize,'permutations.')
 
     return (gf,unclean)
 
@@ -364,21 +364,21 @@ class PegPermSet(PermSet):
   #   return PegPermSet(super(PegPermSet, self).downset())
 
   def cross_sections(self):
-    print 'Starting to compute downset.'
+    print('Starting to compute downset.')
     generating_set = PegPermSet(self.downset())
-    print '\tDownset done. Contains',len(generating_set),'peg permutations.'
-    print 'Starting to compactify.'
+    print('\tDownset done. Contains',len(generating_set),'peg permutations.')
+    print('Starting to compactify.')  
     generating_set.compactify()
-    print '\tDone compactifying. Now contains',len(generating_set),'peg permutations.'
-    print 'Starting to compute cross sections.'
+    print('\tDone compactifying. Now contains',len(generating_set),'peg permutations.')
+    print('Starting to compute cross sections.')
     cross_sections = dict()
     pairs = list()
-    print '\tCleaning, finding bases, and loading pairs.'
+    print('\tCleaning, finding bases, and loading pairs.')
     i = 0
     n = len(generating_set)
     for P in generating_set:
       if i % 20000 == 0:
-        print '\t\t',i,'of',n,'...'
+        print('\t\t',i,'of',n,'...')
       cp = P.clean()
       b = P.clean_basis()
       pairs.append((cp,b))
@@ -386,10 +386,10 @@ class PegPermSet(PermSet):
       i += 1
     i = 0
     del generating_set
-    print '\tUnioning bases.'
+    print('\tUnioning bases.')
     for (cleaned_perm, V) in pairs:
       if i % 200000 == 0:
-        print '\t\t',i,'of',n,'... dict_size =',len(cross_sections)
+        print('\t\t',i,'of',n,'... dict_size =',len(cross_sections))
       # if cleaned_perm in cross_sections.keys():
       cross_sections[cleaned_perm] = V.basis_union(cross_sections[cleaned_perm])
       # else:
@@ -402,8 +402,8 @@ class PegPermSet(PermSet):
     if cross_sections is None:
       cross_sections = self.cross_sections()
     gc.collect()
-    print '\tDone computing cross_sections. There are',len(cross_sections),'cross sections.'
-    print 'Starting to compute generating function.'
+    print('\tDone computing cross_sections. There are',len(cross_sections),'cross sections.')
+    print('Starting to compute generating function.')
     gf = 0
     i = 0
     n = len(cross_sections)
@@ -414,34 +414,34 @@ class PegPermSet(PermSet):
       if i % 50000 == 0 and i > 0:
         clear_cache()
       if i % 1000 == 0 and i > 0:
-        print '\t\t',i,'of',n,'\ttook',(time.time()-t),'seconds.'
+        print('\t\t',i,'of',n,'\ttook',(time.time()-t),'seconds.')
         t = time.time()
       gf += clean_perm.csgf(cross_sections[clean_perm])
       i += 1
-    print '\tDone!'
+    print('\tDone!')
     return gf.simplify()
 
   def alt_cross_sections(self):
-    print 'Starting to compute downset.'
+    print('Starting to compute downset.')
     (gf, uc) = self.alt_downset()
     unclean = PegPermSet()
     uncleanlist = list()
     for PP in uc.keys():
       uncleanlist.extend(uc[PP])
     unclean = set(uncleanlist )
-    print '\tDownset done. Contains',len(unclean),'unclean peg permutations.'
+    print('\tDownset done. Contains',len(unclean),'unclean peg permutations.')
     # print 'Starting to compactify.'
     # unclean.compactify()
     # print '\tDone compactifying. Now contains',len(unclean),'peg permutations.'
-    print 'Starting to compute cross sections of UNCLEAN peg permutations.'
+    print('Starting to compute cross sections of UNCLEAN peg permutations.')
     cross_sections = dict()
     i = 1
     pairs = list()
-    print '\tCleaning, finding bases, and loading pairs.'
+    print('\tCleaning, finding bases, and loading pairs.')
     n = len(unclean)
     for P in unclean:
       if i % 20000 == 0:
-        print '\t\t',i,'of',n,'...'
+        print('\t\t',i,'of',n,'...')
       cp = P.clean()
       b = P.clean_basis()
       pairs.append((cp,b))
@@ -450,10 +450,10 @@ class PegPermSet(PermSet):
     i = 1
     del unclean
     clear_cache()
-    print '\tUnioning bases.'
+    print('\tUnioning bases.')
     for (cleaned_perm, V) in pairs:
       if i % 200000 == 0:
-        print '\t\t',i,'of',n,'... dict_size =',len(cross_sections)
+        print('\t\t',i,'of',n,'... dict_size =',len(cross_sections))
       # if cleaned_perm in cross_sections.keys():
       cross_sections[cleaned_perm] = V.basis_union(cross_sections[cleaned_perm])
       # else:
@@ -469,8 +469,8 @@ class PegPermSet(PermSet):
     PPS = PegPermSet([s for s in self if len(s) == ml])
     (gf, cross_sections) = PPS.alt_cross_sections()
     gc.collect()
-    print '\tDone computing cross_sections. There are',len(cross_sections),'cross sections.'
-    print 'Starting to compute generating function for uncleans.'
+    print('\tDone computing cross_sections. There are',len(cross_sections),'cross sections.')
+    print('Starting to compute generating function for uncleans.')
     i = 0
     n = len(cross_sections)
     t = time.time()
@@ -481,14 +481,14 @@ class PegPermSet(PermSet):
       if i % 50000 == 0 and i > 0:
         clear_cache()
       if i % 10000 == 0 and i > 0:
-        print '\t\t',i,'of',n,'\ttook',(time.time()-t),'seconds.'
+        print('\t\t',i,'of',n,'\ttook',(time.time()-t),'seconds.')
         t = time.time()
       # gf -= clean_perm.csgf([])
       # print 'subtracting gf for',clean_perm,'with basis []'
       # print 'adding gf for',clean_perm,'with basis',cross_sections[clean_perm]
       gf += clean_perm.csgf(cross_sections[clean_perm])
       i += 1
-    print '\tDone!'
+    print('\tDone!')
     return gf.simplify()
 
 

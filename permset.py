@@ -35,7 +35,7 @@ class PermSet(set):
     n = len(self)
     for P in self:
       if i % 10000 == 0:
-        print '\t',i,'of',n,'. Now with',len(S),'.'
+        print('\t',i,'of',n,'. Now with',len(S),'.')
       S.update(P.shrink_by_one())
       i += 1
     return S
@@ -53,7 +53,7 @@ class PermSet(set):
       bottom_edge = next_layer
       del next_layer
       newsize = len(done)
-      print '\t\tDownset currently has',newsize,'permutations, added',(newsize-oldsize),'in the last run.'
+      print('\t\tDownset currently has',newsize,'permutations, added',(newsize-oldsize),'in the last run.')
     return done
 
   def total_statistic(self, statistic):

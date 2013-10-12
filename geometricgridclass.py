@@ -116,7 +116,7 @@ class GeometricGridClass(PermClass):
     allowed_inflations = [Permutation([1])]
     allowed_inflations.extend(list(set([P for sublist in [B.all_intervals(return_patterns=True) for B in basis] for P in sublist])))
     avoidence_inflations = []
-    print allowed_inflations
+    print(allowed_inflations)
     for length in range(2,max_basis_length):
       all_words = itertools.product(self.alphabet_indices,repeat=length)
       for word in all_words:
@@ -129,7 +129,7 @@ class GeometricGridClass(PermClass):
           Q = P.inflate(components)
           if Q in basis:
             what_to_avoid = [chr(e+97)+'_'+str(allowed_inflations.index(components[i])) for (i,e) in enumerate(word)]
-            print what_to_avoid,'=',Q
+            print(what_to_avoid,'=',Q)
             if what_to_avoid not in avoidence_inflations:
               avoidence_inflations.append(what_to_avoid)
     return avoidence_inflations
