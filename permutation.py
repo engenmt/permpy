@@ -11,13 +11,13 @@ class Permutation(tuple):
 
   # static class variable, controls permutation representation
   _REPR = 'oneline'
-  lower_bound = [] 
+  lower_bound = []
   upper_bound = []
   bounds_set = False;
 
   #===============================================================%
   # some useful functions for playing with permutations
-  
+
   @staticmethod
   def random(n):
     '''outputs a random permutation of length n'''
@@ -35,12 +35,12 @@ class Permutation(tuple):
       for k in range(math.factorial(n)):
         L.append(Permutation(k,n))
       return L
-  
+
   @staticmethod
   def standardize(L):
     # copy by value
     assert len(set(L)) == len(L), 'make sure elements are distinct!'
-    ordered = L[:] 
+    ordered = L[:]
     ordered.sort()
     return [ordered.index(x) for x in L]
 
@@ -54,7 +54,7 @@ class Permutation(tuple):
     Permutation._REPR = L[k]
 
   @staticmethod
-  def ind2perm(k, n):   
+  def ind2perm(k, n):
     '''de-indexes a permutation'''
     result = range(n)
     def swap(i,j):
@@ -74,8 +74,8 @@ class Permutation(tuple):
     ''' Initializes a permutation object, internal indexing starts at zero. '''
     entries = []
     if n:
-      return Permutation.ind2perm(p, n) 
-    else: 
+      return Permutation.ind2perm(p, n)
+    else:
       if isinstance(p, Permutation):
         return tuple.__new__(cls, p)
       elif isinstance(p, tuple):
@@ -104,9 +104,9 @@ class Permutation(tuple):
   #       list.__init__(self, std)
   #     else:
   #       list.__init__(self,Permutation.ind2perm(p,n))
-    
+
   def __call__(self,i):
-    '''allows permutations to be used as functions 
+    '''allows permutations to be used as functions
     (useful for counting cycles)'''
     return self[i]
 
@@ -117,7 +117,7 @@ class Permutation(tuple):
     return s
 
   def cycles(self):
-    stringlist = ['( ' + ' '.join([str(x+1) for x in cyc]) + ' )' 
+    stringlist = ['( ' + ' '.join([str(x+1) for x in cyc]) + ' )'
                                     for cyc in self.cycle_decomp()]
     return ' '.join(stringlist)
 
@@ -127,7 +127,7 @@ class Permutation(tuple):
       return self.oneline()
     if Permutation._REPR == 'cycles':
       return self.cycles()
-    else: 
+    else:
       return '\n '.join([self.oneline(), self.cycles()])
 
   # def __hash__(self):
@@ -160,12 +160,12 @@ class Permutation(tuple):
     if power == 0:
       return Permutation(range(len(self)))
     else:
-      ans = self 
+      ans = self
       for i in range(power - 1):
         ans *= self
       return ans
 
-  def perm2ind(self):      
+  def perm2ind(self):
     ''' De-indexes a permutation. '''
     q = list(self)
     n = self.__len__()
@@ -199,8 +199,8 @@ class Permutation(tuple):
     n = self.__len__()
     L = [n-1-i for i in self]
     return Permutation(L)
-    
-  # returns the reverse of the permutation  
+
+  # returns the reverse of the permutation
   def reverse(self):
     q = list(self)
     q.reverse()
@@ -221,7 +221,7 @@ class Permutation(tuple):
     for i in range(n):
       array[self[i]][i] = '*'
     array.reverse()
-    s = '\n'.join( (''.join(l) for l in array)) 
+    s = '\n'.join( (''.join(l) for l in array))
     # return s
     print(s)
 
@@ -246,17 +246,17 @@ class Permutation(tuple):
     return len(self.cycle_decomp())
 
 
-    
+
 
 # Permutation Statistics - somewhat self-explanatory
-  
+
   def fixed_points(self):
     sum = 0
     for i in range(self.__len__()):
       if self(i) == i:
         sum += 1
     return sum
-    
+
 
   def skew_decomposable(self):
     p = list(self)
@@ -265,7 +265,7 @@ class Permutation(tuple):
       if set(range(n-i,n)) == set(p[0:i]):
         return True
     return False
-  
+
   def sum_decomposable(self):
     p = list(self)
     n = self.__len__()
@@ -288,7 +288,7 @@ class Permutation(tuple):
         k = list[0]
         num += 1
     return num
-      
+
   def descents(self):
     p = list(self)
     n = self.__len__()
@@ -297,12 +297,12 @@ class Permutation(tuple):
       if p[i-1] > p[i]:
         numd+=1
     return numd
-   
+
   def ascents(self):
     return self.__len__()-1-self.descents()
 
   # NEEDS TO BE FIXED
-  #    
+  #
   # def bends(self):
   #       # Bends measures the number of times the permutation p
   #       # "changes direction".  Bends is also the number of
@@ -330,14 +330,14 @@ class Permutation(tuple):
   #         b += 1
   #         curr_seg = 0
   #   return b
-  
+
   def trivial(self):
     return 0
 
   def order(self):
     L = map(len, self.cycle_decomp())
-    return reduce(lambda x,y: x*y / fractions.gcd(x,y), L) 
-  
+    return reduce(lambda x,y: x*y / fractions.gcd(x,y), L)
+
   def ltrmin(self):
     p = list(self)
     n = self.__len__()
@@ -380,7 +380,7 @@ class Permutation(tuple):
         if p[i]<p[j]:
           inv+=1
     return inv
-    
+
   def bonds(self):
     numbonds = 0
     p = list(self)
@@ -388,7 +388,7 @@ class Permutation(tuple):
       if p[i] - p[i-1] == 1 or p[i] - p[i-1] == -1:
         numbonds+=1
     return numbonds
-    
+
   def majorindex(self):
     sum = 0
     p = list(self)
@@ -397,10 +397,10 @@ class Permutation(tuple):
       if p[i] > p[i+1]:
         sum += i + 1
     return sum
-       
+
   def fixedptsplusbonds(self):
     return self.fixedpoints() + self.bonds()
- 
+
   def longestrunA(self):
     p = list(self)
     n = self.__len__()
@@ -413,14 +413,14 @@ class Permutation(tuple):
       else:
         length = 1
     return max(maxi,length)
-  
+
   def longestrunD(self):
     return self.complement().longestrunA()
-  
+
   def longestrun(self):
     return max(self.longestrunA(),self.longestrunD())
-  
-  def christiecycles(self): 
+
+  def christiecycles(self):
     # builds a permutation induced by the black and gray edges separately, and
     # counts the number of cycles in their product. used for transpositions
     p = list(self)
@@ -437,8 +437,8 @@ class Permutation(tuple):
       j = grayperm[k]
       newperm.append(j)
     return Permutation(newperm).numcycles()
-  
-  def othercycles(self): 
+
+  def othercycles(self):
     # builds a permutation induced by the black and gray edges separately, and
     # counts the number of cycles in their product
     p = list(self)
@@ -455,10 +455,10 @@ class Permutation(tuple):
       j = grayperm[k]
       newperm.append(j)
     return Permutation(newperm).numcycles()
-    
+
   def sumcycles(self):
     return self.othercycles() + self.christiecycles()
-   
+
   def maxcycles(self):
     return max(self.othercycles() - 1,self.christiecycles())
 
@@ -468,19 +468,19 @@ class Permutation(tuple):
   def threepats(self):
     p = list(self)
     n = self.__len__()
-    patnums = {'123' : 0, '132' : 0, '213' : 0, 
+    patnums = {'123' : 0, '132' : 0, '213' : 0,
                '231' : 0, '312' : 0, '321' : 0}
     for i in range(n-2):
       for j in range(i+1,n-1):
         for k in range(j+1,n):
-          patnums[''.join(map(lambda x: 
+          patnums[''.join(map(lambda x:
                               str(x+1),Permutation([p[i], p[j], p[k]])))] += 1
     return patnums
 
   def fourpats(self):
     p = list(self)
     n = self.__len__()
-    patnums = {'1234' : 0, '1243' : 0, '1324' : 0, 
+    patnums = {'1234' : 0, '1243' : 0, '1324' : 0,
                '1342' : 0, '1423' : 0, '1432' : 0,
                '2134' : 0, '2143' : 0, '2314' : 0,
                '2341' : 0, '2413' : 0, '2431' : 0,
@@ -493,8 +493,8 @@ class Permutation(tuple):
       for j in range(i+1,n-2):
         for k in range(j+1,n-1):
           for m in range(k+1,n):
-            patnums[''.join(map(lambda x: 
-                      str(x+1),Permutation([p[i], p[j], p[k], p[m]]).p))] += 1
+            patnums[''.join(map(lambda x:
+                      str(x+1),list(Permutation([p[i], p[j], p[k], p[m]]))))] += 1
     return patnums
 
   def num_consecutive_3214(self):
@@ -555,7 +555,7 @@ class Permutation(tuple):
       return True
 
     indices = [0]*n
-    
+
     while indices[0] < p:
       if self.involvement_check(self.upper_bound, self.lower_bound, indices, P, 1):
         return True
@@ -613,12 +613,12 @@ class Permutation(tuple):
     if c_length != 0:
       mi.append((c_start, c_start+c_length))
     return mi
-    
+
   def maximal_interval(self):
     ''' finds the biggest interval, and returns (i,j) is one is found,
 			where is the size of the interval, and j is the index
 			of the first entry in the interval
-			
+
 		returns (0,0) if no interval is found, i.e., if the permutation
 			is simple'''
     for i in range(2, len(self))[::-1]:
@@ -631,7 +631,7 @@ class Permutation(tuple):
     ''' searches for an interval, and returns (i,j) if one is found,
 			where i is the size of the interval, and j is the
 			first index of the interval
-			
+
 		returns (0,0) if no interval is found, i.e., if the permutation
 			is simple'''
     mins = list(self)
@@ -648,7 +648,7 @@ class Permutation(tuple):
     ''' returns True is this permutation is simple, False otherwise'''
     (i,j) = self.simple_location()
     return i == 0
-    
+
   def decomposition(self):
     base = Permutation(self)
     components = [Permutation([1])for i in range(0,len(base))]
