@@ -350,6 +350,9 @@ class Permutation(tuple):
       if flag: L.append(i)
     return L
 
+  def rtlmax(self):
+    return [len(self)-i-1 for i in self.complement().reverse().ltrmin()][::-1]
+
   def numltrmin(self):
     p = list(self)
     n = self.__len__()
@@ -543,6 +546,12 @@ class Permutation(tuple):
             min_above = L[j]
             upper_bound[i] = j
     return (lower_bound, upper_bound)
+
+  def avoids(self, P):
+    return not P.involved_in(self)
+
+  def involves(self, P):
+    return P.involved_in(self)
 
   def involved_in(self, P):
     if not self.bounds_set:

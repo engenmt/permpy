@@ -9,7 +9,7 @@ class PermSet(set):
   @staticmethod
   def all(n):
     ''' builds the set of all permutations of length n'''
-    return PermSet(permutation.Permutation.listall(n))
+    return PermSet(Permutation.listall(n))
 
   def show_all(self):
     return set.__repr__(self)
