@@ -41,7 +41,7 @@ Easily extensible.
 >>> 
 
 >>> 
->>> A = pp.AvClass(8)
+>>> A = pp.AvClass([ [1,3,2] ])
 >>> 
 >>> A
 [Set of 0 permutations,
@@ -54,19 +54,6 @@ Easily extensible.
  Set of 5040 permutations,
  Set of 40320 permutations]
 >>> 
->>> 
->>> A.avoid( pp.Perm([2,3,1]) )
->>> 
->>> A
-[Set of 0 permutations,
- Set of 1 permutations,
- Set of 2 permutations,
- Set of 5 permutations,
- Set of 14 permutations,
- Set of 42 permutations,
- Set of 132 permutations,
- Set of 429 permutations,
- Set of 1430 permutations]
 >>> 
 >>> 
 ```
