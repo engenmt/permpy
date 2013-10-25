@@ -1,5 +1,7 @@
 ''' This is working code which may or may not be added to a class at some point.'''
 
+from permpy import *
+
 def color_1324(p):
   red_entries = []
   blue_entries = []
@@ -16,7 +18,6 @@ def color_1324(p):
 def label_1324(p, new_version=False):
   (red_entries, blue_entries) = color_1324(p)
   word = ''
-
   for (index, entry) in enumerate(p):
     if new_version and index in p.rtlmax():
       word += 'D'
@@ -24,7 +25,6 @@ def label_1324(p, new_version=False):
       word += ('A' if index in p.ltrmin() else 'B')
     else:
       word += ('D' if index in p.rtlmax() else 'C')
-
   return (word, ''.join([word[i] for i in p.inverse()]))
 
 def check_pattern(word_pairs, pattern):

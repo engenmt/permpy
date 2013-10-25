@@ -26,6 +26,18 @@ class Permutation(tuple):
     return Permutation(L)
 
   @staticmethod
+  def random_avoider(n, B, simple=False, involution=False, verbose=-1):
+    i = 1
+    p = Permutation.random(n)
+    while (involution and not p.is_involution()) or (simple and not p.is_simple()) or not p.avoids_set(B):
+      i += 1
+      p = Permutation.random(n)
+      if verbose != -1 and i % verbose == 0:
+        print("Tested: "+str(i)+" permutations.");
+    return p
+
+
+  @staticmethod
   def listall(n):
     '''returns a list of all permutations of length n'''
     if n == 0:
@@ -549,6 +561,12 @@ class Permutation(tuple):
 
   def avoids(self, P):
     return not P.involved_in(self)
+
+  def avoids_set(self, B):
+    for b in B:
+      if b.involved_in(self):
+        return False
+    return True
 
   def involves(self, P):
     return P.involved_in(self)
