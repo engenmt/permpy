@@ -362,6 +362,12 @@ class Permutation(tuple):
       if flag: L.append(i)
     return L
 
+  def rtlmin(self):
+    return [len(self)-i-1 for i in Permutation(self[::-1]).ltrmin()]
+
+  def ltrmax(self):
+    return [len(self)-i-1 for i in Permutation(self[::-1]).rtlmax()]
+
   def rtlmax(self):
     return [len(self)-i-1 for i in self.complement().reverse().ltrmin()][::-1]
 
@@ -734,4 +740,26 @@ class Permutation(tuple):
         l.insert(j, i-0.5)
         S.add(Permutation(l))
     return S
+
+  def to_tikz(self):
+    s = r'\begin{tikzpicture}[scale=.3,baseline=(current bounding box.center)]';
+    s += '\n\t'
+    s += r'\draw[ultra thick] (1,0) -- ('+str(len(self))+',0);'
+    s += '\n\t'
+    s += r'\draw[ultra thick] (0,1) -- (0,'+str(len(self))+');'
+    s += '\n\t'
+    s += r'\foreach \x in {1,...,'+str(len(self))+'} {'
+    s += '\n\t\t'
+    s += r'\draw[thick] (\x,.09)--(\x,-.5);'
+    s += '\n\t\t'
+    s += r'\draw[thick] (.09,\x)--(-.5,\x);'
+    s += '\n\t'
+    s += r'}'
+    for (i,e) in enumerate(self):
+      s += '\n\t'
+      s += r'\draw[fill=black] ('+str(i+1)+','+str(e+1)+') circle (5pt);'
+    s += '\n'
+    s += r'\end{tikzpicture}'
+    return s
+
 
