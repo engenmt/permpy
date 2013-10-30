@@ -2,12 +2,37 @@
 
 from permpy import *
 
+def color_4231(p):
+  red_entries = []
+  blue_entries = []
+
+  for entry in p:
+    if Permutation(blue_entries+[entry]).involves(Permutation(312)):
+      red_entries.append(entry)
+    else:
+      blue_entries.append(entry) 
+
+  return (red_entries, blue_entries)
+
+def label_4231(p, new_version=False):
+  (red_entries, blue_entries) = color_4231(p)
+  word = ''
+  for (index, entry) in enumerate(p):
+    if new_version and index in p.ltrmax():
+      word += 'D'
+    elif new_version and index in p.rtlmin():
+      word += 'A'
+    elif entry in red_entries:
+      word += ('A' if index in p.rtlmin() else 'B')
+    else:
+      word += ('D' if index in p.ltrmax() else 'C')
+  return (word, ''.join([word[i] for i in p.inverse()]))
+
 def color_1324(p):
   red_entries = []
   blue_entries = []
 
   for entry in p:
-    print 
     if (len(blue_entries) > 0 and entry > min(blue_entries)) or Permutation(red_entries+[entry]).involves(Permutation(132)):
       blue_entries.append(entry)
     else:
@@ -34,8 +59,8 @@ def check_pattern(word_pairs, pattern):
       n[0] += 1
     if y.find(pattern) != -1:
       n[1] += 1
-  if (n[0] == 0 or n[1] == 0) and pattern.find('CB') == -1:
-    print('\n\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n\t\t'+pattern+'\n\n')
+  if n[0] == 0 or n[1] == 0:
+    print('\n\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n\t\t'+pattern+': ('+str(n[0])+', '+str(n[1])+')\n\n')
   return n
 
 def check_pattern_list(word_pairs, patterns):
