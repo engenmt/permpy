@@ -8,13 +8,17 @@ class GeometricGridClass(PermClass):
   
   ## Todo: Automatic row/col signs if possible, otherwise use the x2 trick
 
-  def __init__(self, M, col, row, max_length=8, generate=True): 
+  def __init__(self, M, col=None, row=None, max_length=8, generate=True): 
+
     M = M[::-1]
     M = map(list, zip(*M))
     self.M = M
     self.col = col
     self.row = row
     list.__init__(self, [PermSet() for i in range(0, max_length+1)])
+
+    if self.col == None or self.row == None:
+      (self.col, self.row) = self.guess_signs(self.M)
 
     self.alphabet_size = sum([(1 if self.M[i][j] != 0 else 0) for i in range(0,len(self.M)) for j in range(0,len(self.M[i]))])
     self.alphabet = [(i,j) for i in range(0, len(self.M)) for j in range(0,len(self.M[i])) if self.M[i][j] != 0]
@@ -51,6 +55,35 @@ class GeometricGridClass(PermClass):
       perm = self.dig_word_to_perm(word)
       if perm == P:
         return dig_to_num(word)
+
+  def guess_signs(self, M):
+    col = [0]*len(M)
+    row = [0]*len(M[0])
+
+    for c in range(len(col)):
+      kc = 1
+      for r in range(len(row)):
+        if row[r] != 0 and M[c][r] != 0 and M[c][r] != 2:
+          kc = row[r] * M[c][r]
+      col[c] = kc
+
+      for r in range(len(row)):
+        if M[c][r] != 0 and M[c][r] != 2:
+          row[r] = col[c] * M[c][r]
+        else:
+          row[r] = col[c]
+
+    # print 'col:',col,'\t\trow:',row
+    # print M
+
+    # CHECKING
+    for c in range(len(col)):
+      for r in range(len(row)):
+        if M[c][r] != 0 and M[c][r] != 2 and M[c][r] != col[c] * row[r]:
+          # print 'c:',c,',  r:',r,',  M:',M[c][r]
+          raise Exception("Unable to find row and columns signs. Please enter them manually.")
+          # return (False, False)
+    return (col, row)
     
   def generate_perms(self, max_length):
     M = self.M
@@ -96,14 +129,14 @@ class GeometricGridClass(PermClass):
     new_points = Permutation.standardize(heights)
     return Permutation(new_points)
 
-  def alpha_word_to_perm(self, word):
-    w = []
-    for i in range(0, len(word)):
-      n = ord(word[i])-97
-      if n < 0 or n >= self.alphabet_size:
-        return False
-      w.append(n)
-    return self.dig_word_to_perm(w, ignore_bad=True)
+#   def alpha_word_to_perm(self, word):
+#     w = []
+#     for i in range(0, len(word)):
+#       n = ord(word[i])-97
+#       if n < 0 or n >= self.alphabet_size:
+#         return False
+#       w.append(n)
+#     return self.dig_word_to_perm(w, ignore_bad=True)
 
   def is_valid_word(self, word):
     for i in range(0,len(word)-1):
@@ -111,46 +144,46 @@ class GeometricGridClass(PermClass):
         return False
     return True
 
-  def find_inflations_avoiders(self, basis):
-    max_basis_length = max([len(B) for B in basis])
-    allowed_inflations = [Permutation([1])]
-    allowed_inflations.extend(list(set([P for sublist in [B.all_intervals(return_patterns=True) for B in basis] for P in sublist])))
-    avoidence_inflations = []
-    print(allowed_inflations)
-    for length in range(2,max_basis_length):
-      all_words = itertools.product(self.alphabet_indices,repeat=length)
-      for word in all_words:
-        P = self.dig_word_to_perm(word)
-        if not P:
-          continue
-        combos = itertools.product(range(0,len(allowed_inflations)),repeat=len(P))
-        for combo in combos:
-          components = [allowed_inflations[i] for i in combo]
-          Q = P.inflate(components)
-          if Q in basis:
-            what_to_avoid = [chr(e+97)+'_'+str(allowed_inflations.index(components[i])) for (i,e) in enumerate(word)]
-            print(what_to_avoid,'=',Q)
-            if what_to_avoid not in avoidence_inflations:
-              avoidence_inflations.append(what_to_avoid)
-    return avoidence_inflations
+#   def find_inflations_avoiders(self, basis):
+#     max_basis_length = max([len(B) for B in basis])
+#     allowed_inflations = [Permutation([1])]
+#     allowed_inflations.extend(list(set([P for sublist in [B.all_intervals(return_patterns=True) for B in basis] for P in sublist])))
+#     avoidence_inflations = []
+#     print(allowed_inflations)
+#     for length in range(2,max_basis_length):
+#       all_words = itertools.product(self.alphabet_indices,repeat=length)
+#       for word in all_words:
+#         P = self.dig_word_to_perm(word)
+#         if not P:
+#           continue
+#         combos = itertools.product(range(0,len(allowed_inflations)),repeat=len(P))
+#         for combo in combos:
+#           components = [allowed_inflations[i] for i in combo]
+#           Q = P.inflate(components)
+#           if Q in basis:
+#             what_to_avoid = [chr(e+97)+'_'+str(allowed_inflations.index(components[i])) for (i,e) in enumerate(word)]
+#             print(what_to_avoid,'=',Q)
+#             if what_to_avoid not in avoidence_inflations:
+#               avoidence_inflations.append(what_to_avoid)
+#     return avoidence_inflations
 
-  def inflation_rules(self, basis):
-    avoidence_inflations = self.find_inflations_avoiders(basis)
-    rules = []
-    letters = set()
-    for ai in avoidence_inflations:
-      rule = 'SS, '
-      rule += (', SS, '.join(ai))
-      rule += ', SS'
-      rules.append('C(P('+rule+'))')
-      letters = letters.union(ai)
-    big_rule = 'I(' + (','.join(rules)) + ')'
-    letters = list(letters)
-    letters.sort()
-    return (letters, big_rule)
+#   def inflation_rules(self, basis):
+#     avoidence_inflations = self.find_inflations_avoiders(basis)
+#     rules = []
+#     letters = set()
+#     for ai in avoidence_inflations:
+#       rule = 'SS, '
+#       rule += (', SS, '.join(ai))
+#       rule += ', SS'
+#       rules.append('C(P('+rule+'))')
+#       letters = letters.union(ai)
+#     big_rule = 'I(' + (','.join(rules)) + ')'
+#     letters = list(letters)
+#     letters.sort()
+#     return (letters, big_rule)
 
-def dig_to_num(w):
-  return ''.join([chr(a+97) for a in w])
+# def dig_to_num(w):
+#   return ''.join([chr(a+97) for a in w])
 
 
 

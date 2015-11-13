@@ -1,9 +1,16 @@
-import permset
+from __future__ import print_function
 import sys, os, subprocess, time
 import math
 import random
 import fractions
 import itertools
+from math import factorial
+import types
+
+import copy
+import time
+from math import factorial
+
 
 __author__ = 'Cheyne Homberger, Jay Pantone'
 
@@ -81,7 +88,7 @@ class Permutation(tuple):
   @staticmethod
   def ind2perm(k, n):
     '''de-indexes a permutation'''
-    result = range(n)
+    result = list(range(n))
     def swap(i,j):
       t = result[i]
       result[i] = result[j]
@@ -641,7 +648,7 @@ class Permutation(tuple):
 
 
 
-  def all_monotone_intervals(self, with_ones=False):
+  def all_monotone_intervals(self):
     mi = []
     difference = 0
     c_start = 0
@@ -660,21 +667,7 @@ class Permutation(tuple):
         difference = 0
     if c_length != 0:
       mi.append((c_start, c_start+c_length))
-
-    if with_ones:
-      in_int = []
-      for (start,end) in mi:
-        in_int.extend(range(start, end+1))
-      for i in range(len(self)):
-        if i not in in_int:
-          mi.append((i,i))
-      mi.sort(key=lambda x : x[0])
     return mi
-
-  def monotone_quotient(self):
-    return Permutation([self[k[0]] for k in self.all_monotone_intervals(with_ones=True)])
-
-
 
   def maximal_interval(self):
     ''' finds the biggest interval, and returns (i,j) is one is found,
@@ -777,27 +770,14 @@ class Permutation(tuple):
         l = list(self[:])
         l.insert(j, i-0.5)
         S.add(Permutation(l))
-    return permset.PermSet(S)
-
-  def all_extensions_track_index(self, ti):
-    L = []
-    for i in range(0, len(self)+1):
-      for j in range(0, len(self)+1):
-        # insert (i-0.5) after entry j (i.e., first when j=0)
-        l = list(self[:])
-        l.insert(j, i-0.5)
-        if j < ti:
-          L.append((Permutation(l), ti+1))
-        else:
-          L.append((Permutation(l), ti))
-    return L
+    return PermSet(S)
 
   def show(self):
     if sys.platform == 'linux2':
       opencmd = 'gnome-open'
     else:
       opencmd = 'open'
-    s = "\documentclass{standalone}\n\usepackage{tikz}\n\n\\begin{document}\n\n"
+    s = "\\documentclass{standalone}\n\\usepackage{tikz}\n\n\\begin{document}\n\n"
     s += self.to_tikz()
     s += "\n\n\end{document}"
     dname = random.randint(1000,9999)
@@ -835,13 +815,13 @@ class Permutation(tuple):
     return s
 
   def shrink_by_one(self):
-    return permset.PermSet([Permutation(p) for p in [self[:i]+self[i+1:] for i in range(0,len(self))]])
+    return PermSet([Permutation(p) for p in [self[:i]+self[i+1:] for i in range(0,len(self))]])
 
   def children(self):
     return self.shrink_by_one()
 
   def downset(self):
-    return permset.PermSet([self]).downset()
+    return PermSet([self]).downset()
 
   def sum_indecomposable_sequence(self):
     S = self.downset()
@@ -854,7 +834,7 @@ class Permutation(tuple):
       l = [len([s for s in S if not s.sum_decomposable()])]+l
       if l[0] > n:
         return False
-      S = list(permset.PermSet(S).layer_down())
+      S = list(PermSet(S).layer_down())
     return True
 
   def contains_locations(self, Q):
@@ -923,47 +903,368 @@ class Permutation(tuple):
     return P
 
   def all_syms(self):
-    S = permset.PermSet([self])
-    S = S.union(permset.PermSet([P.reverse() for P in S]))
-    S = S.union(permset.PermSet([P.complement() for P in S]))
-    S = S.union(permset.PermSet([P.inverse() for P in S]))
+    S = PermSet([self])
+    S = S.union(PermSet([P.reverse() for P in S]))
+    S = S.union(PermSet([P.complement() for P in S]))
+    S = S.union(PermSet([P.inverse() for P in S]))
     return S
 
   def is_representative(self):
     return self == sorted(self.all_syms())[0]
 
-  def greedy_sum(p):
-    parts = []
-    sofar = 0
-    while sofar < len(p):
-      if len(p)-sofar == 1:
-        parts.append(Permutation(1))
-        return parts
-      i = 1
-      while sofar+i <= len(p) and list(p[sofar:sofar+i]) == range(sofar,sofar+i):
-        i += 1
-      i -= 1
-      if i > 0:
-        parts.append(Permutation(range(i)))
-      sofar += i
-      i = 2
-      while sofar+i <= len(p) and not (max(p[sofar:sofar+i]) - min(p[sofar:sofar+i])+1 == i and min(p[sofar:sofar+i]) == sofar):
-        i += 1
-      if sofar+i <= len(p):
-        parts.append(Permutation(p[sofar:sofar+i]))
-      sofar += i
-    return parts
 
-  def chom_sum(p):
-    L = []
-    p = p.greedy_sum()
-    for i in p:
-      if i.inversions() == 0:
-        L.extend([Permutation(1)]*len(i))
-      else:
-        L.append(i)
-    return L
 
-  def chom_skew(p):
-    return [r.reverse() for r in p.reverse().chom_sum()]
+class PermClass(list):
 
+  # def __init__(self, n = 8):
+    # list.__init__(self, [PermSet(permutation.Permutation.listall(i)) for i in range(n + 1)])
+    # self.avoids = []
+    # self.length = n
+
+  # def __len__(self):
+  #   return self.length
+
+  @staticmethod
+  def class_from_test(test, l=8, has_all_syms=False):
+    C = [PermSet([Permutation([])])]
+    for cur_length in range(1,l+1):
+      this_len = PermSet([])
+      if len(C[cur_length-1]) == 0:
+        return PermClass(C)
+      to_check = PermSet(set.union(*[P.all_extensions() for P in C[cur_length-1]]))
+      to_check = [P for P in to_check if PermSet(P.children()).issubset(C[cur_length-1])]
+      while len(to_check) > 0:
+        P = to_check.pop()
+        if has_all_syms:
+          syms = PermSet([
+              P,
+              P.reverse(),
+              P.complement(),
+              P.reverse().complement(),
+              P.inverse(),
+              P.reverse().inverse(),
+              P.complement().inverse(),
+              P.reverse().complement().inverse()
+            ])
+        if test(P):
+          if has_all_syms:
+            for Q in syms:
+              this_len.add(Q)
+          else:
+            this_len.add(P)
+        if has_all_syms:
+          for Q in syms:
+            if Q in to_check:
+              to_check.remove(Q)
+
+      C.append(this_len)
+    return PermClass(C)
+
+
+
+  def filter_by(self, test):
+    for i in range(0, len(self)):
+      D = list(self[i])
+      for P in D:
+        if not test(P):
+          self[i].remove(P)
+
+  def guess_basis(self, max_length=6, search_mode=False):
+    """
+      Guess a basis for the class up to "max_length" by iteratively generating
+      the class with basis elements known so far ({}, to start with) and adding
+      elements which should be avoided to the basis.
+
+      Search mode goes up to the max length in the class and prints out the number
+      of basis elements of each length on the way.
+    """
+
+    t = time.time()
+
+    assert max_length < len(self), 'class not big enough to check that far'
+
+    if search_mode:
+      max_length = len(self)-1
+
+    # Find the first length at which perms are missing.
+    not_all_perms = [i for i in range(len(self)) if i >= 1 and len(self[i]) != factorial(i)]
+
+    # If no perms are missing, we have all perms, so return empty basis.
+    if len(not_all_perms) == 0:
+      return PermSet([])
+
+    # Add missing perms of minimum length to basis.
+    start_length = min(not_all_perms)
+    basis = PermSet(Permutation.listall(start_length)).difference(self[start_length])
+
+    if search_mode:
+      print('\t'+str(len(basis))+' basis elements of length '+str(start_length)+'\t\t'+("{0:.2f}".format(time.time() - t)) + ' seconds')
+      t = time.time()
+
+    basis_elements_so_far = len(basis)
+
+    current_length = start_length + 1
+
+    # Go up in length, adding missing perms at each step.
+    while current_length <= max_length:
+      C = avclass.AvClass(basis, current_length)
+      basis = basis.union(C[-1].difference(self[current_length]))
+
+      if search_mode:
+        print('\t'+str(len(basis)-basis_elements_so_far)+' basis elements of length ' + str(current_length) + '\t\t' + ("{0:.2f}".format(time.time() - t)) + ' seconds')
+        t = time.time()
+
+      basis_elements_so_far = len(basis)
+
+      current_length += 1
+
+    return basis
+
+
+  # def guess_basis(self, max_length=8):
+  #   max_length = min(max_length, len(self)-1)
+  #   B = PermSet()
+  #   B.update(self.check_tree_basis(max_length, Permutation([1,2]), PermSet()))
+  #   B.update(self.check_tree_basis(max_length, Permutation([2,1]), PermSet()))
+  #   return B.minimal_elements()
+
+  # def check_tree_basis(self, max_length, R, S):
+  #   if R not in self[len(R)]:
+  #     for s in S:
+  #       if s.involved_in(R):
+  #         return S
+  #     S.add(R)
+  #     return S
+  #   else:
+  #     if len(R) == max_length:
+  #       return S
+  #     re = R.right_extensions()
+  #     for p in re:
+  #       S = self.check_tree_basis(max_length, p, S)
+  #     return S
+
+  def plus_class(self,t):
+    C = copy.deepcopy(self)
+    for i in range(0,t):
+      C = C.plus_one_class()
+    return C
+
+  def plus_one_class(self):
+    D = copy.deepcopy(self)
+    D.append(PermSet())
+    for l in range(0,len(self)):
+      for P in self[l]:
+        D[l+1] = D[l+1].union(P.all_extensions())
+    return D
+
+class PermSet(set):
+  ''' Provides functions for dealing with sets of Permutation objects '''
+
+  def __repr__(self):
+    # if len(self) > 10:
+    return 'Set of %d permutations' % len(self)
+    # else:
+      # return set.__repr__(self)
+
+  @staticmethod
+  def all(n):
+    ''' builds the set of all permutations of length n'''
+    return PermSet(Permutation.listall(n))
+
+  def show_all(self):
+    return set.__repr__(self)
+
+  def minimal_elements(self):
+    B = list(self)
+    B = sorted(B, key=len)
+    C = B[:]
+    n = len(B)
+    for (i,b) in enumerate(B):
+      # if i % 1 == 0:
+        # print i,'/',n
+      if b not in C:
+        continue
+      for j in range(i+1,n):
+        if B[j] not in C:
+          continue
+        if b.involved_in(B[j]):
+          C.remove(B[j])
+    return PermSet(C)
+
+  def all_syms(self):
+    sym_set = [frozenset(self)]
+    sym_set.append(frozenset([i.reverse() for i in self]))
+    sym_set.append(frozenset([i.complement() for i in self]))
+    sym_set.append(frozenset([i.reverse().complement() for i in self]))
+    sym_set.extend([frozenset([k.inverse() for k in L]) for L in sym_set])
+    return frozenset(sym_set)
+
+  def layer_down(self):
+    S = PermSet()
+    i = 1
+    n = len(self)
+    for P in self:
+      # if i % 10000 == 0:
+        # print('\t',i,'of',n,'. Now with',len(S),'.')
+      S.update(P.shrink_by_one())
+      i += 1
+    return S
+
+  def downset(self, return_class=False):
+    bottom_edge = PermSet()
+    bottom_edge.update(self)
+
+    done = PermSet(bottom_edge)
+    while len(bottom_edge) > 0:
+      oldsize = len(done)
+      next_layer = bottom_edge.layer_down()
+      done.update(next_layer)
+      del bottom_edge
+      bottom_edge = next_layer
+      del next_layer
+      newsize = len(done)
+      # print '\t\tDownset currently has',newsize,'permutations, added',(newsize-oldsize),'in the last run.'
+    if not return_class:
+      return done
+    cl = [PermSet([])]
+    max_length = max([len(P) for P in done])
+    for i in range(1,max_length+1):
+      cl.append(PermSet([P for P in done if len(P) == i]))
+    return permclass.PermClass(cl)
+
+
+  def total_statistic(self, statistic):
+    return sum([statistic(p) for p in self])
+
+  def threepats(self):
+    patnums = {'123' : 0, '132' : 0, '213' : 0,
+               '231' : 0, '312' : 0, '321' : 0}
+    L = list(self)
+    for p in L:
+      n = len(p)
+      for i in range(n-2):
+        for j in range(i+1,n-1):
+          for k in range(j+1,n):
+            std = Permutation.standardize([p[i], p[j], p[k]])
+            patnums[''.join([str(x + 1) for x in std])] += 1
+    return patnums
+
+  def fourpats(self):
+    patnums = {'1234' : 0, '1243' : 0, '1324' : 0,
+               '1342' : 0, '1423' : 0, '1432' : 0,
+               '2134' : 0, '2143' : 0, '2314' : 0,
+               '2341' : 0, '2413' : 0, '2431' : 0,
+               '3124' : 0, '3142' : 0, '3214' : 0,
+               '3241' : 0, '3412' : 0, '3421' : 0,
+               '4123' : 0, '4132' : 0, '4213' : 0,
+               '4231' : 0, '4312' : 0, '4321' : 0 }
+    L = list(self)
+    for p in L:
+      n = len(p)
+      for i in range(n-3):
+        for j in range(i+1,n-2):
+          for k in range(j+1,n-1):
+            for m in range(k+1,n):
+              std = Permutation.standardize([p[i], p[j], p[k], p[m]])
+              patnums[''.join([str(x + 1) for x in std])] += 1
+    return patnums
+
+
+
+class AvClass(PermClass):
+
+  def __init__(self, basis, length=8, verbose=0):
+    list.__init__(self, [PermSet() for i in range(0, length+1)])
+    self.length = length
+
+    temp_basis = []
+    for P in basis:
+      temp_basis.append(Permutation(P))
+    basis = temp_basis
+    self.basis = basis
+
+    if length >= 1:
+        self[1].add(Permutation([1]));
+    for n in range(2,length+1):
+      k = 0
+      outof = len(self[n-1])
+      for P in self[n-1]:
+        k += 1
+        if verbose > 0 and k % verbose == 0:
+          print('\t\t\t\tRight Extensions:',k,'/',outof,'\t( length',n,')')
+        insertion_locations = P.insertion_locations
+        add_this_time = []
+        for Q in P.right_extensions():
+          is_good = True
+          for B in basis:
+            if B.involved_in(Q,last_require=2):
+              is_good = False
+              insertion_locations[Q[-1]] = 0
+              # break
+          if is_good:
+
+            add_this_time.append(Q)
+        for Q in add_this_time:
+          # print Q,'is good'
+          # print '\tchanging IL from ',Q.insertion_locations,'to',(insertion_locations[:Q[-1]+1]+  insertion_locations[Q[-1]:])
+          Q.insertion_locations = insertion_locations[:Q[-1]+1] + insertion_locations[Q[-1]:]
+          self[n].add(Q)
+
+  def extend_to_length(self, l):
+    for i in range(self.length+1, l+1):
+      self.append(PermSet())
+    if (l <= self.length):
+      return
+    old = self.length
+    self.length = l
+    for n in range(old+1,l+1):
+      for P in self[n-1]:
+        insertion_locations = P.insertion_locations
+        add_this_time = []
+        for Q in P.right_extensions():
+          is_good = True
+          for B in self.basis:
+            if B.involved_in(Q,last_require=2):
+              is_good = False
+              insertion_locations[Q[-1]] = 0
+              # break
+          if is_good:
+
+            add_this_time.append(Q)
+        for Q in add_this_time:
+          # print Q,'is good'
+          # print '\tchanging IL from ',Q.insertion_locations,'to',(insertion_locations[:Q[-1]+1]+  insertion_locations[Q[-1]:])
+          Q.insertion_locations = insertion_locations[:Q[-1]+1] + insertion_locations[Q[-1]:]
+          self[n].add(Q)
+
+  def right_juxtaposition(self, C, generate_perms=True):
+    A = PermSet()
+    max_length = max([len(P) for P in self.basis]) + max([len(P) for P in C.basis])
+    for n in range(2, max_length+1):
+      for i in range(0, factorial(n)):
+        P = Permutation(i,n)
+        for Q in self.basis:
+          for R in C.basis:
+            if len(Q) + len(R) == n:
+              if (Q == Permutation(P[0:len(Q)]) and R == Permutation(P[len(Q):n])):
+                A.add(P)
+            elif len(Q) + len(R) - 1 == n:
+              if (Q == Permutation(P[0:len(Q)]) and Permutation(R) == Permutation(P[len(Q)-1:n])):
+                A.add(P)
+    return AvClass(list(A.minimal_elements()), length=(8 if generate_perms else 0))
+
+  def above_juxtaposition(self, C, generate_perms=True):
+    inverse_class = AvClass([P.inverse() for P in C.basis], 0)
+    horizontal_juxtaposition = self.right_juxtaposition(inverse_class, generate_perms=False)
+    return AvClass([B.inverse() for B in horizontal_juxtaposition.basis], length=(8 if generate_perms else 0))
+
+  def contains(self, C):
+    for P in self.basis:
+      good = False
+      for Q in C.basis:
+        if P.involved_in(Q):
+          good = True
+          break
+      if not good:
+        return False
+    return True

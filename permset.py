@@ -1,15 +1,19 @@
-from .permutation import *
+import permutation
+import permclass
 
 class PermSet(set):
   ''' Provides functions for dealing with sets of Permutation objects '''
 
   def __repr__(self):
+    # if len(self) > 10:
     return 'Set of %d permutations' % len(self)
+    # else:
+      # return set.__repr__(self)
 
   @staticmethod
   def all(n):
     ''' builds the set of all permutations of length n'''
-    return PermSet(Permutation.listall(n))
+    return PermSet(permutation.Permutation.listall(n))
 
   def show_all(self):
     return set.__repr__(self)
@@ -20,6 +24,8 @@ class PermSet(set):
     C = B[:]
     n = len(B)
     for (i,b) in enumerate(B):
+      # if i % 1 == 0:
+        # print i,'/',n
       if b not in C:
         continue
       for j in range(i+1,n):
@@ -29,18 +35,26 @@ class PermSet(set):
           C.remove(B[j])
     return PermSet(C)
 
+  def all_syms(self):
+    sym_set = [frozenset(self)]
+    sym_set.append(frozenset([i.reverse() for i in self]))
+    sym_set.append(frozenset([i.complement() for i in self]))
+    sym_set.append(frozenset([i.reverse().complement() for i in self]))
+    sym_set.extend([frozenset([k.inverse() for k in L]) for L in sym_set])
+    return frozenset(sym_set)
+
   def layer_down(self):
     S = PermSet()
     i = 1
     n = len(self)
     for P in self:
-      if i % 10000 == 0:
-        print('\t',i,'of',n,'. Now with',len(S),'.')
+      # if i % 10000 == 0:
+        # print('\t',i,'of',n,'. Now with',len(S),'.')
       S.update(P.shrink_by_one())
       i += 1
     return S
 
-  def downset(self):
+  def downset(self, return_class=False):
     bottom_edge = PermSet()
     bottom_edge.update(self)
 
@@ -53,8 +67,15 @@ class PermSet(set):
       bottom_edge = next_layer
       del next_layer
       newsize = len(done)
-      print('\t\tDownset currently has',newsize,'permutations, added',(newsize-oldsize),'in the last run.')
-    return done
+      # print '\t\tDownset currently has',newsize,'permutations, added',(newsize-oldsize),'in the last run.'
+    if not return_class:
+      return done
+    cl = [PermSet([])]
+    max_length = max([len(P) for P in done])
+    for i in range(1,max_length+1):
+      cl.append(PermSet([P for P in done if len(P) == i]))
+    return permclass.PermClass(cl)
+
 
   def total_statistic(self, statistic):
     return sum([statistic(p) for p in self])
@@ -68,7 +89,7 @@ class PermSet(set):
       for i in range(n-2):
         for j in range(i+1,n-1):
           for k in range(j+1,n):
-            std = Permutation.standardize([p[i], p[j], p[k]])
+            std = permutation.Permutation.standardize([p[i], p[j], p[k]])
             patnums[''.join([str(x + 1) for x in std])] += 1
     return patnums
 
@@ -88,6 +109,6 @@ class PermSet(set):
         for j in range(i+1,n-2):
           for k in range(j+1,n-1):
             for m in range(k+1,n):
-              std = Permutation.standardize([p[i], p[j], p[k], p[m]])
+              std = permutation.Permutation.standardize([p[i], p[j], p[k], p[m]])
               patnums[''.join([str(x + 1) for x in std])] += 1
     return patnums

@@ -1,3 +1,4 @@
+from __future__ import print_function
 from .pegpermutation import *
 from .permset import *
 from itertools import chain, combinations, combinations_with_replacement
@@ -5,6 +6,7 @@ from sympy import *
 import time, gc, sys
 from sympy.core.cache import clear_cache
 import copy
+
 
 class PegPermSet(PermSet):
 
