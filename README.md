@@ -3,8 +3,10 @@ permpy
 
 ## A Python Permutations Class
 
-Contains Various tools for working interactively with permutaions. 
-Easily extensible.
+Contains various tools for working interactively with permutaions, with a focus 
+on permutation patterns and classes. Easily extensible.
+
+To install (for now), just clone this repository and import `permpy`. 
 
 ### Examples:
 ```python
