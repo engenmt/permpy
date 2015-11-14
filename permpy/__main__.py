@@ -1,6 +1,4 @@
-
-
-from __future__ import print_function
+# import permpy
 from .permset import PermSet
 from .permutation import Permutation
 from .pegpermutation import PegPermutation
@@ -9,7 +7,8 @@ from .avclass import AvClass
 from .pegpermset import PegPermSet
 from .geometricgridclass import GeometricGridClass
 from .InsertionEncoding import *
-import RestrictedContainer
+import permpy.RestrictedContainer
 
-Perm = Permutation
-Av = AvClass
+import doctest
+doctest.testmod()
+

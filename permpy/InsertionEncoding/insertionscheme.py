@@ -1,7 +1,7 @@
-from ..permutation import Permutation
-from ..avclass import AvClass
-from ..permset import PermSet
-from configuration import Configuration
+from permpy.permutation import Permutation
+from permpy.avclass import AvClass
+from permpy.permset import PermSet
+from permpy.InsertionEncoding.configuration import Configuration
 import sympy
 import random
 
@@ -39,11 +39,11 @@ class InsertionScheme():
         if self.has_inssch():
           self._has_inssch = True
           if not quiet:
-            print 'Av(',basis,') does not have an insertion scheme, but its symmetry Av(',S,') does.'
+            print('Av({}) does not have an insertion scheme, but its symmetry Av({}) does.'.format(basis, S))
           break
       if not self._has_inssch:
         if not quiet:
-          print 'Neither this class nor its symmetries has an insertion scheme.'
+          print('Neither this class nor its symmetries has an insertion scheme.')
 
 
   def has_inssch(self):
@@ -60,21 +60,24 @@ class InsertionScheme():
       config = self._reductions[config]
     return config
 
-    
+
   def build_rules(self, verbose=True, make_class=False, class_bound=100):
     configs_to_check = [Configuration((0,), self._basis)]
     while len(configs_to_check) > 0:
       if verbose:
-        print '\tstates to check:',len(configs_to_check),',   nodes in tree:',len(self._tree.keys()),',   states:', len(self._automaton)
+        # print '\tstates to check:',len(configs_to_check),',   nodes in tree:',len(self._tree.keys()),',   states:', len(self._automaton)
+        s_to_print = '\tstates to check: {}, nodes in tree: {}, states: {}'.format(
+            len(configs_to_check), len(self._tree.keys()), len(self._automaton))
+        print(s_to_print)
       configs_to_check.sort(key=len)
       current_config = configs_to_check[0]
       if verbose:
-        print '\nChecking:',current_config
+        print('\nChecking: ',current_config)
       self._configs_checked.add(current_config)
-      
+
       if current_config.is_permutation():
         if verbose:
-          print current_config,'is not reducible'
+          print(current_config,' is not reducible')
         configs_to_check.remove(current_config)
         continue
 
@@ -91,11 +94,13 @@ class InsertionScheme():
           continue
         checked_already.append(second_config)
         if verbose:
-          print 'Checking isomorphism (depth='+str(length_to_check)+'):',current_config, '<->', second_config
+          # print 'Checking isomorphism (depth='+str(length_to_check)+'):',current_config, '<->', second_config
+          print('Checking isomorphism (depth={}): {} <-> {}'.format(
+            length_to_check, current_config, second_config))
         if self.check_isomorphism(current_config, second_config, length_to_check, make_class, class_bound):
           self._reductions[current_config] = second_config
           if verbose:
-            print current_config,'is reducible to',second_config
+            print(current_config,' is reducible to ',second_config)
           if current_config in self._automaton.keys():
             del self._automaton[current_config]
           for config in self._automaton.keys():
@@ -107,19 +112,21 @@ class InsertionScheme():
           break
       if not reducible:
         if verbose:
-          print current_config,'is not reducible'
+          print(current_config,'is not reducible')
         if make_class and len(self._class) < len(current_config) + 2 and len(current_config) + 2 <= class_bound:
           if verbose:
-            print '\t\t\tExtending class length from ', (len(self._class) - 1), 'to', (len(current_config) + 2), 'for', current_config, '(!)'
+            # print '\t\t\tExtending class length from ', (len(self._class) - 1), 'to', (len(current_config) + 2), 'for', current_config, '(!)'
+            print('\t\t\tExtending class length from {} to {} for {} (!)'.format(
+                len(self._class - 1), len(current_config) + 2, current_config))
           self._class.extend_to_length(len(current_config)+2)
           if verbose:
-            print '\t\t\t\tDone!'
+            print('\t\t\t\tDone!')
 
         # print '3'
         TTT = current_config.valid_children(self._class)
         self._automaton[current_config] = list(TTT)
         configs_to_check.extend(TTT)
-      
+
       configs_to_check.remove(current_config)
       configs_to_check = list(set(configs_to_check).difference(self._configs_checked))
 
@@ -143,16 +150,16 @@ class InsertionScheme():
       return c1.is_permutation() == c2.is_permutation()
     if c1 not in self._tree.keys():
       if make_class and len(self._class) < len(c1) + 3 and len(c1) + 2 <= class_bound:
-        print '\t\t\tExtending class length from ', (len(self._class)-1), 'to', (len(c1) + 2), 'for', c1, '(@)'
+        print('\t\t\tExtending class length from ', (len(self._class)-1), 'to', (len(c1) + 2), 'for', c1, '(@)')
         self._class.extend_to_length(len(c1)+2)
-        print '\t\t\t\tDone!'
+        print('\t\t\t\tDone!')
       # print '1',c1,len(c1)
       self._tree[c1] = c1.valid_children(self._class)
     if c2 not in self._tree.keys():
       if make_class and len(self._class) < len(c2) + 3 and len(c2) + 2 <= class_bound:
-        print '\t\t\tExtending class length from ', (len(self._class)-1), 'to', (len(c2) + 2), 'for', c2, '(#)'
+        print('\t\t\tExtending class length from ', (len(self._class)-1), 'to', (len(c2) + 2), 'for', c2, '(#)')
         self._class.extend_to_length(len(c2)+2)
-        print '\t\t\t\tDone!'
+        print('\t\t\t\tDone!')
       # print '2'
       self._tree[c2] = c2.valid_children(self._class)
     c1kids = {c._type : c for c in self._tree[c1]}
@@ -183,6 +190,6 @@ class InsertionScheme():
     M = (sympy.eye(len(states))-sympy.Matrix(transitions)) ** -1
     f = (1+M[states.index(self._root),states.index(self._perm)]).factor()
     if show_series:
-      print f.series(x,0,11)
+      print(f.series(x,0,11))
     return f
-    
+

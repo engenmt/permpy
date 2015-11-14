@@ -1,4 +1,4 @@
-from ..permutation import *
+from permpy.permutation import *
 
 
 class Configuration(tuple):
@@ -70,7 +70,7 @@ class Configuration(tuple):
     self._children = S
     self._children_computed = True
     return self._children
-     
+
   def is_permutation(self):
     return self.num_slots() == 0
 

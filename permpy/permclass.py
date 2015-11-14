@@ -1,13 +1,14 @@
 from __future__ import print_function
-import permutation
-import permset
 import copy
 import time
 from math import factorial
 
+import permpy.permutation
+import permpy.permset
+
 class PermClass(list):
-  
-  # def __init__(self, n = 8): 
+
+  # def __init__(self, n = 8):
     # list.__init__(self, [permset.PermSet(permutation.Permutation.listall(i)) for i in range(n + 1)])
     # self.avoids = []
     # self.length = n
@@ -88,7 +89,7 @@ class PermClass(list):
     # Add missing perms of minimum length to basis.
     start_length = min(not_all_perms)
     basis = permset.PermSet(permutation.Permutation.listall(start_length)).difference(self[start_length])
-    
+
     if search_mode:
       print('\t'+str(len(basis))+' basis elements of length '+str(start_length)+'\t\t'+("{0:.2f}".format(time.time() - t)) + ' seconds')
       t = time.time()
@@ -134,7 +135,7 @@ class PermClass(list):
   #     for p in re:
   #       S = self.check_tree_basis(max_length, p, S)
   #     return S
-    
+
   def plus_class(self,t):
     C = copy.deepcopy(self)
     for i in range(0,t):
@@ -153,4 +154,3 @@ class PermClass(list):
     return PermClass.class_from_test(lambda P : ((len(P) < len(self) and P in self[len(P)]) or P.sum_decomposable()) and all([Q in self[len(Q)] for Q in P.chom_sum()]), l=length, has_all_syms=has_syms)
 
 
-import avclass

@@ -1,5 +1,5 @@
-import permutation
-import permclass
+import permpy.permutation
+import permpy.permclass
 
 class PermSet(set):
   ''' Provides functions for dealing with sets of Permutation objects '''
@@ -81,11 +81,11 @@ class PermSet(set):
     return sum([statistic(p) for p in self])
 
   def threepats(self):
-    patnums = {'123' : 0, '132' : 0, '213' : 0, 
+    patnums = {'123' : 0, '132' : 0, '213' : 0,
                '231' : 0, '312' : 0, '321' : 0}
     L = list(self)
     for p in L:
-      n = len(p) 
+      n = len(p)
       for i in range(n-2):
         for j in range(i+1,n-1):
           for k in range(j+1,n):
@@ -94,7 +94,7 @@ class PermSet(set):
     return patnums
 
   def fourpats(self):
-    patnums = {'1234' : 0, '1243' : 0, '1324' : 0, 
+    patnums = {'1234' : 0, '1243' : 0, '1324' : 0,
                '1342' : 0, '1423' : 0, '1432' : 0,
                '2134' : 0, '2143' : 0, '2314' : 0,
                '2341' : 0, '2413' : 0, '2431' : 0,
