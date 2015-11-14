@@ -20,12 +20,12 @@ class AvClass(permpy.permclass.PermClass):
 
         temp_basis = []
         for P in basis:
-            temp_basis.append(permutation.Permutation(P))
+            temp_basis.append(Permutation(P))
         basis = temp_basis
         self.basis = basis
 
         if length >= 1:
-                self[1].add(permutation.Permutation([1]));
+                self[1].add(Permutation([1]));
         for n in range(2,length+1):
             k = 0
             outof = len(self[n-1])
@@ -85,14 +85,14 @@ class AvClass(permpy.permclass.PermClass):
         max_length = max([len(P) for P in self.basis]) + max([len(P) for P in C.basis])
         for n in range(2, max_length+1):
             for i in range(0, factorial(n)):
-                P = permutation.Permutation(i,n)
+                P = Permutation(i,n)
                 for Q in self.basis:
                     for R in C.basis:
                         if len(Q) + len(R) == n:
-                            if (Q == permutation.Permutation(P[0:len(Q)]) and R == permutation.Permutation(P[len(Q):n])):
+                            if (Q == Permutation(P[0:len(Q)]) and R == Permutation(P[len(Q):n])):
                                 A.add(P)
                         elif len(Q) + len(R) - 1 == n:
-                            if (Q == permutation.Permutation(P[0:len(Q)]) and permutation.Permutation(R) == permutation.Permutation(P[len(Q)-1:n])):
+                            if (Q == Permutation(P[0:len(Q)]) and Permutation(R) == Permutation(P[len(Q)-1:n])):
                                 A.add(P)
         return AvClass(list(A.minimal_elements()), length=(8 if generate_perms else 0))
 
