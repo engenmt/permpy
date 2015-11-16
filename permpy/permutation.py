@@ -239,23 +239,6 @@ class Permutation(tuple):
 
     # __hash__, __eq__, __ne__ inherited from tuple class
 
-    # def __hash__(self):
-    #       '''allows fast comparisons of permutations, and allows sets of
-    #       permutations'''
-    #       return (self.perm2ind(), self.__len__()).__hash__()
-
-    # def __eq__(self,other):
-    #       ''' checks if two permutations are equal '''
-    #       if len(self) != len(other):
-    #           return False
-    #       for i in range(len(self)):
-    #           if self[i] != other[i]:
-    #               return False
-    #       return True
-
-    # def __ne__(self,other):
-    #       return not self == other
-
     def __mul__(self,other):
         """Returns the composition of two permutations."""
         assert len(self) == len(other)
@@ -349,7 +332,7 @@ class Permutation(tuple):
         return Permutation(q)
 
     def plot(self):
-        ''' Draws a plot of the given Permutation. '''
+        """Prints a simple plot of the given Permutation."""
         n = self.__len__()
         array = [[' ' for i in range(n)] for j in range(n)]
         for i in range(n):
@@ -360,6 +343,11 @@ class Permutation(tuple):
         print(s)
 
     def cycle_decomp(self):
+        """Calculates the cycle decomposition of the permutation. Returns a list
+        of cycles, each of which is represented as a list.
+        >>> Permutation(53814276).cycle_decomp()
+        [[4, 3, 0], [6], [7, 5, 1, 2]]
+        """
         n = self.__len__()
         seen = set()
         cyclelist = []
@@ -376,25 +364,42 @@ class Permutation(tuple):
         cyclelist.reverse()
         return cyclelist
 
-    def num_disjoint_cycles(self):
-        return len(self.cycle_decomp())
 
     def sum(self, Q):
+        """Calculates and returns the direct sum of two permutations.
+        >>> Permutation(312).sum(Permutation(1234))
+        3 1 2 4 5 6 7
+        """
         return Permutation(list(self)+[i+len(self) for i in Q])
 
     def skew_sum(self, Q):
+        """Calculates and returns the skew sum of two permutations.
+        >>> Permutation(312).skew_sum(Permutation(1234))
+        7 5 6 1 2 3 4
+        """
         return Permutation([i+len(Q) for i in self]+list(Q))
 
 
-# Permutation Statistics - somewhat self-explanatory
+    # Permutation Statistics - somewhat self-explanatory
 
     def fixed_points(self):
+        """Returns the number of fixed points of the permutation.
+        >>> Permutation(521436).fixed_points()
+        3
+        """
         sum = 0
         for i in range(self.__len__()):
             if self(i) == i:
                 sum += 1
         return sum
 
+    def num_disjoint_cycles(self):
+        """Returns the number of cycles in the permutation.
+        >>> Permutation(53814276).cycle_decomp()
+        3
+        """
+
+        return len(self.cycle_decomp())
 
     def skew_decomposable(self):
         p = list(self)
