@@ -7,8 +7,24 @@ import random
 import fractions
 import itertools
 
+
 # python 2/3 compatibility
 from functools import reduce
+
+mpl_imported = False
+try:
+    import matplotlib as mpl
+    import matplotlib.pyplot as plt
+    mpl.rc('axes', fc='E5E5E5', ec='white', lw='1',
+            grid='True', axisbelow='True')
+    mpl.rc('grid', c='white', ls='-')
+    mpl.rc('figure', fc='white')
+    mpl_imported = True
+except ImportError:
+    print('Install matplotlib for extra plotting functionality')
+    pass
+
+
 
 import permpy.permset
 
@@ -128,7 +144,7 @@ class Permutation(tuple):
         if representation in L:
             Permutation._REPR = representation
         else:
-            k = input('1 for oneline, 2 for cycles, 3 for both\n ')
+            k = int(input('1 for oneline, 2 for cycles, 3 for both\n '))
             k -= 1
             Permutation._REPR = L[k]
 
@@ -386,14 +402,14 @@ class Permutation(tuple):
             q[p[i]] = i
         return Permutation(q)
 
-    def plot(self):
+    def ascii_plot(self):
         """Prints a simple plot of the given Permutation."""
         n = self.__len__()
         array = [[' ' for i in range(n)] for j in range(n)]
         for i in range(n):
             array[self[i]][i] = '*'
         array.reverse()
-        s = '\n'.join( (''.join(l) for l in array))
+        s = '\n'.join( (' '.join(l) for l in array))
         # return s
         print(s)
 
@@ -1130,7 +1146,34 @@ class Permutation(tuple):
                     L.append((Permutation(l), ti))
         return L
 
-    def show(self):
+    def plot(self, show=True, ax=None, use_mpl=True, **kwargs):
+        """Draws a matplotlib plot of the permutation. Can be used for both
+        quick visualization, or to build a larger figure. Unrecognized arguments
+        are passed as options to the axes object to allow for customization
+        (i.e., setting a figure title, or setting labels on the axes). Falls
+        back to an ascii_plot if matplotlib isn't found, or if use_mpl is set to
+        False.
+        """
+        if not mpl_imported or not use_mpl:
+            return self.ascii_plot()
+        xs = [val + Permutation._BASE for val in range(len(self))]
+        ys = [val + Permutation._BASE for val in self]
+        if not ax:
+            ax = plt.gca()
+        scat = ax.scatter(xs, ys, s=40, c='k')
+        ax_settings = {'xticks': xs, 'yticks': ys,
+                    'xticklabels': '', 'yticklabels': '',
+                    'xlim': (min(xs) - 1, max(xs) + 1),
+                    'ylim': (min(ys) - 1, max(ys) + 1)}
+        ax.set(**ax_settings)
+        ax.set(**kwargs)
+        ax.set_aspect('equal')
+        if show:
+            plt.show()
+        return ax
+
+
+    def _show(self):
         if sys.platform == 'linux2':
             opencmd = 'gnome-open'
         else:
