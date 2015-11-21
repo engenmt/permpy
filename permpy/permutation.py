@@ -24,6 +24,9 @@ class Permutation(tuple):
     # static class variable, controls permutation representation
     _REPR = 'oneline'
 
+    # default to displaying permutations as 1-based
+    _BASE = 1
+
     lower_bound = []
     upper_bound = []
     bounds_set = False;
@@ -111,7 +114,7 @@ class Permutation(tuple):
     @staticmethod
     def standardize(L):
         """Standardizes a list `L` of unique elements by mapping them to the set
-        0,1, ..., len(L) by an order-preserving bijection"""
+        {0,1, ..., len(L)} by an order-preserving bijection"""
         assert len(set(L)) == len(L), 'make sure elements are distinct!'
         ordered = L[:]
         ordered.sort()
@@ -119,7 +122,7 @@ class Permutation(tuple):
 
     @staticmethod
     def change_repr(representation=None):
-        """Toggles (globally) between cycle notation or one-line notation. Note
+        """Toggles globally between cycle notation or one-line notation. Note
         that internal representation is still one-line."""
         L = ['oneline', 'cycles', 'both']
         if representation in L:
@@ -145,6 +148,8 @@ class Permutation(tuple):
         -------
         p : Permutation instance
 
+        >>> Permutation.ind2perm(12,8).perm2ind()
+        12
         """
 
         result = list(range(n))
@@ -181,6 +186,12 @@ class Permutation(tuple):
         -------
         Permutation instance
 
+        >>> Permutation(35124) == Permutation([3, 5, 1, 2, 4])
+        True
+        >>> Permutation(5, 12) == Permutation.ind2perm(5, 12)
+        True
+        >>> Permutation([215, -99, 30, 12.1351, 0]) == Permutation(51432)
+        True
         """
         def _is_iterable(obj):
             """Quick utility to check if object is iterable."""
@@ -213,18 +224,26 @@ class Permutation(tuple):
 
     def __call__(self,i):
         """Allows permutations to be called as functions. Used extensively for
-        internal methods (e.g., counting cycles)."""
+        internal methods (e.g., counting cycles). Note that permutations are
+        zero-based internally.
+
+        >>> Permutation(4132)(2)
+        2
+        """
+
         return self[i]
 
     def oneline(self):
         """Returns the one-line notation representation of the permutation (as a
         sequence of integers 1 through n)."""
-        s = ' '.join( str(entry + 1) for entry in self )
+        base = Permutation._BASE
+        s = ' '.join( str(entry + base) for entry in self )
         return s
 
     def cycles(self):
         """Returns the cycle notation representation of the permutation."""
-        stringlist = ['( ' + ' '.join([str(x + 1) for x in cyc]) + ' )'
+        base = Permutation._BASE
+        stringlist = ['( ' + ' '.join([str(x + base) for x in cyc]) + ' )'
                             for cyc in self.cycle_decomp()]
         return ' '.join(stringlist)
 
@@ -237,15 +256,32 @@ class Permutation(tuple):
         else:
             return '\n'.join([self.oneline(), self.cycles()])
 
+
     # __hash__, __eq__, __ne__ inherited from tuple class
 
-    def __mul__(self,other):
+    def __mul__(self, other):
         """Returns the composition of two permutations."""
         assert len(self) == len(other)
         L = list(other)
         for i in range(len(L)):
             L[i] = self.__call__(L[i])
         return Permutation(L)
+
+    def __add__(self, other):
+        """Returns the direct sum of two permutations.
+        >>> p = Permutation.monotone_increasing(10)
+        >>> p + p == Permutation.monotone_increasing(20)
+        True
+        """
+        return self.direct_sum(other)
+
+    def __sub__(self, other):
+        """Returns the skew sum of two permutations.
+        >>> p = Permutation.monotone_decreasing(10)
+        >>> p - p == Permutation.monotone_decreasing(20)
+        True
+        """
+        return self.skew_sum(other)
 
     def __pow__(self, power):
         """Returns the permutation raised to a (positive integer) power."""
@@ -264,7 +300,12 @@ class Permutation(tuple):
 
     def perm2ind(self):
         """De-indexes a permutation, by mapping it to an integer between 0 and
-        len(self)! - 1. See also `Permutation.ind2perm`."""
+        len(self)! - 1. See also `Permutation.ind2perm`.
+
+        >>> p = Permutation(41523)
+        >>> Permutation.ind2perm(p.perm2ind(), len(p)) == p
+        True
+        """
         q = list(self)
         n = self.__len__()
         def swap(i,j):
@@ -311,19 +352,33 @@ class Permutation(tuple):
 
     def complement(self):
         """Returns the complement of the permutation. That is, the permutation
-        obtained by subtracting each of the entries from `len(self)`."""
+        obtained by subtracting each of the entries from `len(self)`.
+
+        >>> Permutation(2314).complement() == Permutation(3241)
+        True
+        """
         n = self.__len__()
         L = [n-1-i for i in self]
         return Permutation(L)
 
     def reverse(self):
-        """Returns the reverse of the permutation."""
+        """Returns the reverse of the permutation.
+
+        >>> Permutation(2314).reverse() == Permutation(4132)
+        True
+        """
         q = list(self)
         q.reverse()
         return Permutation(q)
 
     def inverse(self):
-        """Returns the group-theoretic inverse of the permutation."""
+        """Returns the group-theoretic inverse of the permutation.
+
+        >>> p = Permutation.random(10)
+        >>> p * p.inverse() == Permutation.monotone_increasing(10)
+        True
+        """
+
         p = list(self)
         n = self.__len__()
         q = [0 for j in range(n)]
@@ -345,6 +400,7 @@ class Permutation(tuple):
     def cycle_decomp(self):
         """Calculates the cycle decomposition of the permutation. Returns a list
         of cycles, each of which is represented as a list.
+
         >>> Permutation(53814276).cycle_decomp()
         [[4, 3, 0], [6], [7, 5, 1, 2]]
         """
@@ -365,15 +421,17 @@ class Permutation(tuple):
         return cyclelist
 
 
-    def sum(self, Q):
+    def direct_sum(self, Q):
         """Calculates and returns the direct sum of two permutations.
-        >>> Permutation(312).sum(Permutation(1234))
+
+        >>> Permutation(312).direct_sum(Permutation(1234))
         3 1 2 4 5 6 7
         """
         return Permutation(list(self)+[i+len(self) for i in Q])
 
     def skew_sum(self, Q):
         """Calculates and returns the skew sum of two permutations.
+
         >>> Permutation(312).skew_sum(Permutation(1234))
         7 5 6 1 2 3 4
         """
@@ -384,6 +442,7 @@ class Permutation(tuple):
 
     def fixed_points(self):
         """Returns the number of fixed points of the permutation.
+
         >>> Permutation(521436).fixed_points()
         3
         """
@@ -393,15 +452,18 @@ class Permutation(tuple):
                 sum += 1
         return sum
 
-    def num_disjoint_cycles(self):
-        """Returns the number of cycles in the permutation.
-        >>> Permutation(53814276).cycle_decomp()
-        3
-        """
-
-        return len(self.cycle_decomp())
 
     def skew_decomposable(self):
+        """Determines whether the permutation is expressible as the skew sum of
+        two permutations.
+
+        >>> p = Permutation.random(8).direct_sum(Permutation.random(12))
+        >>> p.skew_decomposable()
+        False
+        >>> p.complement().skew_decomposable()
+        True
+        """
+
         p = list(self)
         n = self.__len__()
         for i in range(1,n):
@@ -410,6 +472,16 @@ class Permutation(tuple):
         return False
 
     def sum_decomposable(self):
+        """Determines whether the permutation is expressible as the direct sum of
+        two permutations.
+
+        >>> p = Permutation.random(4).direct_sum(Permutation.random(15))
+        >>> p.sum_decomposable()
+        True
+        >>> p.reverse().sum_decomposable()
+        False
+        """
+
         p = list(self)
         n = self.__len__()
         for i in range(1,n):
@@ -417,45 +489,115 @@ class Permutation(tuple):
                 return True
         return False
 
+    def num_cycles(self):
+        """Returns the number of cycles in the permutation.
 
-    def numcycles(self):
-        num = 1
-        n = self.__len__()
-        list = range(n)
-        k = 0
-        while list:
-            if k in list:
-                del list[list.index(k)]
-                k = self(k)
-            else:
-                k = list[0]
-                num += 1
-        return num
+        >>> Permutation(53814276).num_cycles()
+        3
+        """
 
-    def descents(self):
+        return len(self.cycle_decomp())
+
+
+
+    def descent_set(self):
+        """Returns descent set of the permutation
+
+        >>> Permutation(42561873).descent_set()
+        [1, 4, 6, 7]
+        """
+
         p = list(self)
         n = self.__len__()
-        numd = 0
+        descents = []
         for i in range(1,n):
             if p[i-1] > p[i]:
-                numd+=1
-        return numd
+                descents.append(i)
+        return descents
 
-    def ascents(self):
-        return self.__len__()-1-self.descents()
+    def num_descents(self):
+        """Returns the number of descents of the permutation
 
-    def bends(self):
-                # Bends measures the number of times the permutation p
-                # "changes direction".  Bends is also the number of
-                # non-monotone consecutive triples in p.
-                # The permutation p can be expressed as the concatenation of
-                # bend(p)+1 monotone segments.
+        >>> Permutation(42561873).num_descents()
+        4
+        """
+        return len(self.descent_set())
+
+    def ascent_set(self):
+        """Returns the ascent set of the permutation
+
+        >>> Permutation(42561873).ascent_set()
+        [2, 3, 5]
+        """
+        descents = self.descent_set()
+        return [i for i in range(1, len(self)) if i not in descents]
+
+    def num_ascents(self):
+        """Returns the number of ascents of the permutation
+
+        >>> Permutation(42561873).num_ascents()
+        3
+        """
+        return len(self.ascent_set())
+
+
+    def peak_list(self):
+        """Returns the list of peaks of the permutation.
+
+        >>> Permutation(2341765).peak_list()
+        [2, 4]
+        """
+
+        def check(i):
+            return self[i-1] < self[i] > self[i+1]
+        return [i for i in range(1, len(self)-1) if check(i)]
+
+
+    def num_peaks(self):
+        """Returns the number of peaks of the permutation
+
+        >>> Permutation(2341765).num_peaks()
+        2
+        """
+
+        return len(self.peak_list())
+
+    def valley_list(self):
+        """Returns the list of valleys of the permutation.
+
+        >>> Permutation(3241756).valley_list()
+        [1, 3, 5]
+        """
+
+        return self.complement().peak_list()
+
+
+    def num_valleys(self):
+        """Returns the number of peaks of the permutation
+
+        >>> Permutation(3241756).num_valleys()
+        3
+        """
+
+        return len(self.valley_list())
+
+    def bend_list(self):
+        """Returns the list of indices at which the permutation changes
+        direction. That is, the number of non-monotone consecutive triples of
+        the permutation. A permutation p can be expressed as the concatenation
+        of len(p.bend_list()) + 1 monotone segments."""
+        raise NotImplementedError
+
+        # this isn't quite correct....
         return len([i for i in range(1, len(self)-1) if (self[i-1] > self[i] and self[i+1] > self[i]) or (self[i-1] < self[i] and self[i+1] < self[i])])
 
-    def peaks(self):
-        return len([i for i in range(1, len(self)-1) if self[i-1] < self[i] and self[i+1] < self[i]])
 
     def trivial(self):
+        """The trivial permutation statistic, for convenience
+
+        >>> Permutation.random(10).trivial()
+        0
+        """
         return 0
 
     def order(self):
@@ -464,21 +606,23 @@ class Permutation(tuple):
 
     def ltrmin(self):
         """Returns the positions of the left-to-right minima.
+
         >>> Permutation(35412).ltrmin()
         [0, 3]
         """
+
         n = self.__len__()
         L = []
-        for i in range(n):
-            flag = True
-            for j in range(i):
-                if self[i] > self[j]:
-                    flag = False
-            if flag: L.append(i)
+        minval = len(self) + 1
+        for idx, val in enumerate(self):
+            if val < minval:
+                L.append(idx)
+                minval = val
         return L
 
     def rtlmin(self):
         """Returns the positions of the left-to-right minima.
+
         >>> Permutation(315264).rtlmin()
         [5, 3, 1]
         """
@@ -491,16 +635,8 @@ class Permutation(tuple):
     def rtlmax(self):
         return [len(self)-i-1 for i in self.complement().reverse().ltrmin()][::-1]
 
-    def numltrmin(self):
-        p = list(self)
-        n = self.__len__()
-        num = 1
-        m = p[0]
-        for i in range(1,n):
-            if p[i] < m:
-                num += 1
-                m = p[i]
-        return num
+    def num_ltrmin(self):
+        return len(self.ltrmin())
 
     def inversions(self):
         """Returns the number of inversions of the permutation, i.e., the
@@ -615,6 +751,9 @@ class Permutation(tuple):
         return max(self.othercycles() - 1,self.christiecycles())
 
     def is_involution(self):
+        """Checks if the permutation is an involution, i.e., is equal to it's
+        own inverse. """
+
         return self == self.inverse()
 
     def threepats(self):
