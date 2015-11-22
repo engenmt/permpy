@@ -1,26 +1,42 @@
 import random
 
 import permpy.permutation
+from permpy.permutation import Permutation
 import permpy.permclass
 
 class PermSet(set):
-    """Provides functions for dealing with sets of Permutation objects."""
-
+    """Represents a set of permutations, and allows statistics to be computed
+    across the set."""
     def __repr__(self):
         # if len(self) > 10:
         return 'Set of {} permutations'.format(len(self))
         # else:
             # return set.__repr__(self)
 
-    @staticmethod
-    def all(n):
-        ''' builds the set of all permutations of length n'''
-        return PermSet(permpy.permutation.Permutation.listall(n))
+    @classmethod
+    def all(cls, length):
+        """Builds the set of all permutations of a given length.
+
+        Parameters:
+        -----------
+        length : int
+            the length of the permutations
+
+        Examples
+        --------
+        >>> p = Permutation(12); q = Permutation(21)
+        >>> PermSet.all(2) == PermSet([p, q])
+        True
+        """
+        return PermSet(Permutation.listall(length))
 
     def get_random(self):
+        """Returns a random element from the set."""
         return random.sample(self, 1)[0]
 
     def show_all(self):
+        """The default representation doesn't print the entire set, function
+        allows this."""
         return set.__repr__(self)
 
     def minimal_elements(self):

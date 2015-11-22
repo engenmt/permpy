@@ -2,6 +2,7 @@
 *.sublime*
 .dropbox
 .DS_STORE
+venv
 avoidencegrid.py
 OLD_permtools.py
 Icon
