@@ -49,32 +49,32 @@ class Permutation(tuple):
     insertion_locations = []
 
     # some useful functions for playing with permutations
-    @staticmethod
-    def monotone_increasing(n):
+    @classmethod
+    def monotone_increasing(cls, n):
         """Returns a monotone increasing permutation of length n.
 
         >>> Permutation.monotone_increasing(5)
         1 2 3 4 5
         """
-        return Permutation(range(n))
+        return cls(range(n))
 
-    @staticmethod
-    def monotone_decreasing(n):
+    @classmethod
+    def monotone_decreasing(cls, n):
         """Returns a monotone decreasing permutation of length n.
 
         >>> Permutation.monotone_decreasing(5)
         5 4 3 2 1
         """
-        return Permutation(range(n)[::-1])
+        return cls(range(n)[::-1])
 
-    @staticmethod
-    def identity(n):
+    @classmethod
+    def identity(cls, n):
         """Returns the identity permutation of length n. Same as
         monotone_increasing."""
-        return Permutation.monotone_increasing(n)
+        return cls.monotone_increasing(n)
 
-    @staticmethod
-    def random(n):
+    @classmethod
+    def random(cls, n):
         """Outputs a random permutation of length n.
 
         >>> len( Permutation.random(10) ) == 10
@@ -82,10 +82,10 @@ class Permutation(tuple):
         """
         L = list(range(n))
         random.shuffle(L)
-        return Permutation(L)
+        return cls(L)
 
-    @staticmethod
-    def random_avoider(n, B, simple=False, involution=False, verbose=-1):
+    @classmethod
+    def random_avoider(cls, n, B, simple=False, involution=False, verbose=-1):
         """Generates a (uniformly) random permutation which avoids the patterns
         contained in `B`.
 
@@ -112,29 +112,29 @@ class Permutation(tuple):
         """
 
         i = 1
-        p = Permutation.random(n)
+        p = cls.random(n)
         while (involution and not p.is_involution()) \
             or (simple and not p.is_simple()) or not p.avoids_set(B):
             i += 1
-            p = Permutation.random(n)
+            p = cls.random(n)
             if verbose != -1 and i % verbose == 0:
                 print("Tested: "+str(i)+" permutations.");
         return p
 
 
-    @staticmethod
-    def listall(n):
+    @classmethod
+    def listall(cls, n):
         """Returns a list of all permutations of length `n`"""
         if n == 0:
             return []
         else:
             L = []
             for k in range(math.factorial(n)):
-                L.append(Permutation(k,n))
+                L.append(cls(k,n))
             return L
 
-    @staticmethod
-    def standardize(L):
+    @classmethod
+    def standardize(cls, L):
         """Standardizes a list `L` of unique elements by mapping them to the set
         {0,1, ..., len(L)} by an order-preserving bijection"""
         assert len(set(L)) == len(L), 'make sure elements are distinct!'
@@ -143,19 +143,19 @@ class Permutation(tuple):
         return [ordered.index(x) for x in L]
 
     @staticmethod
-    def change_repr(representation=None):
+    def change_repr(cls, representation=None):
         """Toggles globally between cycle notation or one-line notation. Note
         that internal representation is still one-line."""
         L = ['oneline', 'cycles', 'both']
         if representation in L:
-            Permutation._REPR = representation
+            cls._REPR = representation
         else:
             k = int(input('1 for oneline, 2 for cycles, 3 for both\n '))
             k -= 1
-            Permutation._REPR = L[k]
+            cls._REPR = L[k]
 
-    @staticmethod
-    def ind2perm(k, n):
+    @classmethod
+    def ind2perm(cls, k, n):
         """De-indexes a permutation by a bijection from the set S_n to [n!].
         See also the `Permutation.perm2ind` method.
 
@@ -183,7 +183,7 @@ class Permutation(tuple):
             j = k % i
             swap(i-1,j)
             k //= i
-        p = Permutation(result)
+        p = cls(result)
         return p
 
     # overloaded built in functions:
