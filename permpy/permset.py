@@ -1,3 +1,5 @@
+import random
+
 import permpy.permutation
 import permpy.permclass
 
@@ -13,7 +15,10 @@ class PermSet(set):
     @staticmethod
     def all(n):
         ''' builds the set of all permutations of length n'''
-        return PermSet(permutation.Permutation.listall(n))
+        return PermSet(permpy.permutation.Permutation.listall(n))
+
+    def get_random(self):
+        return random.sample(self, 1)[0]
 
     def show_all(self):
         return set.__repr__(self)

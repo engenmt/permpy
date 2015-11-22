@@ -68,6 +68,12 @@ class Permutation(tuple):
         return Permutation(range(n)[::-1])
 
     @staticmethod
+    def identity(n):
+        """Returns the identity permutation of length n. Same as
+        monotone_increasing."""
+        return Permutation.monotone_increasing(n)
+
+    @staticmethod
     def random(n):
         """Outputs a random permutation of length n.
 
@@ -180,9 +186,7 @@ class Permutation(tuple):
         p = Permutation(result)
         return p
 
-    #================================================================#
     # overloaded built in functions:
-
     def __new__(cls, p, n = None):
         """Creates a new permutation object. Supports a variety of creation
         methods.
@@ -300,12 +304,19 @@ class Permutation(tuple):
         return self.skew_sum(other)
 
     def __pow__(self, power):
-        """Returns the permutation raised to a (positive integer) power."""
+        """Returns the permutation raised to a (positive integer) power.
+
+        >>> p = Permutation.random(10)
+        >>> p**p.order() == Permutation.monotone_increasing(10)
+        True
+        """
+
         try:
-            assert isinstance(power, int) and power >= 0
-        except:
+            assert power >= 0 and (isinstance(power, int) or power.is_integer())
+        except ValueError:
             err = 'Power must be a positive integer'
             raise ValueError(err)
+        power = int(power)
         if power == 0:
             return Permutation(range(len(self)))
         else:
@@ -402,7 +413,7 @@ class Permutation(tuple):
             q[p[i]] = i
         return Permutation(q)
 
-    def ascii_plot(self):
+    def _ascii_plot(self):
         """Prints a simple plot of the given Permutation."""
         n = self.__len__()
         array = [[' ' for i in range(n)] for j in range(n)]
@@ -618,7 +629,7 @@ class Permutation(tuple):
 
     def order(self):
         L = map(len, self.cycle_decomp())
-        return reduce(lambda x,y: x*y / fractions.gcd(x,y), L)
+        return reduce(lambda x,y: x*y // fractions.gcd(x,y), L)
 
     def ltrmin(self):
         """Returns the positions of the left-to-right minima.
@@ -771,6 +782,16 @@ class Permutation(tuple):
         own inverse. """
 
         return self == self.inverse()
+
+    def is_identity(self):
+        """Checks if the permutation is the identity.
+
+        >>> p = Permutation.random(10)
+        >>> (p * p.inverse()).is_identity()
+        True
+        """
+
+        return self == Permutation.identity(len(self))
 
     def threepats(self):
         p = list(self)
@@ -1155,7 +1176,7 @@ class Permutation(tuple):
         False.
         """
         if not mpl_imported or not use_mpl:
-            return self.ascii_plot()
+            return self._ascii_plot()
         xs = [val + Permutation._BASE for val in range(len(self))]
         ys = [val + Permutation._BASE for val in self]
         if not ax:
