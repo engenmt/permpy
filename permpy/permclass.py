@@ -3,7 +3,7 @@ import time
 from math import factorial
 
 import permpy.permutation
-import permpy.permset
+from permpy.permset import PermSet
 
 class PermClass(list):
 
@@ -148,6 +148,12 @@ class PermClass(list):
             for P in self[l]:
                 D[l+1] = D[l+1].union(P.all_extensions())
         return D
+
+    def heatmap(self, **kwargs):
+        permset = PermSet()
+        for item in self:
+            permset.update(item)
+        permset.heatmap(**kwargs)
 
     def sum_closure(self,length=8, has_syms=False):
         return PermClass.class_from_test(lambda P : ((len(P) < len(self) and P in self[len(P)]) or P.sum_decomposable()) and all([Q in self[len(Q)] for Q in P.chom_sum()]), l=length, has_all_syms=has_syms)

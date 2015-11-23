@@ -11,18 +11,23 @@ import itertools
 # python 2/3 compatibility
 from functools import reduce
 
-mpl_imported = False
 try:
-    import matplotlib as mpl
     import matplotlib.pyplot as plt
-    mpl.rc('axes', fc='E5E5E5', ec='white', lw='1',
-            grid='True', axisbelow='True')
-    mpl.rc('grid', c='white', ls='-')
-    mpl.rc('figure', fc='white')
     mpl_imported = True
 except ImportError:
-    print('Install matplotlib for extra plotting functionality')
-    pass
+    mpl_imported = False
+
+# try:
+#     import matplotlib as mpl
+#     import matplotlib.pyplot as plt
+#     mpl.rc('axes', fc='E5E5E5', ec='white', lw='1',
+#             grid='True', axisbelow='True')
+#     mpl.rc('grid', c='white', ls='-')
+#     mpl.rc('figure', fc='white')
+#     mpl_imported = True
+# except ImportError:
+#     print('Install matplotlib for extra plotting functionality')
+#     pass
 
 
 
@@ -142,15 +147,15 @@ class Permutation(tuple):
         ordered.sort()
         return [ordered.index(x) for x in L]
 
-    @staticmethod
+    @classmethod
     def change_repr(cls, representation=None):
         """Toggles globally between cycle notation or one-line notation. Note
         that internal representation is still one-line."""
-        L = ['oneline', 'cycles', 'both']
+        L = ['oneline', 'cycle', 'both']
         if representation in L:
             cls._REPR = representation
         else:
-            k = int(input('1 for oneline, 2 for cycles, 3 for both\n '))
+            k = int(input('1 for oneline, 2 for cycle, 3 for both\n '))
             k -= 1
             cls._REPR = L[k]
 
@@ -271,7 +276,7 @@ class Permutation(tuple):
         """Tells python how to display a permutation object."""
         if Permutation._REPR == 'oneline':
             return self.oneline()
-        if Permutation._REPR == 'cycles':
+        if Permutation._REPR == 'cycle':
             return self.cycles()
         else:
             return '\n'.join([self.oneline(), self.cycles()])
