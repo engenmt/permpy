@@ -17,19 +17,6 @@ try:
 except ImportError:
     mpl_imported = False
 
-# try:
-#     import matplotlib as mpl
-#     import matplotlib.pyplot as plt
-#     mpl.rc('axes', fc='E5E5E5', ec='white', lw='1',
-#             grid='True', axisbelow='True')
-#     mpl.rc('grid', c='white', ls='-')
-#     mpl.rc('figure', fc='white')
-#     mpl_imported = True
-# except ImportError:
-#     print('Install matplotlib for extra plotting functionality')
-#     pass
-
-
 
 import permpy.permset
 
