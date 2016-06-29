@@ -262,7 +262,7 @@ class PermSet(set):
             for i in range(n-2):
                 for j in range(i+1,n-1):
                     for k in range(j+1,n):
-                        std = permutation.Permutation.standardize([p[i], p[j], p[k]])
+                        std = permpy.permutation.Permutation.standardize([p[i], p[j], p[k]])
                         patnums[''.join([str(x + 1) for x in std])] += 1
         return patnums
 
@@ -282,6 +282,6 @@ class PermSet(set):
                 for j in range(i+1,n-2):
                     for k in range(j+1,n-1):
                         for m in range(k+1,n):
-                            std = permutation.Permutation.standardize([p[i], p[j], p[k], p[m]])
+                            std = permpy.permutation.Permutation.standardize([p[i], p[j], p[k], p[m]])
                             patnums[''.join([str(x + 1) for x in std])] += 1
         return patnums
