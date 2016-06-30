@@ -8,7 +8,7 @@ on permutation patterns and classes. Easily extensible.
 
 To install (for now), just clone this repository and import `permpy`. 
 
-See `Pverview.ipynb` for more examples.
+**See `Overview.ipynb` for more examples.**
 
 ### Examples:
 ```python

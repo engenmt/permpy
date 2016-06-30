@@ -10,3 +10,6 @@ plot.py
 .ipynb_checkpoints
 to_fix.txt
 todo.txt
+permpy.egg*
+build
+dist
