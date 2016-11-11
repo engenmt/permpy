@@ -22,6 +22,14 @@ import permpy.permset
 
 __author__ = 'Cheyne Homberger, Jay Pantone'
 
+def _is_iter(obj):
+    try:
+        iter(obj)
+        result = True
+    except TypeError:
+        result = False
+    return result
+
 
 # a class for creating permutation objects
 class Permutation(tuple):
@@ -177,6 +185,30 @@ class Permutation(tuple):
             k //= i
         p = cls(result)
         return p
+
+    @classmethod
+    def plentiful(cls, gap):
+        """Returns the gap-plentiful permutation of minimal(?) length."""
+        # if gap == 6:
+        #     return Permutation([5,10,15,2,7,12,17,4,9,14,1,6,11,16,3,8,13])
+        d = gap-1
+        if d % 2:
+            firsts = list(range(2, d+1, 2)) + list(range(1, d+2, 2))
+        else:
+            firsts = list(range(1, d+1, 2)) + list(range(2, d+2, 2))
+        def segment(first):
+            return list(range(first, first+(d-2)*(d+1)+1, d+1))
+        segments = [segment(f) for f in firsts]
+        entries = [val for segment in segments for val in segment]
+        try:
+            entries.remove(1)
+            entries.remove(2)
+            n = max(entries)
+            entries.remove(n)
+        except ValueError:
+            pass
+        return Permutation(entries)
+
 
     # overloaded built in functions:
     def __new__(cls, p, n = None):
@@ -347,7 +379,12 @@ class Permutation(tuple):
         2 4 1 3
         """
         p = list(self)
-        del p[idx]
+        if _is_iter(idx):
+            sorted_idx = sorted(idx, reverse=True)
+            for ix in sorted_idx:
+                del p[ix]
+        else:
+            del p[idx]
         return Permutation(p)
 
     def insert(self,idx,val):
@@ -678,6 +715,23 @@ class Permutation(tuple):
                     inv+=1
         return inv
 
+    def min_gapsize(self):
+        """Returns the minimum gap between any two entries in the permutation 
+        (computed with the taxicab metric).
+
+        >>> Permutation(3142).min_gapsize()
+        3
+        """
+        # currently uses the naive algorithm --- can be improved 
+        min_dist = len(self)
+        for i, j in itertools.combinations(range(len(self)), 2):
+            h_dist = abs(i - j)
+            v_dist = abs(self[i] - self[j])
+            dist = h_dist + v_dist
+            if dist < min_dist:
+                min_dist = dist
+        return min_dist
+
     def noninversions(self):
         p = list(self)
         n = self.__len__()
@@ -989,8 +1043,6 @@ class Permutation(tuple):
                 total += 1
         return total
 
-
-
     def all_intervals(self, return_patterns=False):
         blocks = [[],[]]
         for i in range(2, len(self)):
@@ -1006,8 +1058,6 @@ class Permutation(tuple):
             return patterns
         else:
             return blocks
-
-
 
     def all_monotone_intervals(self, with_ones=False):
         mi = []
@@ -1159,7 +1209,7 @@ class Permutation(tuple):
                     L.append((Permutation(l), ti))
         return L
 
-    def plot(self, show=True, ax=None, use_mpl=True, **kwargs):
+    def plot(self, show=True, ax=None, use_mpl=True, fname=None, **kwargs):
         """Draws a matplotlib plot of the permutation. Can be used for both
         quick visualization, or to build a larger figure. Unrecognized arguments
         are passed as options to the axes object to allow for customization
@@ -1181,6 +1231,9 @@ class Permutation(tuple):
         ax.set(**ax_settings)
         ax.set(**kwargs)
         ax.set_aspect('equal')
+        if fname:
+            fig = plt.gcf()
+            fig.savefig(fname, dpi=300)
         if show:
             plt.show()
         return ax
@@ -1229,9 +1282,10 @@ class Permutation(tuple):
         return s
 
     def shrink_by_one(self):
-        return permset.PermSet([Permutation(p) for p in [self[:i]+self[i+1:] for i in range(0,len(self))]])
+        return permpy.permset.PermSet([Permutation(p) for p in [self[:i]+self[i+1:] for i in range(0,len(self))]])
 
     def children(self):
+        """Returns all patterns of length one less than the permutation."""
         return self.shrink_by_one()
 
     def downset(self):
