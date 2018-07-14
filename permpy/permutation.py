@@ -1194,7 +1194,7 @@ class Permutation(tuple):
                 l = list(self[:])
                 l.insert(j, i-0.5)
                 S.add(Permutation(l))
-        return permset.PermSet(S)
+        return permpy.permset.PermSet(S)
 
     def all_extensions_track_index(self, ti):
         L = []
@@ -1289,7 +1289,7 @@ class Permutation(tuple):
         return self.shrink_by_one()
 
     def downset(self):
-        return permset.PermSet([self]).downset()
+        return permpy.permset.PermSet([self]).downset()
 
     def sum_indecomposable_sequence(self):
         S = self.downset()
@@ -1302,7 +1302,7 @@ class Permutation(tuple):
             l = [len([s for s in S if not s.sum_decomposable()])]+l
             if l[0] > n:
                 return False
-            S = list(permset.PermSet(S).layer_down())
+            S = list(permpy.permset.PermSet(S).layer_down())
         return True
 
     def contains_locations(self, Q):
@@ -1371,10 +1371,10 @@ class Permutation(tuple):
         return P
 
     def all_syms(self):
-        S = permset.PermSet([self])
-        S = S.union(permset.PermSet([P.reverse() for P in S]))
-        S = S.union(permset.PermSet([P.complement() for P in S]))
-        S = S.union(permset.PermSet([P.inverse() for P in S]))
+        S = permpy.permset.PermSet([self])
+        S = S.union(permpy.permset.PermSet([P.reverse() for P in S]))
+        S = S.union(permpy.permset.PermSet([P.complement() for P in S]))
+        S = S.union(permpy.permset.PermSet([P.inverse() for P in S]))
         return S
 
     def is_representative(self):

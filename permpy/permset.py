@@ -162,15 +162,6 @@ class PermSet(set):
         return ax
 
 
-
-
-
-
-
-
-
-
-
     def show_all(self):
         """The default representation doesn't print the entire set, this
         function does."""
