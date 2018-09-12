@@ -3,12 +3,8 @@ permpy
 
 ## A Python Permutations Class
 
-Contains various tools for working interactively with permutations, with a focus 
-on permutation patterns and classes. Easily extensible.
-
-To install (for now), just clone this repository and import `permpy`. 
-
-**See `Overview.ipynb` for more examples.**
+Contains Various tools for working interactively with permutaions. 
+Easily extensible.
 
 ### Examples:
 ```python
@@ -16,7 +12,7 @@ To install (for now), just clone this repository and import `permpy`.
 >>> import permpy as pp
 >>> 
 >>> 
->>> p = pp.Permutation.random(8)
+>>> p = pp.Perm.random(8)
 >>> 
 >>> p
  5 4 7 1 6 2 3 8 
@@ -45,7 +41,7 @@ To install (for now), just clone this repository and import `permpy`.
 >>> 
 
 >>> 
->>> A = pp.AvClass([ [1,3,2] ])
+>>> A = pp.AvClass([ 132 ])
 >>> 
 >>> A
 [Set of 0 permutations,
