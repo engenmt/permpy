@@ -283,7 +283,7 @@ class Permutation(tuple,
 
 			If only the "bad spots" are noted, then initializing perms is faster!
 
-		ME: TODO!
+		ME: Done!
 		"""
 		self.insertion_values = list(range(len(self)+1))
 

@@ -16,9 +16,8 @@ try:
     mpl.rc('figure', fc='white')
     mpl_imported = True
 except ImportError:
-    print('Install matplotlib for extra plotting functionality')
+    print('Install matplotlib for extra plotting functionality.')
     pass
-
 
 Perm = Permutation
 Av = AvClass

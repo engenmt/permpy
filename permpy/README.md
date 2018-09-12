@@ -3,7 +3,7 @@ permpy
 
 ## A Python Permutations Class
 
-Contains Various tools for working interactively with permutaions. 
+Contains Various tools for working interactively with permutations. 
 Easily extensible.
 
 ### Examples:
@@ -41,7 +41,7 @@ Easily extensible.
 >>> 
 
 >>> 
->>> A = pp.AvClass([ [1,3,2] ])
+>>> A = pp.AvClass([ 132 ])
 >>> 
 >>> A
 [Set of 0 permutations,
