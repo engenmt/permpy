@@ -13,8 +13,12 @@ import random
 import fractions
 import itertools
 
-import permmisc
-import permstats
+import permpy.permmisc
+import permpy.permstats
+import permpy.permset
+# import permpy.permclass
+import permpy.avclass
+
 
 # python 2/3 compatibility
 from functools import reduce
@@ -27,23 +31,15 @@ try:
 except ImportError:
 	mpl_imported = False
 
-import permset
-# import permclass
-import avclass
-
 __author__ = 'Cheyne Homberger, Jay Pantone'
 
 """
-
-
-
 Todo:
 	* Permutation.random_avoider
 	* Permutation.__init__
 	* Permutation.breadth
 	* Permutation.avoids
 	* Permutation.set_up_bounds
-
 """
 
 def _is_iter(obj):
@@ -55,8 +51,8 @@ def _is_iter(obj):
 
 # a class for creating permutation objects
 class Permutation(tuple, 
-				  permstats.PermutationStatsMixin, 
-				  permmisc.PermutationMiscMixin):
+				  permpy.permstats.PermutationStatsMixin, 
+				  permpy.permmisc.PermutationMiscMixin):
 	"""Class for representing permutations as immutable 0-indexed tuples.
 	"""
 

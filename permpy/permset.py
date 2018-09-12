@@ -4,10 +4,10 @@ from functools import reduce
 
 from collections import Counter, defaultdict
 
-import permutation
+import permpy.permutation
 # from permutation import Permutation
 # import permpy.permclass
-import avclass
+import permpy.avclass
 
 try:
 	import matplotlib as mpl

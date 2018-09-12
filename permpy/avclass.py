@@ -1,15 +1,15 @@
 from math import factorial
 import types
 
-import permutation
-import permset
-import permclass
+import permpy.permutation
+import permpy.permset
+import permpy.permclass
 
 # from permutation import Permutation
 # from permset import PermSet
 # from permclass import PermClass
 
-class AvClass(permclass.PermClass):
+class AvClass(permpy.permclass.PermClass):
 	"""Object representing an avoidance class.
 
 	Examples:
