@@ -74,20 +74,20 @@ def check_combos(max_length, size_of_combos=0, verbose=False):
     expected = expected_basis(basis)
     B = make_restricted_container_class(basis).guess_basis()
     if B == expected:
-      print(str(basis) + '  -->  ' + str(B) + '  :  ok')
+      print(f"{str(basis)}  -->  {str(B)}  :  ok")
     else:
       bad_ones += 1
-      print(str(basis) + '  -->  ' + str(B) + '  : WHOA!')
+      print(f"{str(basis)}  -->  {str(B)}  : WHOA!")
     if verbose and so_far % 10 == 0:
-      print('----------------------------------------------------')
-      print('----------------------------------------------------')
-      print('       === SO FAR: ' + str(bad_ones) + ' BAD BASES OUT OF ' + str(so_far) + ' ===')
-      print('----------------------------------------------------')
-  print('----------------------------------------------------')
-  print('----------------------------------------------------')
-  print('----------------------------------------------------')
-  print('=== THERE WERE ' + str(bad_ones) + ' BAD BASES OUT OF ' + str(so_far) + ' ===')
-  print('----------------------------------------------------')
+      print(f'----------------------------------------------------')
+      print(f'----------------------------------------------------')
+      print(f'       === SO FAR: {str(bad_ones)} BAD BASES OUT OF {str(so_far)} ===')
+      print(f'----------------------------------------------------')
+  print(f'----------------------------------------------------')
+  print(f'----------------------------------------------------')
+  print(f'----------------------------------------------------')
+  print(f'=== THERE WERE {str(bad_ones)} BAD BASES OUT OF {str(so_far)} ===')
+  print(f'----------------------------------------------------')
 
 
 def check_singleton_restricted_containers():
@@ -99,9 +99,9 @@ def check_singleton_restricted_containers():
       expected = expected_basis(P)
       B = make_restricted_container_class([P]).guess_basis()
       if B == expected:
-        print(str(P) + '  -->  ' + str(B) + '  :  ok')
+        print(f"{str(P)}  -->  {str(B)}  :  ok")
       else:
-        print(str(P) + '  -->  ' + str(B) + '  : WHOA!')
+        print(f"{str(P)}  -->  {str(B)}  : WHOA!")
   print('----------------------------------------------------')
 
 def make_restricted_container_class(basis,length=7):
@@ -191,7 +191,7 @@ def check_pattern(word_pairs, pattern):
     if y.find(pattern) != -1:
       n[1] += 1
   if n[0] == 0 or n[1] == 0:
-    print('\n\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n\t\t'+pattern+': ('+str(n[0])+', '+str(n[1])+')\n\n')
+    print(f"\n\n{'!'*40}\n\t\t{pattern}: ({str(n[0])}, {str(n[1])})\n\n")
   return n
 
 def check_pattern_list(word_pairs, patterns):

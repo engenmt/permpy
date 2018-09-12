@@ -95,9 +95,8 @@ class PermClass(list):
         else:
             # If we're here, then self is the class of all permutations.
             return permset.PermSet([])
-        
+
         # Add missing perms of minimum length to basis.
-        start_length = min(not_all_perms)
         basis = permset.PermSet(permutation.Permutation.listall(start_length)).difference(self[start_length])
 
         if search_mode:
