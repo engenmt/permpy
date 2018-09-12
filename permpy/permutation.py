@@ -40,6 +40,9 @@ __author__ = 'Cheyne Homberger, Jay Pantone'
 Todo:
 	* Permutation.random_avoider
 	* Permutation.__init__
+	* Permutation.breadth
+	* Permutation.avoids
+	* Permutation.set_up_bounds
 
 """
 
@@ -543,15 +546,15 @@ class Permutation(tuple,
 
 		Examples:
 			>>> print(Permutation([1,9,3,7,5,6,4,8,2,10]).pretty_out())
-			                  10
+							  10
 			   9                
-			               8    
-			       7            
-			           6        
-			         5          
-			             4      
-			     3              
-			                 2  
+						   8    
+				   7            
+					   6        
+					 5          
+						 4      
+				 3              
+							 2  
 			 1                  
 
 			>>> Permutation([1,9,3,7,5,6,4,8,2,10]).pretty_out(by_lines = True)
@@ -731,9 +734,10 @@ class Permutation(tuple,
 
 	def peaks(self):
 		"""Return the list of peaks of the permutation.
-
-		>>> Permutation(2341765).peaks()
-		[2, 4]
+		
+		Examples:
+			>>> Permutation(2341765).peaks()
+			[2, 4]
 
 		ME: Done!
 		"""
@@ -741,9 +745,10 @@ class Permutation(tuple,
 
 	def valleys(self):
 		"""Return the list of valleys of the permutation.
-
-		>>> Permutation(3241756).valley_list()
-		[1, 3, 5]
+		
+		Examples:
+			>>> Permutation(3241756).valley_list()
+			[1, 3, 5]
 
 		ME: Done!
 		"""
@@ -752,8 +757,9 @@ class Permutation(tuple,
 	def ltr_min(self):
 		"""Return the positions of the left-to-right minima.
 		
-		>>> Permutation(35412).ltr_min()
-		[0, 3]
+		Examples:
+			>>> Permutation(35412).ltr_min()
+			[0, 3]
 
 		ME: Done!
 		"""
@@ -767,9 +773,10 @@ class Permutation(tuple,
 
 	def rtl_min(self):
 		"""Return the positions of the right-to-left minima.
-
-		>>> Permutation(315264).rtl_min()
-		[5, 3, 1]
+		
+		Examples:
+			>>> Permutation(315264).rtl_min()
+			[5, 3, 1]
 
 		ME: Done!
 		"""
@@ -785,8 +792,9 @@ class Permutation(tuple,
 	def ltr_max(self):
 		"""Return the positions of the left-to-right maxima.
 		
-		>>> Permutation(35412).ltr_max()
-		[4, 2, 1]
+		Examples:
+			>>> Permutation(35412).ltr_max()
+			[4, 2, 1]
 
 		ME: Done!
 		"""
@@ -800,9 +808,10 @@ class Permutation(tuple,
 
 	def rtl_max(self):
 		"""Return the positions of the right-to-left maxima.
-
-		>>> Permutation(315264).rtl_min()
-		[5, 4]
+		
+		Examples:
+			>>> Permutation(315264).rtl_min()
+			[5, 4]
 
 		ME: Done!
 		"""
@@ -818,15 +827,15 @@ class Permutation(tuple,
 	def inversions(self):
 		"""Return the list of inversions of the permutation, i.e., the
 		pairs (i,j) such that i < j and self(i) > self(j).
-
-		>>> Permutation(4132).inversions()
-		[(0,1),(0,2),(0,3),(2,3)]
-		>>> Permutation.monotone_increasing(7).inversions()
-		[]
+		
+		Examples:
+			>>> Permutation(4132).inversions()
+			[(0,1),(0,2),(0,3),(2,3)]
+			>>> Permutation.monotone_increasing(7).inversions()
+			[]
 
 		ME: Done!
 		"""
-		n = len(self)
 		L = [(i,j+i+1) for i, val_i in enumerate(self)\
 					   for j, val_j in enumerate(self[i+1:]) if val_i >= val_j]
 		return L
@@ -842,27 +851,31 @@ class Permutation(tuple,
 					   for j, val_j in enumerate(self[i+1:]) if val_i <= val_j]
 		return L
 
-	# def min_gapsize(self):
-	#     #TODO 
-	#     """Returns the minimum gap between any two entries in the permutation 
-	#     (computed with the taxicab metric).
+	def breadth(self):
+		"""Return the minimum taxicab distance between any two entries in the 
+		permutation.
+		
+		Examples:
+			>>> Permutation(3142).min_gapsize()
+			3
 
-	#     >>> Permutation(3142).min_gapsize()
-	#     3
-	#     """
-	#     # currently uses the naive algorithm --- can be improved 
-	#     min_dist = len(self)
-	#     for i, j in itertools.combinations(range(len(self)), 2):
-	#         h_dist = abs(i - j)
-	#         v_dist = abs(self[i] - self[j])
-	#         dist = h_dist + v_dist
-	#         if dist < min_dist:
-	#             min_dist = dist
-	#     return min_dist
+		ME: TODO! Currently uses the naive algorithm--can be improved.
+		"""
+
+		min_dist = len(self)
+		for i, j in itertools.combinations(range(len(self)), 2):
+			h_dist = abs(i - j)
+			v_dist = abs(self[i] - self[j])
+			dist = h_dist + v_dist
+			if dist < min_dist:
+				min_dist = dist
+		return min_dist
 
 	def bonds(self):
 		"""Return the list of (initial) indices of the bonds of `self`.
-		A bond is an interval of size 2.
+
+		Notes:
+			A bond is an interval of size 2.
 
 		ME: Done!
 		"""
@@ -874,7 +887,9 @@ class Permutation(tuple,
 
 	def max_ascending_run(self):
 		"""Return the (inital) index and length of a longest ascending run of `self`.
-		An ascending run is a consecutive sequence of increasing entries.
+		
+		Notes:
+			An ascending run is a consecutive sequence of increasing entries.
 
 		ME: Done!
 		"""
@@ -921,7 +936,7 @@ class Permutation(tuple,
 		return (max_idx, max_len)
 
 	def covered_by(self):
-		""" Returns set of permutations which cover `self`.
+		"""Return the set of permutations which cover `self`.
 
 		ME: Done!
 		"""
@@ -937,18 +952,19 @@ class Permutation(tuple,
 		return S
 
 	def covers(self):
-		""" Returns set of permutations which are covered by `self`.
+		"""Return the set of permutations which are covered by `self`.
 
 		ME: Done!
 		"""
-		S = set(self.delete(values=[val]) for val in self)
+		S = set(self.delete(values=val) for val in self)
 		return S
 
 	def upset(self, height, stratified=False):
 		"""Return the upset of `self` using repeated applications of `covered_by`.
 		
-		If `stratified` == True, return it as a list `L` such that `L[i]` is the
-		set of permutations of length `i` which contain `self`.
+		Notes:
+			If `stratified` == True, return the upset as a list `L` such that 
+			`L[i]` is the set of permutations of length `i` which contain `self`.
 
 		ME: Done!
 		"""
@@ -988,7 +1004,6 @@ class Permutation(tuple,
 		return (lower_bound, upper_bound)
 
 	def avoids(self, p=None, lr=0, B=None):
-		#TODO Am I correct on the lr?
 		""" Check if the permutation avoids the pattern `p`.
 
 		Parameters
@@ -1003,7 +1018,7 @@ class Permutation(tuple,
 		>>> Permutation(123456).avoids(123)
 		False
 
-
+		ME: "#TODO Am I correct on the lr?"
 		"""
 		if p:
 			if p.involved_in(self, last_require=lr):
@@ -1020,29 +1035,33 @@ class Permutation(tuple,
 			# If we're here, neither a permutation `p` nor a set `B` was provided.
 			return True
 
-	def involves(self, p, lr=0):
-		"""Check if the permutation contains the pattern `p`.
+	def involves(self, P, lr=0):
+		"""Check if the permutation contains the pattern `P`.
 
-		Parameters
-		----------
-		p : Permutation-like object
-		lr : int
-			Require the last entry to be equal to this
-
-		>>> Permutation(123456).involves(231)
-		False
-		>>> Permutation(123456).involves(123)
-		True
+		Args:
+			P (Permutation-like object): Pattern to be contained.
+			lr (int, optional): Require the last entry to be equal to this.
+		
+		Examples:
+			>>> Permutation(123456).involves(231)
+			False
+			>>> Permutation(123456).involves(123)
+			True
 		"""
-		return p.involved_in(self,last_require=lr)
+		return P.involved_in(self,last_require=lr)
 
 	def involved_in(self, P, last_require=0):
-		""" Checks if `self` is contained as a pattern in `P`.
+		"""Check if `self` is contained as a pattern in `P`.
 
-		>>> Permutation(123).involved_in(31542)
-		False
-		>>> Permutation(213).involved_in(54213)
-		True
+		Args:
+			P (Permutation-like object): Pattern to be contained.
+			lr (int, optional): Require the last entry to be equal to this.
+		
+		Examples:
+			>>> Permutation(123).involved_in(31542)
+			False
+			>>> Permutation(213).involved_in(54213)
+			True
 		"""
 		P = Permutation(P)
 
@@ -1434,13 +1453,21 @@ class Permutation(tuple,
 		return P
 
 	def all_syms(self):
-		S = permset.PermSet([self])
-		S = S.union(permset.PermSet([P.reverse() for P in S]))
-		S = S.union(permset.PermSet([P.complement() for P in S]))
-		S = S.union(permset.PermSet([P.inverse() for P in S]))
+		"""Return the set (not PermSet) of all symmetries of `self`.
+
+		ME: Done!
+		"""
+		S = set([self])
+		S.update([P.reverse() for P in S])
+		S.update([P.complement() for P in S])
+		S.update([P.inverse() for P in S])
 		return S
 
 	def is_representative(self):
+		"""Check if self is the (lexicographically) least element of its symmetry class.
+
+		ME: Done!
+		"""
 		return self == sorted(self.all_syms())[0]
 
 	def greedy_sum(p):
