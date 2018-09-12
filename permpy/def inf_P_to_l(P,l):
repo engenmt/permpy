@@ -1,7 +1,0 @@
-def inf_P_to_l(P,l):
-    L = set()
-    for d in range(len(P)+1,l+1):
-        for Co in strongcompositions(d,len(P)):
-            L.add(P.inflate([Perm.monotone_increasing(Co[i]) for i in Co]))
-            print Co, P
-    return L
