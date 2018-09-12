@@ -1,6 +1,6 @@
 from __future__ import division, print_function
 
-from collections import defaultdict
+from collections import Counter, defaultdict
 
 # from tree import Node # Only temporary, used for some stack sorting stuff.
 
@@ -884,6 +884,21 @@ class Permutation(tuple,
 
 	# def fixedptsplusbonds(self):
 	#     return len(self.fixed_points() + self.bonds())
+
+	def pattern_counts(self, k):
+		"""Return a Counter (dictionary) counting the occurrences of each perm of length `k` in `self`.
+
+		Examples:
+			>>> a = Permutation(1324)
+			>>> a.pattern_counts(3)
+			Counter({1 2 3: 2, 1 3 2: 1, 2 1 3: 1})
+
+		ME: Done!
+		"""
+		C = Counter()
+		for vals in itertools.combinations(self,k):
+			C[ Permutation(vals) ] += 1
+		return C
 
 	def max_ascending_run(self):
 		"""Return the (inital) index and length of a longest ascending run of `self`.

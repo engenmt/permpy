@@ -34,7 +34,7 @@ def chom_sum(p):
   L = []
   p = greedy_sum(p)
   for i in p:
-    if i.inversions() == 0:
+    if i.num_inversions() == 0:
       L.extend([Perm(1)]*len(i))
     else:
       L.append(i)
@@ -402,30 +402,34 @@ def up_jump_lengths(P):
 
 
 def check_stats(L1, L2, l=8, add_syms=False, tups=1):
+  """Not sure what this does.
+
+  ME: I've updated some of this, but I don't know what many of these even do.
+  """
   if add_syms:
     L1 = [item for sublist in [list(PermSet(l1).all_syms()) for l1 in L1] for item in sublist]
     L2 = [item for sublist in [list(PermSet(l2).all_syms()) for l2 in L2] for item in sublist]
   stats = [
-    ('number of descents', Perm.descents),
-    ('position of descents', lambda P : [i for i in range(len(P)-1) if P[i] > P[i+1]]),
-    ('number of ascents', Perm.ascents),
-    ('position of ascents', lambda P : [i for i in range(len(P)-1) if P[i] < P[i+1]]),
-    ('number of ltrmin', lambda P : len(P.ltrmin())),
-    ('positions of ltrmin', Perm.ltrmin),
-    ('values of ltrmin', lambda P : [P[i] for i in P.ltrmin()]),
-    ('number of ltrmax', lambda P : len(P.ltrmax())),
-    ('positions of ltrmax', Perm.ltrmax),
-    ('values of ltrmax', lambda P : [P[i] for i in P.ltrmax()]),
-    ('number of rtlmin', lambda P : len(P.rtlmin())),
-    ('positions of rtlmin', Perm.rtlmin),
-    ('values of rtlmin', lambda P : [P[i] for i in P.rtlmin()]),
-    ('number of rtlmax', lambda P : len(P.rtlmax())),
-    ('positions of rtlmax', Perm.rtlmax),
-    ('values of rtlmax', lambda P : [P[i] for i in P.rtlmax()]),
-    ('number of sum decomposables', Perm.sum_decomposable),
-    ('number of sum components', lambda P: len(chom_sum(P))),
-    ('number of skew decomposables', Perm.skew_decomposable),
-    ('number of skew components', lambda P: len(chom_skew(P))),
+    ('number of descents', Perm.num_descents),
+    ('position of descents', Perm.descents),
+    ('number of ascents', Perm.num_ascents),
+    ('position of ascents', Perm.ascents),
+    ('number of ltrmin', Perm.num_ltr_min),
+    ('positions of ltrmin', Perm.ltr_min),
+    ('values of ltrmin', lambda P : [P[i] for i in P.ltr_min()]),
+    ('number of ltrmax', Perm.num_ltr_max),
+    ('positions of ltrmax', Perm.ltr_max),
+    ('values of ltrmax', lambda P : [P[i] for i in P.ltr_max()]),
+    ('number of rtlmin', Perm.num_rtl_min),
+    ('positions of rtlmin', Perm.rtl_min),
+    ('values of rtlmin', lambda P : [P[i] for i in P.rtl_min()]),
+    ('number of rtlmax', Perm.num_rtl_max),
+    ('positions of rtlmax', Perm.rtl_max),
+    ('values of rtlmax', lambda P : [P[i] for i in P.rtl_max()]),
+    ('is sum decomposable', Perm.sum_decomposable),
+    ('number of sum components', lambda P: len(P.sum_decomposition())),
+    ('is skew decomposable', Perm.skew_decomposable),
+    ('number of skew components', lambda P: len(P.skew_decomposition())),
     ('number of inflations of simples', lambda P : P.skew_decomposable() or P.sum_decomposable()),
     ('length of simple quotient', lambda P : len(P.decomposition()[0])),
     ('number of simple permutations', Perm.is_simple),

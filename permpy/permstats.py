@@ -130,16 +130,6 @@ class PermutationStatsMixin:
 	def is_strongly_simple(self):
 		return self.is_simple() and all([p.is_simple() for p in self.children()])
 
-	def pattern_counts(self, k):
-		"""Return a Counter (dictionary) counting the occurrences of each perm of length `k` in `self`.
-
-		ME: Done!
-		"""
-		C = Counter()
-		for vals in itertools.combinations(self,k):
-			C[ Permutation(vals) ] += 1
-		return C
-
 	def num_copies_of(self, other):
 		"""Return the number of copies of `other` in `self`.
 
