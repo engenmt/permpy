@@ -3,7 +3,7 @@ permpy
 
 ## A Python Permutations Class
 
-Contains Various tools for working interactively with permutaions. 
+Contains Various tools for working interactively with permutations. 
 Easily extensible.
 
 ### Examples:
@@ -33,10 +33,10 @@ Easily extensible.
 >>> S
  Set of 720 permutations
 >>> 
->>> S.total_statistic(Perm.inversions)
+>>> S.total_statistic(Perm.num_inversions)
  5400
 >>> 
->>> S.total_statistic(Perm.descents)
+>>> S.total_statistic(Perm.num_descents)
  1800
 >>> 
 
