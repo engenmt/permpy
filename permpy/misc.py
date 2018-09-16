@@ -5,6 +5,7 @@ from permpy import *
 from math import factorial
 import itertools
 from collections import Counter
+
 from permpy.RestrictedContainer import *
 
 

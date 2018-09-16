@@ -33,10 +33,10 @@ Easily extensible.
 >>> S
  Set of 720 permutations
 >>> 
->>> S.total_statistic(Perm.inversions)
+>>> S.total_statistic(Perm.num_inversions)
  5400
 >>> 
->>> S.total_statistic(Perm.descents)
+>>> S.total_statistic(Perm.num_descents)
  1800
 >>> 
 
