@@ -1,4 +1,4 @@
-from .vector import *
+from permpy.vector import *
 
 class VectorSet(list):
 

@@ -2,8 +2,6 @@ from __future__ import division, print_function
 
 from collections import Counter, defaultdict
 
-# from tree import Node # Only temporary, used for some stack sorting stuff.
-
 import sys
 import os
 import subprocess
@@ -13,15 +11,8 @@ import random
 import fractions
 import itertools
 
-import permpy.permmisc
-import permpy.permstats
-import permpy.permset
-# import permpy.permclass
-import permpy.avclass
-
-
-# python 2/3 compatibility
-from functools import reduce
+from permpy.permstats import PermutationStatsMixin
+from permpy.permmisc import PermutationMiscMixin
 
 from scipy.misc import comb
 
@@ -36,10 +27,6 @@ __author__ = 'Cheyne Homberger, Jay Pantone'
 """
 Todo:
 	* Permutation.random_avoider
-	* Permutation.__init__
-	* Permutation.breadth
-	* Permutation.avoids
-	* Permutation.set_up_bounds
 """
 
 def _is_iter(obj):
@@ -51,8 +38,8 @@ def _is_iter(obj):
 
 # a class for creating permutation objects
 class Permutation(tuple, 
-				  permpy.permstats.PermutationStatsMixin, 
-				  permpy.permmisc.PermutationMiscMixin):
+				  PermutationStatsMixin, 
+				  PermutationMiscMixin):
 	"""Class for representing permutations as immutable 0-indexed tuples.
 	"""
 
@@ -178,7 +165,7 @@ class Permutation(tuple,
 		
 		ME: Done!
 		"""
-		assert len(set(L)) == len(L), 'Ensure elements are distinct!'
+		assert len(set(L)) == len(L), "Ensure elements are distinct!"
 		ordered = sorted(L)
 		return tuple(ordered.index(x) for x in L)
 
@@ -205,11 +192,14 @@ class Permutation(tuple,
 			k (int): An integer between 0 and n! - 1, to be mapped to S_n.
 			n (int): Length of the permutation.
 
-		Returns
+		Returns:
 			Permutation of index k of length n.
+		
+		Examples:
+			>>> Permutation.ind2perm(12,8).perm2ind()
+			12
 
-		>>> Permutation.ind2perm(12,8).perm2ind()
-		12
+		ME: Todo!
 		"""
 		assert isinstance(k, int), f"Got confused: Permutation.ind2perm(k = {k}, n = {n}) was called."
 		result = list(range(n))
@@ -297,17 +287,18 @@ class Permutation(tuple,
 		"""
 		return self[i]
 
-	def __le__(self, other):
-		return self.involved_in(other)
+	def __contains__(self, other):
+		"""Return True if `self` contains `other`.
 
-	def __ge__(self, other):
-		return self.involves(other)
-
-	def __lt__(self, other):
-		return self != other and self.involved_in(other)
-
-	def __gt__(self, other):
-		return self != other and self.involves(other)
+		Examples:
+			>>> Permutation(21).__contains__(Permutation(1))
+			True
+			>>> Permutation(132) in Permutation(4132)
+			True
+			>>> Permutation(231) in Permutation(1234)
+			False
+		"""
+		return other.involved_in(self)
 
 	def oneline(self):
 		"""Return the one-line notation representation of the permutation (as a
@@ -316,7 +307,7 @@ class Permutation(tuple,
 		ME: Done!
 		"""
 		base = Permutation._BASE
-		s = ' '.join( str(entry + base) for entry in self )
+		s = " ".join( str(entry + base) for entry in self )
 		return s
 
 	def __repr__(self):
@@ -542,28 +533,30 @@ class Permutation(tuple,
 
 		Examples:
 			>>> print(Permutation([1,9,3,7,5,6,4,8,2,10]).pretty_out())
-							  10
+			                  10
 			   9                
-						   8    
-				   7            
-					   6        
-					 5          
-						 4      
-				 3              
-							 2  
+			               8    
+			       7            
+			           6        
+			         5          
+			             4      
+			     3              
+			                 2  
 			 1                  
 
-			>>> Permutation([1,9,3,7,5,6,4,8,2,10]).pretty_out(by_lines = True)
-			['                  10',
-			 '   9                ',
-			 '               8    ',
-			 '       7            ',
-			 '           6        ',
-			 '         5          ',
-			 '             4      ',
-			 '     3              ',
-			 '                 2  ',
-			 ' 1                  ']
+			>>> for line in Permutation([1,9,3,7,5,6,4,8,2,10]).pretty_out(by_lines = True):
+			...     print(repr(line))
+			... 
+			'                  10'
+			'   9                '
+			'               8    '
+			'       7            '
+			'           6        '
+			'         5          '
+			'             4      '
+			'     3              '
+			'                 2  '
+			' 1                  '
 
 		ME: Done!
 		"""
@@ -592,7 +585,7 @@ class Permutation(tuple,
 		both indices and values are zero-indexed.
 		
 		>>> Permutation(521436).fixed_points()
-		[1,3.5]
+		[1, 3, 5]
 
 		ME: Done!
 		"""
@@ -630,8 +623,6 @@ class Permutation(tuple,
 			>>> p.sum_decomposition()
 			[1, 3 1 2, 2 1]
 			>>> p == sum(p.sum_decomposition(), Permutation([]))
-			True
-			>>> p == reduce(Permutation.direct_sum, p.sum_decomposition())
 			True
 
 		ME: Done!
@@ -707,29 +698,29 @@ class Permutation(tuple,
 		return [self]
 
 	def descents(self):
-		"""Return list of descents of the permutation.
+		"""Return the list of (positions of) descents of the permutation.
 		
 		Examples:
 			>>> Permutation(42561873).descents()
-			[1, 4, 6, 7]
+			[0, 3, 5, 6]
 
 		ME: Done!
 		"""
-		return [i for i in range(len(self)) if p[i] >= p[i+1]] # >= is a bit faster than > for some reason.
+		return [i for i in range(len(self)-1) if self[i] >= self[i+1]] # >= is a bit faster than > for some reason.
 
 	def ascents(self):
-		""" Returns list of ascents of the permutation.
+		"""Return the list of (positions of) ascents of the permutation.
 
 		Examples:
 			>>> Permutation(42561873).ascents()
-			[2, 3, 5]
+			[1, 2, 4]
 
 		ME: Done!
 		"""
-		return [i for i in range(len(self)) if p[i] <= p[i+1]] # <= is a bit faster than < for some reason.
+		return [i for i in range(len(self)-1) if self[i] <= self[i+1]] # <= is a bit faster than < for some reason.
 
 	def peaks(self):
-		"""Return the list of peaks of the permutation.
+		"""Return the list of (positions of) peaks of the permutation.
 		
 		Examples:
 			>>> Permutation(2341765).peaks()
@@ -740,10 +731,10 @@ class Permutation(tuple,
 		return [i for i in range(1, len(self)-1) if self[i-1] < self[i] > self[i+1]]
 
 	def valleys(self):
-		"""Return the list of valleys of the permutation.
+		"""Return the list of (positions of) valleys of the permutation.
 		
 		Examples:
-			>>> Permutation(3241756).valley_list()
+			>>> Permutation(3241756).valleys()
 			[1, 3, 5]
 
 		ME: Done!
@@ -790,7 +781,7 @@ class Permutation(tuple,
 		
 		Examples:
 			>>> Permutation(35412).ltr_max()
-			[4, 2, 1]
+			[0, 1]
 
 		ME: Done!
 		"""
@@ -806,8 +797,8 @@ class Permutation(tuple,
 		"""Return the positions of the right-to-left maxima.
 		
 		Examples:
-			>>> Permutation(315264).rtl_min()
-			[5, 4]
+			>>> Permutation(35412).rtl_max()
+			[4, 2, 1]
 
 		ME: Done!
 		"""
@@ -826,7 +817,7 @@ class Permutation(tuple,
 		
 		Examples:
 			>>> Permutation(4132).inversions()
-			[(0,1),(0,2),(0,3),(2,3)]
+			[(0, 1), (0, 2), (0, 3), (2, 3)]
 			>>> Permutation.monotone_increasing(7).inversions()
 			[]
 
@@ -852,7 +843,7 @@ class Permutation(tuple,
 		permutation.
 		
 		Examples:
-			>>> Permutation(3142).min_gapsize()
+			>>> Permutation(3142).breadth()
 			3
 
 		ME: TODO! Currently uses the naive algorithm--can be improved.
@@ -1017,12 +1008,10 @@ class Permutation(tuple,
 	def avoids(self, p=None, lr=0, B=None):
 		""" Check if the permutation avoids the pattern `p`.
 
-		Parameters
-		----------
-		p  : Permutation-like object
-		lr : int
-			Require the last entry to be equal to this
-		B  : A set of permutations to avoid.
+		Args:
+			p (Permutation-like object): permutation to be avoided
+			lr (int): Require the last entry to be equal to this
+			B (iterable of permutation-like objects:optional): A collection of permutations to be avoided.
 
 		>>> Permutation(123456).avoids(231)
 		True
@@ -1031,7 +1020,8 @@ class Permutation(tuple,
 
 		ME: "#TODO Am I correct on the lr?"
 		"""
-		if p:
+		if p is not None:
+			p = Permutation(p)
 			if p.involved_in(self, last_require=lr):
 				return False
 			else:
@@ -1059,7 +1049,7 @@ class Permutation(tuple,
 			>>> Permutation(123456).involves(123)
 			True
 		"""
-		return P.involved_in(self,last_require=lr)
+		return Permutation(P).involved_in(self,last_require=lr)
 
 	def involved_in(self, P, last_require=0):
 		"""Check if `self` is contained as a pattern in `P`.
