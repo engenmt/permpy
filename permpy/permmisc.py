@@ -30,6 +30,13 @@ class PermutationMiscMixin:
 				b = self[b]
 			cycles.append(cyc)
 		return cycles[::-1]
+
+	def cycles(self):
+		"""Returns the cycle notation representation of the permutation."""
+		stringlist = ['( ' + ' '.join([str(x+1) for x in cyc]) + ' )'
+		                    for cyc in self.cycle_decomp()]
+		return ' '.join(stringlist)
+
 	
 	def order(self):
 		L = map(len, self.cycle_decomp())
