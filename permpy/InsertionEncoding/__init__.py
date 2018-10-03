@@ -1,3 +1,3 @@
 
-from permpy.InsertionEncoding.configuration import Configuration
-from permpy.InsertionEncoding.insertionscheme import InsertionScheme
+from .configuration import Configuration
+from .insertionscheme import InsertionScheme
