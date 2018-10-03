@@ -1,3 +1,3 @@
 
 
-from permpy.RestrictedContainer.restricted_container import RestrictedContainer
+from .restricted_container import RestrictedContainer
