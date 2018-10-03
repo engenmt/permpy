@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 try:
     from setuptools import setup
@@ -8,7 +8,7 @@ except ImportError:
 setup(name         = 'permpy',
       version      = '0.0.3',
       description  = 'Permutation (patterns) workshop in Python',
-      author       = 'Cheyne Homberger and Jay Pantone',
+      author       = 'Michael Engen and Cheyne Homberger and Jay Pantone',
       author_email = 'cheyne.homberger@gmail.com',
       url          ='https://github.com/cheyneh/permpy',
       keywords     = [
