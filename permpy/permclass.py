@@ -2,8 +2,8 @@ import copy
 import time
 from math import factorial
 
-from permpy.permutation import Permutation
-from permpy.permset import PermSet
+from .permutation import Permutation
+from .permset import PermSet
 
 class PermClass(list):
 

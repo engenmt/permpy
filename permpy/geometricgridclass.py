@@ -3,9 +3,9 @@ import itertools
 import operator
 from math import factorial
 
-from permpy.permutation import Permutation
-from permpy.permset import PermSet
-from permpy.permclass import PermClass
+from .permutation import Permutation
+from .permset import PermSet
+from .permclass import PermClass
 
 class GeometricGridClass(PermClass):
 	

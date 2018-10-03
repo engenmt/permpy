@@ -11,8 +11,8 @@ import random
 import fractions
 import itertools
 
-from permpy.permstats import PermutationStatsMixin
-from permpy.permmisc import PermutationMiscMixin
+from .permstats import PermutationStatsMixin
+from .permmisc import PermutationMiscMixin
 
 from scipy.misc import comb
 

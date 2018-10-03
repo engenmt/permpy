@@ -4,7 +4,7 @@ from functools import reduce
 
 from collections import Counter, defaultdict
 
-from permpy.permutation import Permutation
+from .permutation import Permutation
 
 try:
 	import matplotlib as mpl

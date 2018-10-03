@@ -2,10 +2,10 @@ from math import factorial,fabs
 from sympy import *
 from itertools import chain, combinations
 
-from permpy.permutation import *
-from permpy.permset import *
-from permpy.permclass import *
-from permpy.vectorset import *
+from .permutation import Permutation
+from .permset import *
+from .permclass import *
+from .vectorset import *
 
 def powerset(iterable):
     s = list(iterable)

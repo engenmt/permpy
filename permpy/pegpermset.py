@@ -7,8 +7,8 @@ from itertools import chain, combinations, combinations_with_replacement
 from sympy import *
 from sympy.core.cache import clear_cache
 
-from permpy.pegpermutation import *
-from permpy.permset import *
+from .pegpermutation import *
+from .permset import *
 
 
 

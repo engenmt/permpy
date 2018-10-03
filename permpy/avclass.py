@@ -2,9 +2,9 @@ from math import factorial
 import types
 import sys
 
-from permpy.permutation import Permutation
-from permpy.permset import PermSet
-from permpy.permclass import PermClass
+from .permutation import Permutation
+from .permset import PermSet
+from .permclass import PermClass
 
 class AvClass(PermClass):
 	"""Object representing an avoidance class.
