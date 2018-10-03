@@ -9,7 +9,7 @@ from .geometricgridclass import GeometricGridClass
 
 from .InsertionEncoding import *
 
-import permpy.RestrictedContainer
+import permpy.permpy.RestrictedContainer
 
 try:
     import matplotlib as mpl
