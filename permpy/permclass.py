@@ -2,13 +2,13 @@ import copy
 import time
 from math import factorial
 
-import permpy.permutation
-from permpy.permset import PermSet
+from .permutation import Permutation
+from .permset import PermSet
 
 class PermClass(list):
 
     # def __init__(self, n = 8):
-        # list.__init__(self, [permset.PermSet(permutation.Permutation.listall(i)) for i in range(n + 1)])
+        # list.__init__(self, [PermSet(Permutation.listall(i)) for i in range(n + 1)])
         # self.avoids = []
         # self.length = n
 
@@ -17,27 +17,30 @@ class PermClass(list):
 
     @staticmethod
     def class_from_test(test, l=8, has_all_syms=False):
-        C = [permset.PermSet([permutation.Permutation([])])]
+        """Return the smallest PermClass of all permutations which satisfy the test.
+
+        Args:
+            test (func): function which accepts a permutation and returns a Boolean.
+            l (int): maximum length to be included in class
+            has_all_syms (Boolean): whether the class should be closed under all symmetries.
+
+        Returns:
+            PermClass: smallest PermClass of permutations which satisfy the test.
+
+        """
+
+        C = [PermSet([Permutation([])])] # List consisting of just the PermSet containing the empty Permutation
         for cur_length in range(1,l+1):
-            this_len = permset.PermSet([])
+            this_len = PermSet([])
             if len(C[cur_length-1]) == 0:
                 return PermClass(C)
-            to_check = permset.PermSet(set.union(*[P.all_extensions() for P in C[cur_length-1]]))
-            to_check = [P for P in to_check if permset.PermSet(P.children()).issubset(C[cur_length-1])]
+            to_check = PermSet(set.union(*[P.all_extensions() for P in C[cur_length-1]]))
+            to_check = [P for P in to_check if PermSet(P.children()).issubset(C[cur_length-1])]
             while len(to_check) > 0:
-                P = to_check.pop()
+                P = to_check.pop() # one permutation
                 print(str(P))
                 if has_all_syms:
-                    syms = permset.PermSet([
-                            P,
-                            P.reverse(),
-                            P.complement(),
-                            P.reverse().complement(),
-                            P.inverse(),
-                            P.reverse().inverse(),
-                            P.complement().inverse(),
-                            P.reverse().complement().inverse()
-                        ])
+                    syms = PermSet([P.all_syms()])
                 if test(P):
                     if has_all_syms:
                         for Q in syms:
@@ -52,9 +55,12 @@ class PermClass(list):
             C.append(this_len)
         return PermClass(C)
 
-
-
     def filter_by(self, test):
+        """Modify self by removing those permutations which fail the test.
+
+        Note:
+            Does not actually ensure the result is a class.
+        """
         for i in range(0, len(self)):
             D = list(self[i])
             for P in D:
@@ -62,62 +68,72 @@ class PermClass(list):
                     self[i].remove(P)
 
     def guess_basis(self, max_length=6, search_mode=False):
-        """
-            Guess a basis for the class up to "max_length" by iteratively generating
-            the class with basis elements known so far ({}, to start with) and adding
-            elements which should be avoided to the basis.
+        """Guess a basis for the class up to "max_length" by iteratively generating
+        the class with basis elements known so far ({}, to start with) and adding
+        elements which should be avoided to the basis.
 
-            Search mode goes up to the max length in the class and prints out the number
-            of basis elements of each length on the way.
+        Search mode goes up to the max length in the class and prints out the number
+        of basis elements of each length on the way.
         """
 
         t = time.time()
 
-        assert max_length < len(self), 'class not big enough to check that far'
+        assert max_length < len(self), 'Class not big enough to check that far!'
 
         if search_mode:
             max_length = len(self)-1
 
         # Find the first length at which perms are missing.
-        not_all_perms = [i for i in range(len(self)) if i >= 1 and len(self[i]) != factorial(i)]
-
-        # If no perms are missing, we have all perms, so return empty basis.
-        if len(not_all_perms) == 0:
-            return permset.PermSet([])
+        for idx, S in enumerate(self):
+            if idx == 0:
+                continue
+            
+            if len(S) < factorial(idx):
+                start_length = idx
+                break
+        else:
+            # If we're here, then self is the class of all permutations.
+            return PermSet([])
 
         # Add missing perms of minimum length to basis.
-        start_length = min(not_all_perms)
-        basis = permset.PermSet(permutation.Permutation.listall(start_length)).difference(self[start_length])
-
-        if search_mode:
-            print('\t'+str(len(basis))+' basis elements of length '+str(start_length)+'\t\t'+("{0:.2f}".format(time.time() - t)) + ' seconds')
-            t = time.time()
-
+        missing = PermSet(Permutation.genall(start_length)).difference(self[start_length])
+        basis = missing
         basis_elements_so_far = len(basis)
 
-        current_length = start_length + 1
+        current_length = start_length
+        prev_level = PermSet(Permutation.genall(current_length-1)) # What if current_length == 1?
+        current_level = prev_level.upset(basis=basis)
+
+        if search_mode:
+            print(f"\t{basis_elements_so_far} basis element(s) of length {current_length}\t\t{time.time() - t:.2f} seconds")
+            t = time.time()
 
         # Go up in length, adding missing perms at each step.
-        while current_length <= max_length:
-            C = avclass.AvClass(basis, current_length)
-            basis = basis.union(C[-1].difference(self[current_length]))
-
-            if search_mode:
-                print('\t'+str(len(basis)-basis_elements_so_far)+' basis elements of length ' + str(current_length) + '\t\t' + ("{0:.2f}".format(time.time() - t)) + ' seconds')
-                t = time.time()
-
-            basis_elements_so_far = len(basis)
+        while current_length < max_length:
+            expected_perms = current_level.upset(basis=basis)
 
             current_length += 1
+            current_level = PermSet()
+
+            for perm in expected_perms:
+                if perm in self[current_length]:
+                    current_level.add(perm)
+                else:
+                    basis.add(perm)
+
+            if search_mode:
+                print(f"\t{len(basis)-basis_elements_so_far} basis element(s) of length {current_length}\t\t{time.time() - t:.2f} seconds")
+                t = time.time()
+                basis_elements_so_far = len(basis)
 
         return basis
 
 
     # def guess_basis(self, max_length=8):
     #       max_length = min(max_length, len(self)-1)
-    #       B = permset.PermSet()
-    #       B.update(self.check_tree_basis(max_length, permutation.Permutation([1,2]), permset.PermSet()))
-    #       B.update(self.check_tree_basis(max_length, permutation.Permutation([2,1]), permset.PermSet()))
+    #       B = PermSet()
+    #       B.update(self.check_tree_basis(max_length, Permutation([1,2]), PermSet()))
+    #       B.update(self.check_tree_basis(max_length, Permutation([2,1]), PermSet()))
     #       return B.minimal_elements()
 
     # def check_tree_basis(self, max_length, R, S):
@@ -143,17 +159,17 @@ class PermClass(list):
 
     def plus_one_class(self):
         D = copy.deepcopy(self)
-        D.append(permset.PermSet())
+        D.append(PermSet())
         for l in range(0,len(self)):
             for P in self[l]:
                 D[l+1] = D[l+1].union(P.all_extensions())
         return D
 
     def heatmap(self, **kwargs):
-        permset = PermSet()
+        permset = Permutation()
         for item in self:
-            permset.update(item)
-        permset.heatmap(**kwargs)
+            Permutation.update(item)
+        Permutation.heatmap(**kwargs)
 
     def sum_closure(self,length=8, has_syms=False):
         return PermClass.class_from_test(lambda P : ((len(P) < len(self) and P in self[len(P)]) or P.sum_decomposable()) and all([Q in self[len(Q)] for Q in P.chom_sum()]), l=length, has_all_syms=has_syms)
