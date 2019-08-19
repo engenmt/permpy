@@ -1,7 +1,7 @@
-from permpy.permutation import Permutation
-from permpy.avclass import AvClass
-from permpy.permset import PermSet
-from permpy.InsertionEncoding.configuration import Configuration
+from ..permutation import Permutation
+from ..avclass import AvClass
+from ..permset import PermSet
+from .configuration import Configuration
 import sympy
 import random
 
