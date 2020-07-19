@@ -27,22 +27,36 @@ class AvClass(PermClass):
 		self.basis = [Permutation(b) for b in basis]
 
 		P = Permutation([0],clean=True)
-		if length >= 1 and P not in self.basis:
-			self.append(PermSet([P]))
-			self.length = 1
-			self.extend_to_length(length,verbose)
+		if length >= 1:
+			if P not in self.basis:
+				self.append(PermSet([P]))
+				self.length = 1
+				self.extend_to_length(length,verbose=verbose)
+			else:
+				for _ in range(length):
+					self.append(PermSet())
 
-	def extend_by_one(self, verbose=0):
+	def extend_by_one(self, test=None, verbose=0, return_info=False):
+		# print(f"Calling extend_by_one({self}, test={test}, verbose={verbose}, return_info={return_info})")
 		self.length += 1
-		self.append(self[-1].upset(basis=self.basis, verbose=verbose))
+		if test is None:
+			upset = self[-1].upset(basis=self.basis, verbose=verbose)
+		else:
+			upset, failures = self[-1].upset_with_test(test, basis=self.basis, return_failures=True, verbose=verbose)
+			# print(f"upset = (length {len(upset)})\n{sorted([perm for perm in upset])}")
+			# print(f"failures = (length {len(failures)})\n{sorted([perm for perm in failures])}")
+			self.basis.extend(failures)
+		self.append(upset)
+		if return_info:
+			return f"{self.length:2}: {len(self[-1]):10}"
 
-	def extend_to_length(self, length, verbose=0):
+	def extend_to_length(self, length, test=None, verbose=0):
 		if length <= self.length:
 			return
 
 		old_length = self.length
 		for n in range(old_length+1, length+1):
-			self.extend_by_one(verbose=verbose)
+			self.extend_by_one(test=test, verbose=verbose)
 
 	def right_juxtaposition(self, C, generate_perms=True):
 		A = PermSet()
@@ -84,7 +98,7 @@ if __name__ == "__main__":
 	print()
 
 	B = [123]
-	A = AvClass(B, 10)
+	A = AvClass(B, 12)
 	for idx, S in enumerate(A):
 		print(S)
 

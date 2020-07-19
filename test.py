@@ -1,4 +1,3 @@
-
 import permpy
 import doctest
 
