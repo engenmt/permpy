@@ -1,0 +1,11 @@
+- Removing `Permutation.bend_list` since it never seeemed to work anyways.
+- Removing `Permutation.insertion_locations`.
+- Removing `Permutation.num_consecutive_3214`.
+- Generally using Google-style Python docstrings.
+- Things kept only for reverse compatability have been moved to PermutationDeprecatedMixin and decorated with a warning that they're deprecated. I think these should be removed.
+- I'm tempted by code formatters (e.g. black, flake8), but I'd like to learn more about them before committing to one.
+
+
+TODOs
+- PermClass should be based on some test.
+- AvClass should require a basis.

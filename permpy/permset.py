@@ -5,6 +5,9 @@ from functools import reduce
 from collections import Counter, defaultdict
 
 from .permutation import Permutation
+from .permmisc import lcm
+
+from .deprecated.permsetdeprecated import PermSetDeprecatedMixin
 
 try:
 	import matplotlib as mpl
@@ -13,40 +16,53 @@ try:
 except ImportError:
 	mpl_imported = False
 
-class PermSet(set):
+class PermSet(set, PermSetDeprecatedMixin):
 	"""Represents a set of permutations, and allows statistics to be computed
 	across the set."""
 
 	def __repr__(self):
 		return f"Set of {len(self)} permutations"
 
+	def __init__(cls, s=[]):
+		"""Return the PermSet from the iterable provided, or just with a single permutation."""
+		if isinstance(s, Permutation):
+			super(PermSet, cls).__init__([s])
+		else:
+			super(PermSet, cls).__init__(s)
+
 	def __add__(self, other):
-		"""Returns the union of the two permutation sets. Does not modify in
-		place.
+		"""Return the union of the two permutation sets.
 
 		Examples:
 			>>> S = PermSet.all(3) + PermSet.all(4)
-			>>> len(S)
-			30
+			>>> S
+			Set of 30 permutations
 		"""
-		result = PermSet()
-		result.update(self); 
-		result.update(other)
-		return result
+		return PermSet(super(PermSet, self).__add__(other))
+
+	def __sub__(self, other):
+		"""Return the union of the two permutation sets.
+
+		Examples:
+			>>> S = PermSet.all(3) - PermSet.all(Permutation(123))
+			>>> len(S)
+			5
+		"""
+		return PermSet(super(PermSet, self).__sub__(other))
 
 	@classmethod
 	def all(cls, length):
-		"""Builds the set of all permutations of a given length.
+		"""Return the set of all permutations of a given length.
 
 		Args:
 			length (int): the length of the permutations
 
 		Examples:
-			>>> p = Permutation(12); q = Permutation(21)
+			>>> p = Permutation(12); q = Permutation(21)q
 			>>> PermSet.all(2) == PermSet([p, q])
 			True
 		"""
-		return PermSet(Permutation.genall(length))
+		return PermSet(Permutation.gen_all(length))
 
 	def get_random(self):
 		"""Return a random element from the set.
@@ -57,6 +73,14 @@ class PermSet(set):
 			True
 		"""
 		return random.sample(self, 1)[0]
+
+	def by_length(self):
+		"""Return a dictionary stratifying the permutations in `self`."""
+		D = defaultdictionary(PermSet)
+		for p in self:
+			D[len(p)].add(p)
+		return D
+
 
 	def get_length(self, length=None):
 		"""Returns the subset of permutations which have the specified length.
@@ -71,6 +95,160 @@ class PermSet(set):
 		"""
 		return PermSet(p for p in self if len(p) == length)
 
+	def show_all(self):
+		"""The default representation doesn't print the entire set, this function does."""
+		return set.__repr__(self)
+
+	def minimal_elements(self):
+		"""Return the elements of `self` which are minimal with respect to the 
+		permutation pattern order.
+
+		TODO: Is there a better way?
+		"""
+
+		shortest_len = min(len(p) for p in self)
+		shortest_perms = PermSet(p for p in self if len(p) == shortest_len)
+		S = PermSet(p for p in s if p.avoids(B = shortest_perms))
+
+		return S.minimal_elements + shortest_perms
+
+	def symmetries(self):
+		"""Return the PermSet of all symmetries of all permutations in `self`."""
+		S = set(self)
+		S.update([P.reverse()    for P in S])
+		S.update([P.complement() for P in S])
+		S.update([P.inverse()    for P in S])
+		return PermSet(S)
+
+	def covers(self, verbose=0):
+		"""Return those permutations that `self` covers."""
+		S = PermSet()
+
+		if verbose:
+			n = len(self)
+			for idx, P in enumerate(self):
+				if idx % verbose == 0:
+					print(f"\t{idx} of {n}. Now with {len(S)}.")
+				S.update(P.covers())
+		else:
+			for P in self:
+				S.update(P.covers())
+
+		return S
+
+	def covered_by(self, verbose=0):
+		"""Return those permutations that `self` is covered by."""
+		S = PermSet()
+
+		if verbose:
+			n = len(self)
+			for idx, P in enumerate(self):
+				if idx % verbose == 0:
+					print(f"\t{idx} of {n}. Now with {len(S)}.")
+				S.update(P.covered_by())
+		else:
+			for P in self:
+				S.update(P.covered_by())
+
+		return S
+
+	def extensions(self, test):
+		return PermSet(p for p in self.covered_by() if test(p))
+
+	def right_extensions(self, trust=False, basis=None, test=None):
+		"""Return the 'one layer' upset of `self`.
+
+		Notes:
+			Requires each permutation in `self` to be the same size.
+			Requires either basis or test.
+			Implicit assumption is that the test is hereditary.
+
+		Args:
+			basis (iter:optional): permutations to avoid. Useful for building classes.
+			test (optional): Function which accepts a permutation and returns a boolean. 
+				Only returns those permutations which pass the test.
+			trust (boolean:optional): Whether or not to trust the `insertion_values`
+				existing in the Permutations in `self`.
+		"""
+		if len(self) == 0:
+			return PermSet()
+		if basis is None and test is None:
+			def test(p): return True
+		elif basis is not None:
+			if trust:
+				lr = 2
+				# If we trust the previous insertion_values, then right-extending
+				# a permutation with an inserton value only makes us fail the test
+				# when the rightmost two entries are used.
+			else:
+				lr = 1
+			def test(p): return p.avoids(B = basis, lr = lr)
+
+		S = set.union(*[set(p.right_extensions(test=test)) for p in self])
+		return PermSet()
+
+	def upset(self, up_to_length):
+		"""Return the upset of `self`, stratified by length.
+
+		Args:
+			basis (iter:optional): permutations to avoid. Useful for building classes.
+
+		"""
+		if not self:
+			return []
+
+
+		by_length = self.by_length
+		min_length = min(by_length.keys())
+		max_length = max(by_length.keys())
+		upset = [PermSet() for _ in range(min_length)]
+		upset.append(PermSet(by_length[min_length]))
+
+		if max_length > up_to_length:
+			raise ValueError(f"PermSet.upset called with up_to_length = {up_to_length} on a PermSet with a longer permutation.")
+
+		for length in range(min_length+1,max_length+1):
+			prev_length = upset[length-1] + by_length[-1]
+			upset.append(PermSet(set.union(p.covered_by() for p in prev_length)))
+
+		return upset
+
+
+	def downset(self, return_class=False):
+		"""Return the downset of `self` as a list."""
+		bottom_edge = PermSet()
+		bottom_edge.update(self)
+
+		max_len = max(len(p) for p in self)
+		levels = [PermSet() for _ in range(max_len+1)]
+		for p in self:
+			levels[len(p)].add(p)
+
+		downset = [None for _ in range(max_len+1)]
+
+		for n in range(max_len,-1,-1):
+			upper = downset[n] + levels[n]
+			lower = upper.covers()
+			downset[n-1] = lower
+			
+		return downset
+
+	def pattern_counts(self, k):
+		"""Return a dictionary counting the copies of all `k`-perms in each permutation in `self`."""
+		C = Counter()
+		for pi in self:
+			C += pi.pattern_counts(k)
+		return C
+
+	def total_statistic(self, statistic, default=0):
+		"""Return the sum of the given statistic over all perms in `self`.
+
+		Notes:
+			Works as long as the statistic is a number. If the statistic is a 
+			Counter or something, this will fail as written.
+		"""
+		return sum((statistic(p) for p in self), default)
+
 	def heatmap(self, only_length=None, ax=None, blur=False, gray=False, **kwargs):
 		"""Visalization of a set of permutations, which, for each length, shows
 		the relative frequency of each value in each position.
@@ -79,30 +257,20 @@ class PermSet(set):
 			only_length (int:optional):  If given, restrict to the permutations of this length.
 		"""
 		if not mpl_imported:
-			err = 'heatmap requires matplotlib to be imported'
-			raise NotImplementedError(err)
+			raise NotImplementedError('PermSet.heatmap requires matplotlib to be imported.')
+
 		try:
 			import numpy as np
-		except ImportError as e:
-			err = 'heatmap function requires numpy'
-			raise e(err)
+		except ImportError as exc:
+			raise exc('PermSet.heatmap requires numpy to be imported!')
 		# first group permutations by length
 		total_size = len(self)
-		perms_by_length = {}
-		for perm in self:
-			n = len(perm)
-			if n in perms_by_length:
-				perms_by_length[n].add(perm)
-			else:
-				perms_by_length[n] = PermSet([perm])
+		perms_by_length = self.by_length()
+
 		# if given a length, ignore all other lengths
 		if only_length:
 			perms_by_length = {only_length: perms_by_length[only_length]}
 		lengths = list(perms_by_length.keys())
-		def lcm(l):
-			"""Returns the least common multiple of the list l."""
-			lcm = reduce(lambda x,y: x*y // fractions.gcd(x,y), l)
-			return lcm
 		grid_size = lcm(lengths)
 		grid = np.zeros((grid_size, grid_size))
 		def inflate(a, n):
@@ -148,224 +316,21 @@ class PermSet(set):
 		ax.axis('off')
 		return ax
 
-	def show_all(self):
-		"""The default representation doesn't print the entire set, this
-		function does."""
-		return set.__repr__(self)
-
-	def minimal_elements(self):
-		"""Return the elements of `self` which are minimal with respect to the 
-		permutation pattern order.
-
-		ME: TODO... Is there a better way?
-		"""
-
-		L = list(self)
-		shortest_perms  = [L[0]]
-		shortest_length = len(L[0])
-
-		# Find the shortest permutations in the set.
-		for P in L[1:]:
-			if len(P) < shortest_length:
-				shortest_perms = [P]
-				shortest_length = len(P)
-			elif len(P) == shortest_length:
-				shortest_perms.append(P)
-
-		# Remove them from the rest.
-		for P in shortest_perms:
-			L.remove(P)
-
-		remaining = PermSet()
-
-		# Keep only those which avoid all the shortest permutations.
-		for P in L:
-			for Q in shortest_perms:
-				if Q.involved_in(P):
-					break
-			else:
-				# If we're here, we never broke out of the for loop above!
-				remaining.add(P)
-
-		minimal = PermSet(shortest_perms)
-		minimal.update(minimal_elements(remaining))
-		return minimal
-
-	def all_syms(self):
-		"""Return the PermSet of all symmetries of all permutations in `self`.
-
-		ME: Done!
-		"""
-		S = set(self)
-		S.update([P.reverse()    for P in S])
-		S.update([P.complement() for P in S])
-		S.update([P.inverse()    for P in S])
-		return PermSet(S)
-
-	def layer_down(self, verbose=0):
-		"""Return the PermSet of those permutations which are covered by an element of `self`.
-
-		ME: Done!
-		"""
-		S = PermSet()
-
-		if verbose:
-			n = len(self)
-			for idx, P in enumerate(self):
-				if idx % verbose == 0:
-					print(f"\t{idx} of {n}. Now with {len(S)}.")
-				S.update(P.covers())
-		else:
-			for P in self:
-				S.update(P.covers())
-
-		return S
-
-	def cover(self, verbose=0):
-		"""Return the PermSet of those permutations which cover an element of `self`.
-
-		ME: Done!
-		"""
-		S = PermSet()
-
-		if verbose:
-			n = len(self)
-			for idx, P in enumerate(self):
-				if idx % verbose == 0:
-					print(f"\t{idx} of {n}. Now with {len(S)}.")
-				S.update(P.covered_by())
-		else:
-			for P in self:
-				S.update(P.covered_by())
-
-		return S
-
-	def upset(self, basis=None, verbose=0):
-		"""Return the 'one layer' upset of `self`.
-
-		Notes:
-			Requires each permutation in `self` to be the same size.
-
-		Args:
-			basis (iter:optional): permutations to avoid. Useful for building classes.
-			verbose (int:optional): level of verbosity.
-		"""
-		sizes = set(len(perm) for perm in self)
-		if len(sizes) == 0:
-			return PermSet()
-		assert len(sizes) == 1, "Need all permutations to be the same size!"
-		for n in sizes: 
-			# While this seems offensive, this seems to be the fastest way to get the element of sizes.
-			# See the following for a discussion of this.
-			# https://stackoverflow.com/questions/59825/how-to-retrieve-an-element-from-a-set-without-removing-it
-			break
-
-		# n is now the size of the 'current' permutations.
-
-		new_perms = PermSet()
-		prev_count = len(self)
-
-		if basis is None:
-			for k, P in enumerate(self):
-				if verbose > 0 and k % verbose == 0:
-					print(f"\tRight Extensions: {k}/{prev_count}\t(length {n})")
-				for Q in P.right_extensions():
-					new_perms.add(Q)
-		else:
-			for k, P in enumerate(self):
-				if verbose > 0 and k % verbose == 0:
-					print(f"\tRight Extensions: {k}/{prev_count}\t(length {n})")
-
-				new_insertion_values = P.insertion_values
-				to_add = set()
-				for Q in P.right_extensions():
-					is_good = True
-					for B in basis:
-						if B.involved_in(Q,last_require=2):
-							# Here, last_require = 2, since if Q contains B using the new value
-							# and not the previous, then this value would have been flagged as bad.
-							is_good = False # We shouldn't break, since there might be multiple basis elements contained here.
-							try: 
-								new_val = Q[-1]
-								new_insertion_values.remove(new_val)
-							except ValueError:
-								pass
-					if is_good:
-						# If we're here, then none of the basis elements were involved in Q.
-						to_add.add(Q)
-
-				for Q in to_add:
-					new_val = Q[-1]
-					Q.insertion_values = [val if val < new_val else val+1 for val in new_insertion_values]
-					Q.insertion_values.append(new_val)
-					new_perms.add(Q)
-
-		return new_perms
-
-	def downset(self, return_class=False):
-		"""Return the downset of `self` as a list.
-
-		ME: TODO!
-		"""
-		bottom_edge = PermSet()
-		bottom_edge.update(self)
-
-		done = PermSet(bottom_edge)
-		while len(bottom_edge) > 0:
-			oldsize = len(done)
-			next_layer = bottom_edge.layer_down()
-			done.update(next_layer)
-			del bottom_edge
-			bottom_edge = next_layer
-			del next_layer
-			newsize = len(done)
-			# print(f"\t\tDownset currently has {newsize} permutations, added {newsize-oldsize} in the last run.")
-		if not return_class:
-			return done
-		cl = [PermSet([])]
-		max_length = max([len(P) for P in done])
-		for i in range(1,max_length+1):
-			cl.append(PermSet([P for P in done if len(P) == i]))
-		return cl
-
-
-	def total_statistic(self, statistic):
-		"""Return the sum of the given statistic over all perms in `self`.
-
-		Notes:
-			Works as long as the statistic is a number. If the statistic is a 
-			Counter or something, this will fail as written.
-
-		ME: Done!
-		"""
-		return sum(statistic(p) for p in self)
-
-	def pattern_counts(self, k):
-		"""Return a dictionary counting the occurrences of each perm of length `k` in each 
-		permutation in `self`.
-
-		ME: Done!
-		"""
-		C = Counter()
-		for pi in self:
-			for vals in itertools.combinations(pi, k):
-				C[Permutation(vals)] += 1
-		return C
-
 	def stack_inverse(self):
+		"""Return the PermSet of stack-inverses of elements of self.
+
+		Notes:
+			Uses dynamic programming!
+		"""
 		A = [tuple([val+1 for val in pi]) for pi in self]
-		# print(A)
 		n = len(A[0])
 		assert all(len(pi)==n for pi in self), "Not designed to handle this, unfortunately!"
 		L = [set() for _ in range(n+1)]
 		L[n].update((pi, tuple(), tuple()) for pi in A)
 		for k in range(n)[::-1]:
-			# print("k={}".format(k))
-			# print("L[{}]={}".format(k+1,L[k+1]))
 			unpop_temp = set(unpop(state) for state in L[k+1])
 			L[k].update(state for state in unpop_temp if state is not None)
 			old = L[k]
-			# print("init_old = {}".format(old))
 
 			unpush_temp = set(unpush(state) for state in old)
 			new = set(state for state in unpush_temp if state is not None)
@@ -374,9 +339,6 @@ class PermSet(set):
 				old = new
 				unpush_temp = set(unpush(state) for state in old)
 				new = set(state for state in unpush_temp if state is not None)
-		# 	print(unpush_temp)
-		# for a in L[0]:
-		# 	print(tuple(a))
 		return PermSet(Permutation(state[2]) for state in L[0] if state is not None and not state[1])
 
 def unpop(state):
@@ -384,7 +346,7 @@ def unpop(state):
 	"""
 	after,stack,before = state
 	if after and after[-1] and (not stack or after[-1] < stack[-1]):
-		return (after[:-1], stack+tuple([after[-1]]), before)
+		return (after[:-1], stack+(after[-1],), before)
 	else:
 		return
 
@@ -393,17 +355,9 @@ def unpush(state):
 	"""
 	after,stack,before = state
 	if stack:
-		return (after, stack[:-1], tuple([stack[-1]]) + before)
+		return (after, stack[:-1], (stack[-1],) + before)
 	else:
 		return
 
 if __name__ == "__main__":
-	pass
-
-
-
-
-
-
-
-
+	import doctest
