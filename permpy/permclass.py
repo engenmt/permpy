@@ -1,19 +1,24 @@
 import copy
+import logging
 import time
 from math import factorial
 
 from .permutation import Permutation
 from .permset import PermSet
 
+
+logging.basicConfig(level=logging.INFO)
+
+
 class PermClass(list):
 
 	@staticmethod
-	def class_from_test(test, l=8, has_all_syms=False):
+	def class_from_test(test, max_len=8, has_all_syms=False):
 		"""Return the smallest PermClass of all permutations which satisfy the test.
 
 		Args:
 			test (func): function which accepts a permutation and returns a Boolean. Should be closed downward.
-			l (int): maximum length to be included in class
+			max_len (int): maximum length to be included in class
 			has_all_syms (Boolean): whether the class is closed under all symmetries.
 
 		Returns:
@@ -21,13 +26,14 @@ class PermClass(list):
 		"""
 
 		C = [PermSet(Permutation())] # List consisting of just the PermSet containing the empty Permutation
-		for length in range(1,l+1):
+		for length in range(1,max_len+1):
 			if len(C[length-1]) == 0:
 				return PermClass(C)
 
 			new_set = PermSet()
 			to_check = PermSet(set.union(*[p.covered_by() for p in C[length-1]]))
 			to_check = PermSet(p for p in to_check if PermSet(p.covers()).issubset(C[length-1]))
+			
 			while to_check:
 				p = to_check.pop()
 
@@ -37,9 +43,12 @@ class PermClass(list):
 						new_set += syms
 						to_check -= syms
 					else:
+						logging.info(f"Keeping p = {p}, as it passed the test.")
 						new_set.add(p)
 				else:
-					to_check -= PermSet(p.symmetries())
+					logging.info(f"Throwing out p = {p}, as it failed the test.")
+					if has_all_syms:
+						to_check -= PermSet(p.symmetries())
 
 			C.append(new_set)
 
@@ -55,7 +64,6 @@ class PermClass(list):
 
 		return p in self[len(p)]
 
-
 	def filter_by(self, test):
 		"""Modify self by removing those permutations which fail the test.
 
@@ -69,9 +77,9 @@ class PermClass(list):
 					self[i].remove(P)
 
 	def guess_basis(self, max_length=6, search_mode=False):
-		"""Guess a basis for the class up to "max_length" by iteratively generating
-		the class with basis elements known so far ({}, to start with) and adding
-		elements which should be avoided to the basis.
+		"""Guess a basis for the class up to "max_length" by iteratively
+		generating the class with basis elements known so far (initially {})
+		and adding elements which should be avoided to the basis.
 
 		Search mode goes up to the max length in the class and prints out the 
 		number of basis elements of each length on the way.
@@ -108,6 +116,10 @@ class PermClass(list):
 		return basis
 
 	def union(self, other):
+		"""
+		Todos: 
+			Test that this extend properly, even if `self` and `other` are modified. 
+		"""
 		return PermClass([S_1.union(S_2) for S_1, S_2 in zip(self, other)], 
 			test=lambda p: self.test(p) or other.test(p))
 
@@ -124,11 +136,16 @@ class PermClass(list):
 		permset = PermSet(set.union(*self)) # Collect all perms in self into one PermSet
 		permset.heatmap(**kwargs)
 
-	def sum_closure(self,length=8, has_syms=False):
-		return PermClass.class_from_test(
-			lambda p: ((len(P) < len(self) and P in self[len(P)]) or P.sum_decomposable()) and all([Q in self[len(Q)] for Q in P.chom_sum()]), 
-			l=length, 
-			has_all_syms=has_syms)
+	def sum_closure(self, max_len=8, has_all_syms=False):
+		"""
+		Notes:
+			This will raise an IndexError if the resulting class is extended.
+		Todos: 
+			Check that the `test` works properly, even if `self` is modified. 
+		"""
+		def is_sum(p):
+			return all(self.test(q) for q in p.sum_decomposition())
+		return PermClass.class_from_test(is_sum, max_len=max_len, has_all_syms=has_all_syms)
 
 if __name__ == "__main__":
 	pass
