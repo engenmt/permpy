@@ -1,0 +1,5 @@
+__pycache__/
+*.pynb
+.DS_store
+.texpadtmp
+

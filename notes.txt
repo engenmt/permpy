@@ -1,9 +1,13 @@
 - Removing `Permutation.bend_list` since it never seeemed to work anyways.
-- Removing `Permutation.insertion_locations`.
+- Changed `Permutation.insertion_locations` to `Permutation.insertion_values`.
 - Removing `Permutation.num_consecutive_3214`.
-- Generally using Google-style Python docstrings.
+- Generally trying to Google-style Python docstrings.
 - Things kept only for reverse compatability have been moved to PermutationDeprecatedMixin and decorated with a warning that they're deprecated. I think these should be removed.
 - I'm tempted by code formatters (e.g. black, flake8), but I'd like to learn more about them before committing to one.
+- An arbitrary permutation class `C` can compute its sum closure `D`, which is another permutation class. What happens when we try to extend `D`? How should we do that?
+	- If `C` was defined by a basis, we can compute thee basis of `D` explicitly.
+	- What if `C` was defined by some arbitrary test through `PermutationClass.class_from_test(f)`? We could try to save `C.test` and transform it into a test for `D`.
+	- We could have transform the class PermutationClass into a class with few methods excluding the extend operation. Then classes created from tests can be some subclass, and classes formed from some basis are a subsubclass.
 
 
 TODOs
