@@ -472,8 +472,6 @@ class Permutation(tuple,
 
 		return Permutation(val for val in self if val in values)
 
-
-
 	def complement(self):
 		"""Return the complement of the permutation. That is, the permutation
 		obtained by subtracting each of the entries from `len(self)`.
@@ -1199,10 +1197,11 @@ class Permutation(tuple,
 		"""Returns the list of right extensions of `self`, only including those 
 		in which the new value comes from `self.insertion_values`.
 		"""
-		if basis is None and test is None:
-			def test(p): return True
-		elif basis is not None:
-			def test(p): return p.avoids(B = basis)
+		if test is None:
+			if basis is None:
+				def test(p): return True
+			else:
+				def test(p): return p.avoids(B = basis)
 
 		L = []
 		bad_vals = []
@@ -1210,12 +1209,13 @@ class Permutation(tuple,
 			p = [val if val < new_val else val+1 for val in self]
 			p.append(new_val)
 			p = Permutation(p, clean=True)
-			if test(p):
+			if not test(p):
 				bad_vals.append(new_val)
 			else:
 				L.append(p)
 
-		prev_insertion_values = [val for val in self.insertion_values if val not in bad_vals]
+		prev_insertion_values = [val \
+			for val in self.insertion_values if val not in bad_vals]
 
 		for p in L:
 			new_val = p[-1]
@@ -1252,7 +1252,6 @@ class Permutation(tuple,
 		if show:
 			plt.show()
 		return ax
-
 
 	def _show(self):
 		if sys.platform == 'linux2':
@@ -1391,8 +1390,8 @@ class Permutation(tuple,
 
 
 if __name__ == '__main__':
-	p = Permutation(25314)
-	print(p.greedy_sum())
+	pass
+	
 	# B = [Permutation([1]) - Permutation(b) for b in [312,231,123]]
 	# for b in B:
 	# 	print(b)

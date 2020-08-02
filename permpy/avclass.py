@@ -9,7 +9,10 @@ from .permset import PermSet
 from .permclass import PermClass
 
 class AvClass(PermClass):
-	"""Object representing an avoidance class.
+	"""An object representing an avoidance class. 
+	
+	Notes:
+		Does not contain the empty permutation.
 
 	Examples:
 		>>> B = [123]
@@ -26,7 +29,11 @@ class AvClass(PermClass):
 	def __init__(self, basis, length=8, verbose=0):
 
 		list.__init__(self, [PermSet()])
-		self.basis = [Permutation(b) for b in basis]
+		if isinstance(basis, Permutation):
+			self.basis = [basis]
+		else:
+			self.basis = [Permutation(b) for b in basis]
+		
 		self.test = lambda p: all(b not in p for b in basis)
 
 		p = Permutation([0], clean=True)
@@ -34,32 +41,32 @@ class AvClass(PermClass):
 			if p not in self.basis:
 				self.append(PermSet(p))
 				self.length = 1
-				self.extend_to_length(length,verbose=verbose)
+				self.extend_to_length(length)
 			else:
 				for _ in range(length):
 					self.append(PermSet())
 
-	def extend_by_one(self, test=None, verbose=0, return_info=False):
-		logging.info(f"Calling extend_by_one({self}, test={test}, verbose={verbose}, return_info={return_info})")
+	def extend_by_one(self, trust=True):
+		"""Extend `self` by right-extending its ultimate PermSet.
+		
+		Args:
+			trust (bool): Whether of not we can trust the insertion values of 
+				the ultimate PermSet. In this context, we generally can.
+		"""
+		logging.debug(f"Calling extend_by_one({self}, trust={trust})")
 		self.length += 1
-		if test is None:
-			upset = self[-1].upset(basis=self.basis, verbose=verbose)
-		else:
-			upset, failures = self[-1].upset_with_test(test, basis=self.basis, return_failures=True, verbose=verbose)
-			# print(f"upset = (length {len(upset)})\n{sorted([perm for perm in upset])}")
-			# print(f"failures = (length {len(failures)})\n{sorted([perm for perm in failures])}")
-			self.basis.extend(failures)
-		self.append(upset)
-		if return_info:
-			return f"{self.length:2}: {len(self[-1]):10}"
-
-	def extend_to_length(self, length, test=None, verbose=0):
+		self.append(self[-1].right_extensions(basis=self.basis, trust=trust))
+	
+	def extend_to_length(self, length, trust=True):
 		if length <= self.length:
 			return
 
-		old_length = self.length
-		for n in range(old_length+1, length+1):
-			self.extend_by_one(test=test, verbose=verbose)
+		for n in range(self.length+1, length+1):
+			self.extend_by_one(trust=trust)
+
+	def extend_by_length(self, length, trust=True):
+		for n in range(length):
+			self.extend_by_one(trust=trust)
 
 	def right_juxtaposition(self, C, generate_perms=True):
 		A = PermSet()
