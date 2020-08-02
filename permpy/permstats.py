@@ -53,6 +53,15 @@ class PermutationStatsMixin:
 			if idx != self[val]: 
 				return False
 		return True
+	
+	def is_increasing(self):
+		return self.is_identity()
+	
+	def is_decreasing(self):
+		for idx, val in enumerate(self[::-1]):
+			if idx != val:
+				return False
+		return True
 
 	def is_identity(self):
 		"""Determine if the permutation is the identity.

@@ -26,9 +26,9 @@ class PermSet(set, PermSetDeprecatedMixin):
 	def __init__(cls, s=[]):
 		"""Return the PermSet from the iterable provided, or just with a single permutation."""
 		if isinstance(s, Permutation):
-			super(PermSet, cls).__init__([s])
+			super().__init__([s])
 		else:
-			super(PermSet, cls).__init__(s)
+			super().__init__(s)
 
 	def __add__(self, other):
 		"""Return the union of the two permutation sets.
@@ -38,17 +38,22 @@ class PermSet(set, PermSetDeprecatedMixin):
 			>>> S
 			Set of 30 permutations
 		"""
-		return PermSet(super(PermSet, self).__add__(other))
+		return PermSet(super().__or__(other))
+	
+	def __or__(self, other):
+		"""Wrapper for _add__."""
+		return self + other
+	
 
 	def __sub__(self, other):
 		"""Return the union of the two permutation sets.
 
 		Examples:
-			>>> S = PermSet.all(3) - PermSet.all(Permutation(123))
+			>>> S = PermSet.all(3) - PermSet(Permutation(123))
 			>>> len(S)
 			5
 		"""
-		return PermSet(super(PermSet, self).__sub__(other))
+		return PermSet(super().__sub__(other))
 
 	@classmethod
 	def all(cls, length):
@@ -63,6 +68,12 @@ class PermSet(set, PermSetDeprecatedMixin):
 			True
 		"""
 		return PermSet(Permutation.gen_all(length))
+
+	def union(self, other):
+		"""Wrapper for __add__
+		"""
+		return self + other
+
 
 	def get_random(self):
 		"""Return a random element from the set.
@@ -83,7 +94,7 @@ class PermSet(set, PermSetDeprecatedMixin):
 
 
 	def get_length(self, length):
-		"""Returns the subset of permutations which have the specified length.
+		"""Return the subset of permutations that have the specified length.
 
 		Args:
 			length (int): length of permutations to be returned
@@ -100,10 +111,8 @@ class PermSet(set, PermSetDeprecatedMixin):
 		return set.__repr__(self)
 
 	def minimal_elements(self):
-		"""Return the elements of `self` which are minimal with respect to the 
+		"""Return the elements of `self` that are minimal with respect to the 
 		permutation pattern order.
-
-		TODO: Is there a better way?
 		"""
 
 		shortest_len = min(len(p) for p in self)
@@ -138,15 +147,15 @@ class PermSet(set, PermSetDeprecatedMixin):
 
 		Args:
 			basis (iter:optional): permutations to avoid. Useful for building classes.
-			test (optional): Function which accepts a permutation and returns a boolean. 
-				Only returns those permutations which pass the test.
+			test (optional): Function that accepts a permutation and returns a boolean. 
+				Only returns those permutations that pass the test.
 			trust (boolean:optional): Whether or not to trust the `insertion_values`
 				existing in the Permutations in `self`.
 		"""
 		if len(self) == 0:
 			return PermSet()
-
-		if basis is not None:
+		
+		if test is None and basis is not None:
 			if trust:
 				lr = 2
 				# If we trust the previous insertion_values, then right-extending
@@ -154,7 +163,8 @@ class PermSet(set, PermSetDeprecatedMixin):
 				# when the rightmost two entries are used.
 			else:
 				lr = 1
-			def test(p): return p.avoids(B = basis, lr = lr)
+			def test(p): 
+				return p.avoids(B = basis, lr = lr)
 
 		S = set.union(*[set(p.right_extensions(test=test)) for p in self])
 		return PermSet(S)
@@ -164,7 +174,6 @@ class PermSet(set, PermSetDeprecatedMixin):
 
 		Args:
 			basis (iter:optional): permutations to avoid. Useful for building classes.
-
 		"""
 		if not self:
 			return []
@@ -186,7 +195,7 @@ class PermSet(set, PermSetDeprecatedMixin):
 		return upset
 
 
-	def downset(self, return_class=False):
+	def downset(self):
 		"""Return the downset of `self` as a list."""
 		bottom_edge = PermSet()
 		bottom_edge.update(self)
