@@ -194,6 +194,8 @@ class PermutationMiscMixin:
 					P = Permutation(P[:i]+P[i+1:])
 					break
 		return P
+	
+	
 
 if __name__ == "__main__":
 	pass

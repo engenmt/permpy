@@ -144,6 +144,10 @@ class PermutationDeprecatedMixin:
 		return cls.ind_to_perm(k, n)
 
 	@deprecated
+	def perm2ind(self):
+		return self.perm_to_ind()
+
+	@deprecated
 	def ind_to_perm(self):
 		return self.perm_to_ind()
 
@@ -187,6 +191,18 @@ class PermutationDeprecatedMixin:
 	@deprecated
 	def majorindex(self):
 		return self.major_index()
+	
+	@deprecated
+	def min_gapsize(self):
+		return self.breadth()
+	
+	@deprecated
+	def occurrences(self, other):
+		return self.copies(other)
+	
+	@deprecated
+	def num_cycles(self):
+		return len(self.cycle_decomp())
 	
 	@deprecated
 	def othercycles(self):

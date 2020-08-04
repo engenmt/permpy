@@ -8,42 +8,6 @@ from collections import Counter
 
 from permpy.RestrictedContainer import *
 
-
-def greedy_sum(p):
-  parts = []
-  sofar = 0
-  while sofar < len(p):
-    if len(p)-sofar == 1:
-      parts.append(Perm(1))
-      return parts
-    i = 1
-    while sofar+i <= len(p) and list(p[sofar:sofar+i]) == range(sofar,sofar+i):
-      i += 1
-    i -= 1
-    if i > 0:
-      parts.append(Perm(range(i)))
-    sofar += i
-    i = 2
-    while sofar+i <= len(p) and not (max(p[sofar:sofar+i]) - min(p[sofar:sofar+i])+1 == i and min(p[sofar:sofar+i]) == sofar):
-      i += 1
-    if sofar+i <= len(p):
-      parts.append(Perm(p[sofar:sofar+i]))
-    sofar += i
-  return parts
-
-def chom_sum(p):
-  L = []
-  p = greedy_sum(p)
-  for i in p:
-    if i.num_inversions() == 0:
-      L.extend([Perm(1)]*len(i))
-    else:
-      L.append(i)
-  return L
-
-def chom_skew(p):
-  return [r.reverse() for r in chom_sum(p.reverse())]
-
 def expected_basis(B):
   return PermSet([expected_basis_element(P) for P in B]).minimal_elements()
 
@@ -75,19 +39,19 @@ def check_combos(max_length, size_of_combos=0, verbose=False):
     expected = expected_basis(basis)
     B = make_restricted_container_class(basis).guess_basis()
     if B == expected:
-      print(f"{str(basis)}  -->  {str(B)}  :  ok")
+      print(f"{basis}  -->  {B}  :  ok")
     else:
       bad_ones += 1
-      print(f"{str(basis)}  -->  {str(B)}  : WHOA!")
+      print(f"{basis}  -->  {B}  : WHOA!")
     if verbose and so_far % 10 == 0:
       print(f'----------------------------------------------------')
       print(f'----------------------------------------------------')
-      print(f'       === SO FAR: {str(bad_ones)} BAD BASES OUT OF {str(so_far)} ===')
+      print(f' === SO FAR: {bad_ones} BAD BASES OUT OF {so_far} === ')
       print(f'----------------------------------------------------')
   print(f'----------------------------------------------------')
   print(f'----------------------------------------------------')
   print(f'----------------------------------------------------')
-  print(f'=== THERE WERE {str(bad_ones)} BAD BASES OUT OF {str(so_far)} ===')
+  print(f'=== THERE WERE {bad_ones} BAD BASES OUT OF {so_far} ===')
   print(f'----------------------------------------------------')
 
 
@@ -100,9 +64,9 @@ def check_singleton_restricted_containers():
       expected = expected_basis(P)
       B = make_restricted_container_class([P]).guess_basis()
       if B == expected:
-        print(f"{str(P)}  -->  {str(B)}  :  ok")
+        print(f"{P}  -->  {B}  :  ok")
       else:
-        print(f"{str(P)}  -->  {str(B)}  : WHOA!")
+        print(f"{P}  -->  {B}  : WHOA!")
   print('----------------------------------------------------')
 
 def make_restricted_container_class(basis,length=7):
@@ -289,7 +253,8 @@ def rsk_shape(perm):
 	return([len(P[i]) for i in range(0,len(P))])
 	
 def shape_contains(A,B):
-	return(len(A) >= len(B) and all(B[i] <= A[i] for i in range(0,len(B))))
+	return (len(A) >= len(B) 
+		and all(b <= a for a, b in zip(A,B)))
 
 def check_stat(f, L1, L2, l=8):
   C = [sorted([f(P) for P in T[l]]) for T in L1]

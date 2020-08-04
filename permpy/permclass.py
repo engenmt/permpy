@@ -5,12 +5,14 @@ from math import factorial
 
 from .permutation import Permutation
 from .permset import PermSet
+from .deprecated.permclassdeprecated import PermClassDeprecatedMixin
 from .utils import copy_func
 
 logging.basicConfig(level=logging.INFO)
 
 
-class PermClass(list):
+class PermClass(list, 
+                PermClassDeprecatedMixin):
 
 	@staticmethod
 	def class_from_test(test, max_len=8, has_all_syms=False):
