@@ -1,15 +1,22 @@
 - Removing `Permutation.bend_list` since it never seeemed to work anyways.
 - Changed `Permutation.insertion_locations` to `Permutation.insertion_values`.
 - Removing `Permutation.num_consecutive_3214`.
-- Generally trying to Google-style Python docstrings.
-- Things kept only for reverse compatability have been moved to PermutationDeprecatedMixin and decorated with a warning that they're deprecated. I think these should be removed.
-- I'm tempted by code formatters (e.g. black, flake8), but I'd like to learn more about them before committing to one.
-- An arbitrary permutation class `C` can compute its sum closure `D`, which is another permutation class. What happens when we try to extend `D`? How should we do that?
-	- If `C` was defined by a basis, we can compute thee basis of `D` explicitly.
-	- What if `C` was defined by some arbitrary test through `PermutationClass.class_from_test(f)`? We could try to save `C.test` and transform it into a test for `D`.
-	- We could have transform the class PermutationClass into a class with few methods excluding the extend operation. Then classes created from tests can be some subclass, and classes formed from some basis are a subsubclass.
-
-
-TODOs
-- PermClass should be based on some test.
-- AvClass should require a basis.
+- Removing `mperm.py`, including the class `_GeneralPermutation` and `MPerm`.
+- Generally trying to keep Google-style Python docstrings.
+- Things kept only for reverse compatability have been moved to 
+  PermutationDeprecatedMixin and decorated with a warning that they're 
+  deprecated. I think these should be removed.
+- I'm tempted by code formatters (e.g. black, flake8), but I'd like to learn 
+  more about them before committing to one.
+- Should we always be able to extend a `PermutationClass`? (Or 
+  "should `PermutationClass` have an `extend_by_one` method?")
+	- If a PermutationClass is defined as some given list of `PermSet`s, say 
+	  produced by some geometric construction or something, we can't extend it. 
+	- I'm inclined to have `PermutationClass` be a method-light class, perhaps 
+	  only with `is_downset` and `guess_basis`, and have subclasses that provide
+	  ways to extend:
+		- GeometricGridClass can add points in its cells
+		- Classes defined by some hereditary property can right-extend existing 
+		  permutations.
+		- AvClass can right-extend existing permutations and use its `lr` 
+		  feature.
