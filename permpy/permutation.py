@@ -1,7 +1,3 @@
-from __future__ import division, print_function
-
-from collections import Counter, defaultdict
-
 import sys
 import os
 import subprocess
@@ -11,10 +7,12 @@ import random
 import fractions
 import itertools
 
+from collections import Counter, defaultdict
+from scipy.special import binom
+
 from .permstats import PermutationStatsMixin
 from .permmisc import PermutationMiscMixin
-
-from scipy.misc import comb
+from .deprecated.permdeprecated import PermutationDeprecatedMixin
 
 try:
 	import matplotlib.pyplot as plt
@@ -22,7 +20,7 @@ try:
 except ImportError:
 	mpl_imported = False
 
-__author__ = 'Cheyne Homberger, Jay Pantone'
+__author__ = 'Michael Engen, Cheyne Homberger, Jay Pantone'
 
 """
 Todo:
@@ -39,7 +37,8 @@ def _is_iter(obj):
 # a class for creating permutation objects
 class Permutation(tuple, 
 				  PermutationStatsMixin, 
-				  PermutationMiscMixin):
+				  PermutationMiscMixin,
+				  PermutationDeprecatedMixin):
 	"""Class for representing permutations as immutable 0-indexed tuples.
 	"""
 
@@ -61,8 +60,6 @@ class Permutation(tuple,
 		Examples:
 			>>> Permutation.monotone_increasing(5)
 			1 2 3 4 5
-
-		ME: Done!
 		"""
 		return cls(range(n), clean=True)
 
@@ -73,17 +70,13 @@ class Permutation(tuple,
 		Examples:
 			>>> Permutation.monotone_decreasing(5)
 			5 4 3 2 1
-		
-		ME: Done!
 		"""
-		return cls(range(n)[::-1], clean=True)
+		return cls(range(n-1,-1,-1), clean=True)
 
 	@classmethod
 	def identity(cls, n):
 		"""Return the identity permutation of length n. 
 		Same as monotone_increasing.
-
-		ME: Done!
 		"""
 		return cls.monotone_increasing(n)
 
@@ -94,8 +87,6 @@ class Permutation(tuple,
 		Examples:
 			>>> len( Permutation.random(10) ) == 10
 			True
-
-		ME: Done!
 		"""
 		L = list(range(n))
 		random.shuffle(L)
@@ -119,12 +110,13 @@ class Permutation(tuple,
 
 		Returns:
 			p (Permutation): A permutation avoiding all the patterns in `B`
+		
+		Examples:
+			>>> p = Permutation.random_avoider(8, [123])
+			>>> p.involves(123)
+			False
 
-		>>> p = Permutation.random_avoider(8, [123])
-		>>> p.involves(123)
-		False
-
-		ME: TODO! Ideally, we should use MCMC for this.
+		TODO: Ideally, we should use MCMC for this.
 		"""
 
 		i = 1
@@ -135,25 +127,21 @@ class Permutation(tuple,
 			i += 1
 			p = cls.random(n)
 			if verbose != -1 and i % verbose == 0:
-				print(f"Tested: {str(i)} permutations.")
+				print(f"Tested: {i} permutations.")
 		return p
 
 	@classmethod
-	def genall(cls, n):
+	def gen_all(cls, n):
 		"""Generate all permutations of length n.
-
-		ME: Done!
 		"""
 		for pi in itertools.permutations(range(n)):
 			yield Permutation(pi,clean=True)
 
 	@classmethod
-	def listall(cls, n):
+	def list_all(cls, n):
 		"""Return a list of all permutations of length `n`.
-
-		ME: Done!
 		"""
-		return list(cls.genall(n))
+		return list(cls.gen_all(n))
 
 	@classmethod
 	def standardize(cls, L):
@@ -162,8 +150,6 @@ class Permutation(tuple,
 		
 		See the following for some interesting discussion on this:
 		https://stackoverflow.com/questions/17767646/relative-order-of-elements-in-list
-		
-		ME: Done!
 		"""
 		assert len(set(L)) == len(L), "Ensure elements are distinct!"
 		ordered = sorted(L)
@@ -173,8 +159,6 @@ class Permutation(tuple,
 	def change_repr(cls, representation=None):
 		"""Toggle globally between cycle notation or one-line notation. 
 		Note that internal representation is still one-line.
-
-		ME: Done!
 		"""
 		L = ['oneline', 'cycle', 'both']
 		if representation in L:
@@ -184,9 +168,9 @@ class Permutation(tuple,
 			cls._REPR = L[k-1]
 
 	@classmethod
-	def ind2perm(cls, k, n):
+	def ind_to_perm(cls, k, n):
 		"""De-index the permutation by a bijection from the set S_n to [n!].
-		See also the `Permutation.perm2ind` method.
+		See also the `Permutation.perm_to_ind` method.
 
 		Args:
 			k (int): An integer between 0 and n! - 1, to be mapped to S_n.
@@ -196,12 +180,14 @@ class Permutation(tuple,
 			Permutation of index k of length n.
 		
 		Examples:
-			>>> Permutation.ind2perm(12,8).perm2ind()
+			>>> Permutation.ind_to_perm(12,8).perm_to_ind()
 			12
 
-		ME: Todo!
 		"""
-		assert isinstance(k, int), f"Got confused: Permutation.ind2perm(k = {k}, n = {n}) was called."
+		if not isinstance(k, int):
+			raise ValuError(
+				f"Got confused: Permutation.ind_to_perm(k={k}, n={n}) was called.")
+
 		result = list(range(n))
 		for i in range(n, 0, -1):
 			j = k % i
@@ -211,14 +197,14 @@ class Permutation(tuple,
 		return p
 
 	# overloaded built in functions:
-	def __new__(cls, p, n = None, clean=False):
+	def __new__(cls, p = None, n = None, clean = False):
 		"""Create a new permutation object. Supports a variety of creation
 		methods.
 
 		Notes:
 			If `p` is an iterable containing distinct elements, they will be
 				standardized to produce a permutation of length `len(p)`.
-			If `n` is given, and `p` is an integer, use `ind2perm` to create a
+			If `n` is given, and `p` is an integer, use `ind_to_perm` to create a
 			permutation.
 			If `p` is an integer with fewer than 10 digits, try to create a
 			permutation from the digits.
@@ -226,29 +212,33 @@ class Permutation(tuple,
 		Args:
 			p (Permutation-like object): object to be coerced into a Permutation.
 				Accepts Permutation, tuple, str, int, or iterable.
-			n (int, optional): If this is provided, the method appeals to Permutation.ind2perm(p, n).
+			n (int, optional): If this is provided, the method appeals to Permutation.ind_to_perm(p, n).
 			clean (Boolean, optional): Whether the input is known to be an 
 				iterable containing each element from range(len(p)) exactly once.
 
-		Returns
-		-------
-		Permutation instance
+		Raises:
+			ValueError if the passed arguments fail to properly create a permutation.
 
-		>>> Permutation('3 5 1 2 4') == Permutation([3, 5, 1, 2, 4])
-		True
-		>>> Permutation(5, 12) == Permutation.ind2perm(5, 12)
-		True
-		>>> Permutation([215, -99, 30, 12.1351, 0]) == Permutation(51432)
-		True
+		Returns:
+			Permutation instance
+		
+		Examples:
+			>>> Permutation('3 5 1 2 4') == Permutation([3, 5, 1, 2, 4])
+			True
+			>>> Permutation(5, 12) == Permutation.ind_to_perm(5, 12)
+			True
+			>>> Permutation([215, -99, 30, 12.1351, 0]) == Permutation(51432)
+			True
 
-		ME: Done!
 		"""
-		if clean:
+		if p is None:
+			return tuple.__new__(cls,[])
+		elif clean:
 			return tuple.__new__(cls, p)
 		elif isinstance(p, Permutation):
 			return p
 		elif n is not None:
-			return Permutation.ind2perm(p, n)
+			return Permutation.ind_to_perm(p, n)
 		else:
 			if isinstance(p, str):
 				if ' ' in p:
@@ -261,15 +251,13 @@ class Permutation(tuple,
 			entries = Permutation.standardize(entries)
 			return tuple.__new__(cls, entries)
 
-	def __init__(self,p,n=None,clean=False):
+	def __init__(self,p=None,n=None,clean=False):
 		"""Initialize the Permutation. 
 
 		Notes:
 			self.insertion_values is used for creating classes later.
-
 			If only the "bad spots" are noted, then initializing perms is faster!
 
-		ME: Done!
 		"""
 		self.insertion_values = list(range(len(self)+1))
 
@@ -282,8 +270,7 @@ class Permutation(tuple,
 		Examples:
 			>>> Permutation(4132)(2)
 			2
-
-		ME: Done!
+		
 		"""
 		return self[i]
 
@@ -297,14 +284,14 @@ class Permutation(tuple,
 			True
 			>>> Permutation(231) in Permutation(1234)
 			False
+
 		"""
 		return other.involved_in(self)
 
 	def oneline(self):
 		"""Return the one-line notation representation of the permutation (as a
 		sequence of integers 1 through n).
-
-		ME: Done!
+		
 		"""
 		base = Permutation._BASE
 		s = " ".join( str(entry + base) for entry in self )
@@ -313,8 +300,7 @@ class Permutation(tuple,
 	def __repr__(self):
 		"""Return a string representation of the permutation depending on the 
 		chosen representation (`Permutation._REPR`).
-
-		ME: Done!
+		
 		"""
 		if Permutation._REPR == 'oneline':
 			return self.oneline()
@@ -326,10 +312,7 @@ class Permutation(tuple,
 	# __hash__, __eq__, __ne__ inherited from tuple class
 
 	def __mul__(self, other):
-		"""Return the functional composition of the two permutations.
-
-		ME: Done!
-		"""
+		"""Return the functional composition of the two permutations."""
 		assert len(other) == len(self)
 		L = (self[val] for val in other)
 		return Permutation(L,clean=True)
@@ -342,10 +325,9 @@ class Permutation(tuple,
 			>>> p + p == Permutation.monotone_increasing(20)
 			True
 
-		ME: Done!
 		"""
 		n = len(self)
-		return Permutation(list(self) + [i+n for i in other],clean=True)
+		return Permutation(list(self) + [i+n for i in other], clean=True)
 
 	def direct_sum(self, other):
 		"""Return the direct sum of the two permutations.
@@ -354,7 +336,6 @@ class Permutation(tuple,
 			>>> Permutation(312).direct_sum(Permutation(1234))
 			3 1 2 4 5 6 7
 
-		ME: Done!
 		"""
 		return self + other
 
@@ -366,10 +347,9 @@ class Permutation(tuple,
 			>>> p - p == Permutation.monotone_decreasing(20)
 			True
 
-		ME: Done!
 		"""
 		m = len(other)
-		return Permutation([i+m for i in self] + list(other),clean=True)
+		return Permutation([i+m for i in self] + list(other), clean=True)
 
 	def skew_sum(self, other):
 		"""Return the skew sum of the two permutations.
@@ -378,7 +358,6 @@ class Permutation(tuple,
 			>>> Permutation(312).skew_sum(Permutation(1234))
 			7 5 6 1 2 3 4
 
-		ME: Done!
 		"""
 		return self - other
 
@@ -390,7 +369,6 @@ class Permutation(tuple,
 			>>> p**p.order() == Permutation.monotone_increasing(10)
 			True
 
-		ME: Done!
 		"""
 		assert isinstance(power,int), 'Power must be an integer!'
 		if power < 0:
@@ -404,16 +382,15 @@ class Permutation(tuple,
 				ans *= self
 			return ans
 
-	def perm2ind(self):
+	def perm_to_ind(self):
 		"""De-index the permutation, by mapping it to an integer between 0 and
-		len(self)! - 1. See also `Permutation.ind2perm`.
+		len(self)! - 1. See also `Permutation.ind_to_perm`.
 		
 		Examples:
 			>>> p = Permutation(41523)
-			>>> Permutation.ind2perm(p.perm2ind(), len(p)) == p
+			>>> Permutation.ind_to_perm(p.perm_to_ind(), len(p)) == p
 			True
 
-		ME: TODO!
 		"""
 		q = list(self)
 		n = len(self)
@@ -443,30 +420,28 @@ class Permutation(tuple,
 			>>> Permutation(35214).delete(indices=[2]) == Permutation(35214).delete(values=1)
 			True
 
-		ME: Done!
 		"""
 		if indices is not None:
 			try:
 				indices = list(indices)
-				p = [val for idx, val in enumerate(self) if idx not in indices]
-				return Permutation(p)
+				return Permutation([val for idx, val in enumerate(self) if idx not in indices])
 			except TypeError: 
 				val = self[indices]
 				p = [old_val if old_val < val else old_val-1 for old_val in self if old_val != val]
-				return Permutation(p,clean=True)
+				return Permutation(p, clean=True)
 		elif values is not None:
 			try:
-				values = list(values)
-				p = [val for idx, val in enumerate(self) if val not in values]
-				return Permutation(p)
+				values = list(values) # Throws TypeError if values is not an iterable.
+				return Permutation([val for val in self if val not in values])
 			except TypeError: 
 				val = values
 				p = [old_val if old_val < val else old_val-1 for old_val in self if old_val != val]
 				return Permutation(p,clean=True)
 		else:
-			raise Exception(f"Permutation({self}).delete() was called, which doesn't make sense.")
+			raise Exception(
+				f"Permutation({self}).delete() was called, which doesn't make sense.")
 
-	def insert(self,idx,val):
+	def insert(self, idx, val):
 		"""Return the permutation resulting from inserting an entry with value
 		just below `val` into the position just before the entry at position
 		`idx`. 
@@ -481,11 +456,21 @@ class Permutation(tuple,
 			>>> p == p.insert(4, 7).delete(indices = 4)
 			True
 
-		ME: Done!
 		"""
 		p = [old_val if old_val < val else old_val+1 for old_val in self]
 		p.insert(idx, int(math.ceil(val)))
 		return Permutation(p,clean=True)
+
+	def restrict(self, indices=None, values=None):
+		"""Return the permutation obtained by restricting self to the given indices or values."""
+		if indices is None and values is None:
+			raise ValueError(
+				f"Permutation({self}).restrict(None, None) called, doesn't make sense!")
+
+		if indices is not None:
+			return Permutation(val for idx, val in enumerate(self) if idx in indices)
+
+		return Permutation(val for val in self if val in values)
 
 	def complement(self):
 		"""Return the complement of the permutation. That is, the permutation
@@ -498,7 +483,6 @@ class Permutation(tuple,
 			>>> p == p.complement().complement()
 			True
 
-		ME: Done!
 		"""
 		n = len(self) - 1
 		return Permutation([n-i for i in self],clean=True)
@@ -510,16 +494,12 @@ class Permutation(tuple,
 			>>> Permutation(2314).reverse() == Permutation(4132)
 			True
 
-		ME: Done!
 		"""
 		return Permutation(self[::-1],clean=True)
 
 	def inverse(self):
-		"""Return the group-theoretic or functional inverse of self.
-
-		ME: Done!
-		"""
-		q = list(self[:])
+		"""Return the group-theoretic or functional inverse of self."""
+		q = [0]*len(self)
 		for idx, val in enumerate(self):
 			q[val] = idx
 		return Permutation(q,clean=True)
@@ -558,21 +538,15 @@ class Permutation(tuple,
 			'                 2  '
 			' 1                  '
 
-		ME: Done!
 		"""
 		lines = []
 		n = len(self)
 		
-		max_width = len(str(n+1)) # This is the width of each value.
-		if max_width > width:
-			width = max_width
+		width = max(width, len(str(n))) # This is the width of each value.
 
 		blank = " " * width
-		for val in range(n)[::-1]:
-			idx = self.index(val)
-			line = (blank * (idx) \
-					+ str(val+1).rjust(width)
-					+ blank * (n-idx-1))
+		for val in range(n-1,-1,-1):
+			line = "".join(f"{val+1:>{width}}" if val == other_val else blank for other_val in self)
 			lines.append(line)
 
 		if by_lines:
@@ -584,17 +558,15 @@ class Permutation(tuple,
 		"""Return the fixed points of the permutation as a list. Recall that 
 		both indices and values are zero-indexed.
 		
-		>>> Permutation(521436).fixed_points()
-		[1, 3, 5]
+		Examples:
+			>>> Permutation(521436).fixed_points()
+			[1, 3, 5]
 
-		ME: Done!
 		"""
-		L = [idx for idx, val in enumerate(self) if idx == val]
-		return L
+		return [idx for idx, val in enumerate(self) if idx == val]
 
 	def sum_decomposable(self):
-		"""Determine whether the permutation is expressible as the direct sum of
-		two smaller permutations.
+		"""Determine whether the permutation is the direct sum of two shorter permutations.
 		
 		Examples:
 			>>> p = Permutation.random(4).direct_sum(Permutation.random(15))
@@ -603,7 +575,6 @@ class Permutation(tuple,
 			>>> p.reverse().sum_decomposable()
 			False
 
-		ME: Done!
 		"""
 		indices = set()
 		vals    = set()
@@ -616,7 +587,7 @@ class Permutation(tuple,
 		return False
 
 	def sum_decomposition(self):
-		"""Return the list of sum-indecomposable permutations which sum to self.
+		"""Decompose self as a list of sum-indecomposable permutations which sum to self.
 		
 		Examples:
 			>>> p = Permutation(1) + Permutation(312) + Permutation(21)
@@ -625,21 +596,20 @@ class Permutation(tuple,
 			>>> p == sum(p.sum_decomposition(), Permutation([]))
 			True
 
-		ME: Done!
 		"""
 		if len(self) == 0:
 			return []
 
 		indices = set()
-		vals    = set()
+		vals = set()
 		for idx, val in enumerate(self[:-1]):
 			# Iterates through the permutation up until the penultimate entry.
 			indices.add(idx)
 			vals.add(val)
 			if indices == vals:
-				component = [Permutation(self[:idx+1],clean=True)]
+				component = Permutation(self[:idx+1],clean=True)
 				rest = Permutation((val-idx-1 for val in self[idx+1:]), clean=True)
-				return component + rest.sum_decomposition()
+				return [component] + rest.sum_decomposition()
 		
 		# If we didn't return already, then self is sum-indecomposable.
 		return [self]
@@ -655,7 +625,6 @@ class Permutation(tuple,
 			>>> p.complement().skew_decomposable()
 			True
 
-		ME: Done!
 		"""
 		indices = set()
 		vals    = set()
@@ -677,7 +646,6 @@ class Permutation(tuple,
 			>>> p.reverse().sum_decomposable()
 			False
 
-		ME: Done!
 		"""
 		if not self:
 			return []
@@ -704,7 +672,6 @@ class Permutation(tuple,
 			>>> Permutation(42561873).descents()
 			[0, 3, 5, 6]
 
-		ME: Done!
 		"""
 		return [i for i in range(len(self)-1) if self[i] >= self[i+1]] # >= is a bit faster than > for some reason.
 
@@ -715,7 +682,6 @@ class Permutation(tuple,
 			>>> Permutation(42561873).ascents()
 			[1, 2, 4]
 
-		ME: Done!
 		"""
 		return [i for i in range(len(self)-1) if self[i] <= self[i+1]] # <= is a bit faster than < for some reason.
 
@@ -726,7 +692,6 @@ class Permutation(tuple,
 			>>> Permutation(2341765).peaks()
 			[2, 4]
 
-		ME: Done!
 		"""
 		return [i for i in range(1, len(self)-1) if self[i-1] < self[i] > self[i+1]]
 
@@ -737,7 +702,6 @@ class Permutation(tuple,
 			>>> Permutation(3241756).valleys()
 			[1, 3, 5]
 
-		ME: Done!
 		"""
 		return [i for i in range(1, len(self)-1) if self[i-1] > self[i] < self[i+1]]
 
@@ -748,7 +712,6 @@ class Permutation(tuple,
 			>>> Permutation(35412).ltr_min()
 			[0, 3]
 
-		ME: Done!
 		"""
 		L = []
 		minval = len(self)
@@ -765,7 +728,6 @@ class Permutation(tuple,
 			>>> Permutation(315264).rtl_min()
 			[5, 3, 1]
 
-		ME: Done!
 		"""
 		L = []
 		n = len(self)
@@ -783,7 +745,6 @@ class Permutation(tuple,
 			>>> Permutation(35412).ltr_max()
 			[0, 1]
 
-		ME: Done!
 		"""
 		L = []
 		maxval = -1
@@ -800,7 +761,6 @@ class Permutation(tuple,
 			>>> Permutation(35412).rtl_max()
 			[4, 2, 1]
 
-		ME: Done!
 		"""
 		L = []
 		n = len(self)
@@ -812,8 +772,8 @@ class Permutation(tuple,
 		return L
 
 	def inversions(self):
-		"""Return the list of inversions of the permutation, i.e., the
-		pairs (i,j) such that i < j and self(i) > self(j).
+		"""Return the list of inversions of the permutation, i.e., the pairs 
+		(i,j) such that i < j and self(i) > self(j).
 		
 		Examples:
 			>>> Permutation(4132).inversions()
@@ -821,7 +781,6 @@ class Permutation(tuple,
 			>>> Permutation.monotone_increasing(7).inversions()
 			[]
 
-		ME: Done!
 		"""
 		L = [(i,j+i+1) for i, val_i in enumerate(self)\
 					   for j, val_j in enumerate(self[i+1:]) if val_i >= val_j]
@@ -831,7 +790,6 @@ class Permutation(tuple,
 		"""Return the list of noninversions of the permutation, i.e., the
 		pairs (i,j) such that i < j and self(i) < self(j).
 
-		ME: Done!
 		"""
 		n = len(self)
 		L = [(i,j+i+1) for i, val_i in enumerate(self)\
@@ -839,14 +797,13 @@ class Permutation(tuple,
 		return L
 
 	def breadth(self):
-		"""Return the minimum taxicab distance between any two entries in the 
-		permutation.
+		"""Return the minimum taxicab distance between any two entries in the permutation.
 		
 		Examples:
 			>>> Permutation(3142).breadth()
 			3
 
-		ME: TODO! Currently uses the naive algorithm--can be improved.
+		TODO: Currently uses the naive algorithm--can be improved, probably.
 		"""
 
 		min_dist = len(self)
@@ -864,13 +821,9 @@ class Permutation(tuple,
 		Notes:
 			A bond is an interval of size 2.
 
-		ME: Done!
 		"""
 		L = [idx for idx,val in enumerate(self[:-1]) if val - self[idx+1] in [-1,1]]
 		return L
-
-	# def fixedptsplusbonds(self):
-	#     return len(self.fixed_points() + self.bonds())
 
 	def pattern_counts(self, k):
 		"""Return a Counter (dictionary) counting the occurrences of each perm of length `k` in `self`.
@@ -880,7 +833,6 @@ class Permutation(tuple,
 			>>> a.pattern_counts(3)
 			Counter({1 2 3: 2, 1 3 2: 1, 2 1 3: 1})
 
-		ME: Done!
 		"""
 		C = Counter()
 		for vals in itertools.combinations(self,k):
@@ -893,7 +845,6 @@ class Permutation(tuple,
 		Notes:
 			An ascending run is a consecutive sequence of increasing entries.
 
-		ME: Done!
 		"""
 		max_idx = 0
 		max_len = 0
@@ -915,9 +866,10 @@ class Permutation(tuple,
 
 	def max_descending_run(self):
 		"""Return the (inital) index and length of a longest descending run of `self`.
-		A descending run is a consecutive sequence of decreasing entries.
 
-		ME: Done!
+		Notes:
+			A run is a contiguous subsequence of self.
+
 		"""
 		max_idx = 0
 		max_len = 0
@@ -938,10 +890,7 @@ class Permutation(tuple,
 		return (max_idx, max_len)
 
 	def covered_by(self):
-		"""Return the set of permutations which cover `self`.
-
-		ME: Done!
-		"""
+		"""Return the set of permutations which `self` is covered by."""
 		S = set()
 		n = len(self)
 		for idx, val in enumerate(self):
@@ -954,10 +903,7 @@ class Permutation(tuple,
 		return S
 
 	def covers(self):
-		"""Return the set of permutations which are covered by `self`.
-
-		ME: Done!
-		"""
+		"""Return the set of permutations which `self` covers."""
 		S = set(self.delete(values=val) for val in self)
 		return S
 
@@ -968,7 +914,8 @@ class Permutation(tuple,
 			If `stratified` == True, return the upset as a list `L` such that 
 			`L[i]` is the set of permutations of length `i` which contain `self`.
 
-		ME: Done!
+		Todo:
+			Try to compute this using a more clever method. Probably very difficult.
 		"""
 		n = len(self)
 		L = [set()]*n
@@ -982,10 +929,12 @@ class Permutation(tuple,
 		if stratified:
 			return L
 		else:
-			return set().union(*L)
+			return set.union(*L)
 
 	def set_up_bounds(self):
-		"""Use for something?
+		"""
+		Notes:
+		    ME: I don't know what this does.
 		"""
 		L = list(self)
 		n = len(L)
@@ -1006,32 +955,26 @@ class Permutation(tuple,
 		return (lower_bound, upper_bound)
 
 	def avoids(self, p=None, lr=0, B=None):
-		""" Check if the permutation avoids the pattern `p`.
+		"""Check if the permutation avoids the pattern `p`.
 
 		Args:
 			p (Permutation-like object): permutation to be avoided
 			lr (int): Require the last entry to be equal to this
 			B (iterable of permutation-like objects:optional): A collection of permutations to be avoided.
+		
+		Examples:
+			>>> Permutation(123456).avoids(231)
+			True
+			>>> Permutation(123456).avoids(123)
+			False
 
-		>>> Permutation(123456).avoids(231)
-		True
-		>>> Permutation(123456).avoids(123)
-		False
-
-		ME: "#TODO Am I correct on the lr?"
+		TODO: Am I correct on the lr?
 		"""
 		if p is not None:
 			p = Permutation(p)
-			if p.involved_in(self, last_require=lr):
-				return False
-			else:
-				return True
-		elif B:
-			B = [Permutation(b) for b in B]
-			for p in B:
-				if p.involved_in(self, last_require=lr):
-					return False
-			return True
+			return not p.involved_in(self, last_require=lr)
+		elif B is not None:
+			return all(not Permutation(b).involved_in(self, last_require = lr) for b in B)
 		else:
 			# If we're here, neither a permutation `p` nor a set `B` was provided.
 			return True
@@ -1135,8 +1078,6 @@ class Permutation(tuple,
 		"""Return all monotone intervals of size at least 2.
 
 		If `with_ones == True`, then return all monotone intervals of size at least 1.
-
-		ME: TODO!
 		"""
 
 		mi = []
@@ -1170,38 +1111,29 @@ class Permutation(tuple,
 		return mi
 
 	def monotone_quotient(self):
-		"""Quotient `self` by its monotone intervals.
-
-		ME: TODO!
-		"""
+		"""Quotient `self` by its monotone intervals."""
 
 		return Permutation([self[k[0]] for k in self.all_monotone_intervals(with_ones=True)])
 
 	def maximal_interval(self):
-		"""Find the biggest interval, and return (i,j) is one is found,
-		where i is the size of the interval, and j is the index
-		of the first entry in the interval
+		"""Find the biggest interval, and return (i,j) is one is found, where 
+		i is the size of the interval, and j is the index of the first entry 
+		in the interval.
 
-		Returns (0,0) if no interval is found, i.e., if the permutation
-			is simple.
-
-		ME: TODO!
+		Return (0,0) if no interval is found, i.e., if the permutation is simple.
 		"""
 		for i in range(2, len(self))[::-1]:
-			for j in range (0,len(self)-i+1):
+			for j in range(0,len(self)-i+1):
 				if max(self[j:j+i]) - min(self[j:j+i]) == i-1:
 					return (i,j)
 		return (0,0)
 
 	def simple_location(self):
-		"""Searche for an interval, and return (i,j) if one is found,
+		"""Search for an interval, and return (i,j) if one is found,
 		where i is the size of the interval, and j is the
 		first index of the interval.
 
-		Returns (0,0) if no interval is found, i.e., if the permutation
-		is simple.
-
-		ME: TODO!
+		Return (0,0) if no interval is found, i.e., if the permutation is simple.
 		"""
 		mins = list(self)
 		maxs = list(self)
@@ -1215,8 +1147,8 @@ class Permutation(tuple,
 
 	def decomposition(self):
 		"""
-
-		ME: TODO!
+		Notes:
+			ME: I don't know what this is.
 		"""
 
 		base = Permutation(self)
@@ -1237,63 +1169,63 @@ class Permutation(tuple,
 		return (base, components)
 
 	def inflate(self, components):
-		assert len(self) == len(components), 'number of components must equal length of base'
-		L = list(self)
-		NL = list(self)
-		current_entry = 0
-		for entry in range(0, len(self)):
-			index = L.index(entry)
-			NL[index] = [components[index][i]+current_entry for i in range(0, len(components[index]))]
-			current_entry += len(components[index])
-		NL_flat = [a for sl in NL for a in sl]
-		return Permutation(NL_flat)
+		"""Inflate the entries of self by the given components.
 
-	def right_extensions(self):
-		""" Returns the list of right extensions of `self`, only including those in which the new
-			value comes from `self.insertion_values`.
+		Notes:
+			Inflates from the bottom up, keeping track of the vertical shift for
+			subsequent points.
+		
+		Raises:
+			ValueError if the wrong number of components is given.
 		"""
+		n = len(self)
+		if n != len(components):
+			raise ValueError(f"{self.__repr__()}.inflate({components}) is invalid!")
+		
+		inflated = [[]]*n
+		vertical_shift = 0
+		for value in range(n):
+			index = self.index(value)
+			component = components[index]
+			inflated[index] = [component_value + vertical_shift for component_value in component]
+			vertical_shift += len(component)
+
+		inflated_flat = [val for component in inflated for val in component]
+		return Permutation(inflated_flat)
+
+	def right_extensions(self, test=None, basis=None, trust=False):
+		"""Returns the list of right extensions of `self`, only including those 
+		in which the new value comes from `self.insertion_values`.
+		"""
+		if test is None:
+			if basis is None:
+				def test(p): return True
+			else:
+				def test(p): return p.avoids(B = basis)
+
 		L = []
+		bad_vals = []
 		for new_val in self.insertion_values:
 			p = [val if val < new_val else val+1 for val in self]
 			p.append(new_val)
-			L.append(Permutation(p,clean=True))
-		return L
+			p = Permutation(p, clean=True)
+			if not test(p):
+				bad_vals.append(new_val)
+			else:
+				L.append(p)
 
-	# def all_right_extensions(self, max_length, l, S):
-	#       if l == max_length:
-	#           return S
-	#       else:
-	#           re = self.right_extensions()
-	#           for p in re:
-	#               S.add(p)
-	#               S = p.all_right_extensions(max_length, l+1, S)
-	#       return S
+		prev_insertion_values = [val \
+			for val in self.insertion_values if val not in bad_vals]
 
-	def all_extensions(self):
-		S = set()
-		for i in range(0, len(self)+1):
-			for j in range(0, len(self)+1):
-				# insert (i-0.5) after entry j (i.e., first when j=0)
-				l = list(self[:])
-				l.insert(j, i-0.5)
-				S.add(Permutation(l))
-		return permset.PermSet(S)
+		for p in L:
+			new_val = p[-1]
+			insertion_values_adjusted = [val if val < new_val else val+1 for val in prev_insertion_values]
+			p.insertion_values = insertion_values_adjusted + [new_val]
 
-	def all_extensions_track_index(self, ti):
-		L = []
-		for i in range(0, len(self)+1):
-			for j in range(0, len(self)+1):
-				# insert (i-0.5) after entry j (i.e., first when j=0)
-				l = list(self[:])
-				l.insert(j, i-0.5)
-				if j < ti:
-					L.append((Permutation(l), ti+1))
-				else:
-					L.append((Permutation(l), ti))
 		return L
 
 	def plot(self, show=True, ax=None, use_mpl=True, fname=None, **kwargs):
-		""" Draws a matplotlib plot of the permutation. Can be used for both
+		"""Draw a matplotlib plot of the permutation. Can be used for both
 		quick visualization, or to build a larger figure. Unrecognized arguments
 		are passed as options to the axes object to allow for customization
 		(i.e., setting a figure title, or setting labels on the axes). Falls
@@ -1321,7 +1253,6 @@ class Permutation(tuple,
 			plt.show()
 		return ax
 
-
 	def _show(self):
 		if sys.platform == 'linux2':
 			opencmd = 'gnome-open'
@@ -1344,120 +1275,72 @@ class Permutation(tuple,
 			subprocess.call(['rm', '-r', 't_'+str(dname)+'/'])
 
 	def to_tikz(self):
-		s = r'\begin{tikzpicture}[scale=.3,baseline=(current bounding box.center)]';
-		s += '\n\t'
-		s += r'\draw[ultra thick] (1,0) -- ('+str(len(self))+',0);'
-		s += '\n\t'
-		s += r'\draw[ultra thick] (0,1) -- (0,'+str(len(self))+');'
-		s += '\n\t'
-		s += r'\foreach \x in {1,...,'+str(len(self))+'} {'
-		s += '\n\t\t'
-		s += r'\draw[thick] (\x,.09)--(\x,-.5);'
-		s += '\n\t\t'
-		s += r'\draw[thick] (.09,\x)--(-.5,\x);'
-		s += '\n\t'
-		s += r'}'
-		for (i,e) in enumerate(self):
-			s += '\n\t'
-			s += r'\draw[fill=black] ('+str(i+1)+','+str(e+1)+') circle (5pt);'
-		s += '\n'
-		s += r'\end{tikzpicture}'
+		"""Return a pure-tikz simple plot of `self`."""
+		s = "\n\t".join([
+			r'\begin{tikzpicture}[scale=.3,baseline=(current bounding box.center)]',
+			rf'\draw[ultra thick] (1,0) -- ({len(self)},0);',
+			rf'\draw[ultra thick] (0,1) -- (0,{len(self)});',
+			r'\foreach \x in {1,...,' + f"{len(self)}" + r'} {',
+			'\t' + r'\draw[thick] (\x,.09)--(\x,-.5);',
+			'\t' + r'\draw[thick] (.09,\x)--(-.5,\x);',
+			r'}'] + [rf'\draw[fill=black] ({i+1},{e+1}) circle (5pt);' for (i,e) in enumerate(self)])
+
+		s += '\n' + r'\end{tikzpicture}'
 		return s
 
-	def shrink_by_one(self):
-		return permpy.permset.PermSet([Permutation(p) for p in [self[:i]+self[i+1:] for i in range(0,len(self))]])
-
-	def children(self):
-		"""Returns all patterns of length one less than the permutation."""
-		return self.shrink_by_one()
-
 	def downset(self):
-		return permset.PermSet([self]).downset()
+		"""Return the downset D of `self` stratified by length."""
+		new_perms = {self : 0}
+		downset = [set([self])]
 
-	def sum_indecomposable_sequence(self):
-		S = self.downset()
-		return [len([p for p in S if len(p)==i and not p.sum_decomposable()]) for i in range(1,max([len(p) for p in S])+1)]
+		for new_length in range(len(self)-1, -1, -1):
 
-	def sum_indec_bdd_by(self, n):
-		l = [1]
-		S = list(self.children())
-		while len(S) > 0 and len(S[0]) > 0:
-			l = [len([s for s in S if not s.sum_decomposable()])]+l
-			if l[0] > n:
-				return False
-			S = list(permset.PermSet(S).layer_down())
-		return True
+			old_perms = new_perms
+			new_perms = dict()
 
-	def contains_locations(self, Q):
-		locs = []
-		sublocs = itertools.combinations(range(len(self)), len(Q))
-		for subloc in sublocs:
-			if Permutation([self[i] for i in subloc]) == Q:
-				locs.append(subloc)
+			for sigma, start in old_perms.items():
+				for i in range(start, new_length+1):
+					tau = sigma.delete(indices=i)
+					if tau in new_perms:
+						new_perms[tau] = min(new_perms[tau], i)
+					else:
+						new_perms[tau] = i
 
-		return locs
+			downset.append(new_perms)
 
-	def rank_val(self, i):
-		return len([j for j in range(i+1,len(self)) if self[j] < self[i]])
+		return downset[::-1]
 
-	def rank_encoding(self):
-		return [self.rank_val(i) for i in range(len(self))]
+	def downset_profile(self):
+		"""Return the downset profile of self.
 
-	def num_rtlmax_ltrmin_layers(self):
-		return len(self.rtlmax_ltrmin_decomposition())
-
-	def rtlmax_ltrmin_decomposition(self):
-		P = Permutation(self)
-		num_layers = 0
-		layers = []
-		while len(P) > 0:
-			num_layers += 1
-			positions = sorted(list(set(P.rtlmax()+P.ltrmin())))
-			layers.append(positions)
-			P = Permutation([P[i] for i in range(len(P)) if i not in positions])
-		return layers
-
-	def num_inc_bonds(self):
-		return len([i for i in range(len(self)-1) if self[i+1] == self[i]+1])
-
-	def num_dec_bonds(self):
-		return len([i for i in range(len(self)-1) if self[i+1] == self[i]-1])
-
-	def num_bonds(self):
-		return len([i for i in range(len(self)-1) if self[i+1] == self[i]+1 or self[i+1] == self[i]-1])
-
-	def contract_inc_bonds(self):
-		P = Permutation(self)
-		while P.num_inc_bonds() > 0:
-			for i in range(0,len(P)-1):
-				if P[i+1] == P[i]+1:
-					P = Permutation(P[:i]+P[i+1:])
-					break
-		return P
-
-	def contract_dec_bonds(self):
-		P = Permutation(self)
-		while P.num_dec_bonds() > 0:
-			for i in range(0,len(P)-1):
-				if P[i+1] == P[i]-1:
-					P = Permutation(P[:i]+P[i+1:])
-					break
-		return P
-
-	def contract_bonds(self):
-		P = Permutation(self)
-		while P.num_bonds() > 0:
-			for i in range(0,len(P)-1):
-				if P[i+1] == P[i]+1 or P[i+1] == P[i]-1:
-					P = Permutation(P[:i]+P[i+1:])
-					break
-		return P
-
-	def all_syms(self):
-		"""Return the set (not PermSet) of all symmetries of `self`.
-
-		ME: Done!
+		Notes
+		    The downset profile is the list of the number of permutations of each
+		    size contained in self.
 		"""
+		new_perms = {self : 0}
+		# downset = [set([pi])]
+		profile = [len(new_perms)]
+
+		for new_length in range(len(self)-1, -1, -1):
+
+			old_perms = new_perms
+			new_perms = dict()
+
+			for sigma, start in old_perms.items():
+				for i in range(start, new_length+1):
+					tau = sigma.delete(indices=i)
+					if tau in new_perms:
+						new_perms[tau] = min(new_perms[tau], i)
+					else:
+						new_perms[tau] = i
+
+			# downset.append(new_perms)
+			profile.append(len(new_perms))
+
+		return profile[::-1]
+
+	def symmetries(self):
+		"""Return the set of all symmetries of `self`."""
 		S = set([self])
 		S.update([P.reverse() for P in S])
 		S.update([P.complement() for P in S])
@@ -1465,60 +1348,19 @@ class Permutation(tuple,
 		return S
 
 	def is_representative(self):
-		"""Check if self is the (lexicographically) least element of its symmetry class.
+		"""Check if `self` is the (lexicographically) least element of its symmetry class."""
+		return self == sorted(self.symmetries())[0]
 
-		ME: Done!
-		"""
-		return self == sorted(self.all_syms())[0]
-
-	def greedy_sum(p):
-		parts = []
-		sofar = 0
-		while sofar < len(p):
-			if len(p)-sofar == 1:
-				parts.append(Permutation(1))
-				return parts
-			i = 1
-			while sofar+i <= len(p) and list(p[sofar:sofar+i]) == range(sofar,sofar+i):
-				i += 1
-			i -= 1
-			if i > 0:
-				parts.append(Permutation(range(i)))
-			sofar += i
-			i = 2
-			while sofar+i <= len(p) and not (max(p[sofar:sofar+i]) - min(p[sofar:sofar+i])+1 == i and min(p[sofar:sofar+i]) == sofar):
-				i += 1
-			if sofar+i <= len(p):
-				parts.append(Permutation(p[sofar:sofar+i]))
-			sofar += i
-		return parts
-
-	@classmethod
-	def one_cycles(cls, n):
-		"""Generate those permutations of length n which consist of one cycle.
-		"""
-		for pi in itertools.permutations(range(n-1)):
-			# print(f"pi={pi}")
-			cycle = [n-1] + list(pi)
-			tau = [None for _ in range(n)]
-			for idx, val in enumerate(cycle[:-1]):
-				# print(val, tau)
-				tau[val] = cycle[idx+1]
-			tau[cycle[-1]] = cycle[0]
-			yield (Permutation(tau), cycle)
-
-	def copies_of(self, other):
-		"""Return the list of (values corresponding to) copies of `other` in `self`.
-		"""
+	def copies(self, other):
+		"""Return the list of (values corresponding to) copies of `other` in `self`."""
 		copies = []
 		for subseq in itertools.combinations(self,len(other)):
 			if Permutation(subseq) == other:
 				copies.append(subseq)
 		return copies
 
-	def immediate_copies_of(self, other):
-		"""Return the list of (indices corresponding to) immediate copies of `other` in `self`.
-		"""
+	def contiguous_copies(self, other):
+		"""Return the list of (indices corresponding to) immediate copies of `other` in `self`."""
 		immediate_copies = []
 		m = len(other)
 		for initial_idx in range(len(self)-m):
@@ -1527,40 +1369,35 @@ class Permutation(tuple,
 		return immediate_copies
 
 	def density_of(self, pi):
-		"""Return the density of copies of pi in self.
+		"""Return the density of copies of `pi` in `self`.
 		"""
-		copies = self.copies_of(pi)
-		num_copies = len(copies)
-
-		return float(num_copies)/comb(len(self),len(pi))
+		num_copies = self.num_copies(pi)
+		return num_copies/binom(len(self),len(pi))
 
 	def optimizers(self, n):
-		# print(self)
+		"""Return the list of permutations of length `n` that contain the most possible copies of `self`."""
 		max_copies = 0
 		best_perms = []
-		for tau in Permutation.genall(n):
-			# print("tau = {}".format(tau))
-			num_copies = len(tau.copies_of(self))
-			# print("num_copies = {}".format(num_copies))
+		for tau in Permutation.gen_all(n):
+			num_copies = len(tau.copies(self))
 			if num_copies > max_copies:
 				max_copies = num_copies
 				best_perms = [tau]
-				# print("\tnum_copies = {}".format(num_copies))
 			elif num_copies == max_copies:
 				best_perms.append(tau)
-				# print("\tnum_copies = {}".format(num_copies))
 
 		return best_perms
 
 
 if __name__ == '__main__':
 	pass
+	
 	# B = [Permutation([1]) - Permutation(b) for b in [312,231,123]]
 	# for b in B:
 	# 	print(b)
 
 	# n = 5
-	# for pi in Permutation.genall(n):
+	# for pi in Permutation.gen_all(n):
 	# 	if all(pi.avoids(b) for b in B):
 	# 		if not pi.sum_decomposable():
 	# 			print(pi.pretty_out())
