@@ -1,13 +1,18 @@
 from math import factorial
-import types
+import logging
 import sys
+import types
+
 
 from .permutation import Permutation
 from .permset import PermSet
 from .permclass import PermClass
 
 class AvClass(PermClass):
-	"""Object representing an avoidance class.
+	"""An object representing an avoidance class. 
+	
+	Notes:
+		Does not contain the empty permutation.
 
 	Examples:
 		>>> B = [123]
@@ -24,25 +29,44 @@ class AvClass(PermClass):
 	def __init__(self, basis, length=8, verbose=0):
 
 		list.__init__(self, [PermSet()])
-		self.basis = [Permutation(b) for b in basis]
+		if isinstance(basis, Permutation):
+			self.basis = [basis]
+		else:
+			self.basis = [Permutation(b) for b in basis]
+		
+		self.test = lambda p: all(b not in p for b in basis)
 
-		P = Permutation([0],clean=True)
-		if length >= 1 and P not in self.basis:
-			self.append(PermSet([P]))
-			self.length = 1
-			self.extend_to_length(length,verbose)
+		p = Permutation([0], clean=True)
+		if length >= 1:
+			if p not in self.basis:
+				self.append(PermSet(p))
+				self.length = 1
+				self.extend_to_length(length)
+			else:
+				for _ in range(length):
+					self.append(PermSet())
 
-	def extend_by_one(self, verbose=0):
+	def extend_by_one(self, trust=True):
+		"""Extend `self` by right-extending its ultimate PermSet.
+		
+		Args:
+			trust (bool): Whether of not we can trust the insertion values of 
+				the ultimate PermSet. In this context, we generally can.
+		"""
+		logging.debug(f"Calling extend_by_one({self}, trust={trust})")
 		self.length += 1
-		self.append(self[-1].upset(basis=self.basis, verbose=verbose))
-
-	def extend_to_length(self, length, verbose=0):
+		self.append(self[-1].right_extensions(basis=self.basis, trust=trust))
+	
+	def extend_to_length(self, length, trust=True):
 		if length <= self.length:
 			return
 
-		old_length = self.length
-		for n in range(old_length+1, length+1):
-			self.extend_by_one(verbose=verbose)
+		for n in range(self.length+1, length+1):
+			self.extend_by_one(trust=trust)
+
+	def extend_by_length(self, length, trust=True):
+		for n in range(length):
+			self.extend_by_one(trust=trust)
 
 	def right_juxtaposition(self, C, generate_perms=True):
 		A = PermSet()
@@ -65,18 +89,16 @@ class AvClass(PermClass):
 		horizontal_juxtaposition = self.right_juxtaposition(inverse_class, generate_perms=False)
 		return AvClass([B.inverse() for B in horizontal_juxtaposition.basis], length=(8 if generate_perms else 0))
 
-	def contains(self, C):
-		"""Check if `self` contains `C` as a permutation class using their bases.
-
-		ME: Done!
+	def contains(self, other):
+		"""Check if `self` contains `other` as a permutation class using their bases.
 		"""
-		for P in self.basis:
-			for Q in C.basis:
-				if P.involved_in(Q):
+		for p in self.basis:
+			for q in other.basis:
+				if p in q:
 					break
 			else:
-				# If we're here, then `P` is not involved in any of the basis elements of `C`, so
-				# the permutation `P` lies in `C` but not `self`.
+				# If we're here, then `p` is not involved in any of the basis elements of `q`, so
+				# the permutation `p` lies in `other` but not `self`.
 				return False
 		return True
 
@@ -84,7 +106,7 @@ if __name__ == "__main__":
 	print()
 
 	B = [123]
-	A = AvClass(B, 10)
+	A = AvClass(B, 12)
 	for idx, S in enumerate(A):
 		print(S)
 

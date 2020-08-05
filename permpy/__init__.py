@@ -8,8 +8,7 @@ from .pegpermset import PegPermSet
 from .geometricgridclass import GeometricGridClass
 
 from .InsertionEncoding import *
-
-import permpy.permpy.RestrictedContainer
+from .RestrictedContainer import *
 
 try:
     import matplotlib as mpl

@@ -40,79 +40,37 @@ class PermutationStatsMixin:
 
 	def major_index(self):
 		"""Return the major index of `self`.
-
-		ME: Done!
 		"""
 		return sum(self.descents())
 
 	def len_max_run(self):
-		""" Returns the length of the longest sequence of montone consecutive entries.
-		
-		ME: Done!
-		"""
+		"""Return the length of the longest monotone contiguous subsequence of entries."""
 		return max(self.max_ascending_run()[1], self.max_descending_run()[1])
 
-	# def christiecycles(self):
-	#     # builds a permutation induced by the black and gray edges separately, and
-	#     # counts the number of cycles in their product. used for transpositions
-	#     p = list(self)
-	#     n = self.__len__()
-	#     q = [0] + [p[i] + 1 for i in range(n)]
-	#     grayperm = range(1,n+1) + [0]
-	#     blackperm = [0 for i in range(n+1)]
-	#     for i in range(n+1):
-	#         ind = q.index(i)
-	#         blackperm[i] = q[ind-1]
-	#     newperm = []
-	#     for i in range(n+1):
-	#         k = blackperm[i]
-	#         j = grayperm[k]
-	#         newperm.append(j)
-	#     return Permutation(newperm).numcycles()
-
-	# def othercycles(self):
-	#     # builds a permutation induced by the black and gray edges separately, and
-	#     # counts the number of cycles in their product
-	#     p = list(self)
-	#     n = self.__len__()
-	#     q = [0] + [p[i] + 1 for i in range(n)]
-	#     grayperm = [n] + range(n)
-	#     blackperm = [0 for i in range(n+1)]
-	#     for i in range(n+1):
-	#         ind = q.index(i)
-	#         blackperm[i] = q[ind-1]
-	#     newperm = []
-	#     for i in range(n+1):
-	#         k = blackperm[i]
-	#         j = grayperm[k]
-	#         newperm.append(j)
-	#     return Permutation(newperm).numcycles()
-
-	# def sumcycles(self):
-	# 	return self.othercycles() + self.christiecycles()
-
-	# def maxcycles(self):
-	# 	return max(self.othercycles() - 1,self.christiecycles())
-
 	def is_involution(self):
-		"""Determine if the permutation is an involution, i.e., is equal to it's
-		own inverse. 
-
-		ME: Done!
-		"""
+		"""Determine if the permutation is an involution, i.e., is equal to it's own inverse. """
 		for idx, val in enumerate(self):
 			if idx != self[val]: 
+				return False
+		return True
+	
+	def is_increasing(self):
+		return self.is_identity()
+	
+	def is_decreasing(self):
+		for idx, val in enumerate(self[::-1]):
+			if idx != val:
 				return False
 		return True
 
 	def is_identity(self):
 		"""Determine if the permutation is the identity.
+		
+		Examples:
+			>>> p = Permutation.random(10)
+			>>> (p * p.inverse()).is_identity()
+			True
 
-		>>> p = Permutation.random(10)
-		>>> (p * p.inverse()).is_identity()
-		True
-
-		ME: Done!
 		"""
 		for idx, val in enumerate(self):
 			if idx != val:
@@ -122,7 +80,7 @@ class PermutationStatsMixin:
 	def is_simple(self):
 		"""Determine if `self` is simple.
 
-		ME: TODO!
+		Todo: Implement this better, if possible.
 		"""
 		(i,j) = self.simple_location()
 		return i == 0
@@ -130,19 +88,15 @@ class PermutationStatsMixin:
 	def is_strongly_simple(self):
 		return self.is_simple() and all([p.is_simple() for p in self.children()])
 
-	def num_copies_of(self, other):
+	def num_copies(self, other):
 		"""Return the number of copies of `other` in `self`.
-
-		ME: Done!
 		"""
-		return len(self.copies_of(other))
+		return len(self.copies(other))
 
-	def num_immediate_copies_of(self, other):
-		"""Return the number of copies of `other` in `self`.
-
-		ME: Done!
+	def num_contiguous_copies_of(self, other):
+		"""Return the number of contiguous copies of `other` in `self`.
 		"""
-		return len(self.immediate_copies_of(other))
+		return len(self.contiguous_copies(other))
 
 
 
