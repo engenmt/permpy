@@ -1,4 +1,4 @@
-from permpy.permutation import *
+from ..permutation import *
 
 
 class Configuration(tuple):

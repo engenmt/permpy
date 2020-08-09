@@ -1,0 +1,22 @@
+- Removing `Permutation.bend_list` since it never seeemed to work anyways.
+- Changed `Permutation.insertion_locations` to `Permutation.insertion_values`.
+- Removing `Permutation.num_consecutive_3214`.
+- Removing `mperm.py`, including the class `_GeneralPermutation` and `MPerm`.
+- Generally trying to keep Google-style Python docstrings.
+- Things kept only for reverse compatability have been moved to 
+  PermutationDeprecatedMixin and decorated with a warning that they're 
+  deprecated. I think these should be removed.
+- I'm tempted by code formatters (e.g. black, flake8), but I'd like to learn 
+  more about them before committing to one.
+- Should we always be able to extend a `PermutationClass`? (Or 
+  "should `PermutationClass` have an `extend_by_one` method?")
+	- If a PermutationClass is defined as some given list of `PermSet`s, say 
+	  produced by some geometric construction or something, we can't extend it. 
+	- I'm inclined to have `PermutationClass` be a method-light class, perhaps 
+	  only with `is_downset` and `guess_basis`, and have subclasses that provide
+	  ways to extend:
+		- GeometricGridClass can add points in its cells
+		- Classes defined by some hereditary property can right-extend existing 
+		  permutations.
+		- AvClass can right-extend existing permutations and use its `lr` 
+		  feature.

@@ -1,114 +1,113 @@
 from math import factorial
+import logging
+import sys
 import types
 
-import permpy.permset
-import permpy.permclass
-from permpy.permutation import Permutation
-from permpy.permset import PermSet
 
+from .permutation import Permutation
+from .permset import PermSet
+from .permclass import PermClass
 
-class AvClass(permpy.permclass.PermClass):
-    """Object representing an avoidance class
-    >>> p = Permutation(123)
-    >>> av = AvClass(p)
-    """
+class AvClass(PermClass):
+	"""An object representing an avoidance class. 
+	
+	Notes:
+		Does not contain the empty permutation.
 
+	Examples:
+		>>> B = [123]
+		>>> A = AvClass(B, length=4)
+		>>> for S in A:
+		...    print(S)
+		... 
+		Set of 0 permutations
+		Set of 1 permutations
+		Set of 2 permutations
+		Set of 5 permutations
+		Set of 14 permutations
+	"""
+	def __init__(self, basis, length=8, verbose=0):
 
-    def __init__(self, basis, length=8, verbose=0):
-        list.__init__(self, [PermSet() for i in range(0, length+1)])
-        self.length = length
+		list.__init__(self, [PermSet()])
+		if isinstance(basis, Permutation):
+			self.basis = [basis]
+		else:
+			self.basis = [Permutation(b) for b in basis]
+		
+		self.test = lambda p: all(b not in p for b in basis)
 
-        temp_basis = []
-        for P in basis:
-            temp_basis.append(Permutation(P))
-        basis = temp_basis
-        self.basis = basis
+		p = Permutation([0], clean=True)
+		if length >= 1:
+			if p not in self.basis:
+				self.append(PermSet(p))
+				self.length = 1
+				self.extend_to_length(length)
+			else:
+				for _ in range(length):
+					self.append(PermSet())
 
-        if length >= 1:
-                self[1].add(Permutation([1]));
-        for n in range(2,length+1):
-            k = 0
-            outof = len(self[n-1])
-            for P in self[n-1]:
-                k += 1
-                if verbose > 0 and k % verbose == 0:
-                    # print '\t\t\t\tRight Extensions:',k,'/',outof,'\t( length',n,')'
-                    print('\t\t\t\tRight Extenstions: {}/{}\t( length {}'.format(
-                                k, outof, n))
-                insertion_locations = P.insertion_locations
-                add_this_time = []
-                for Q in P.right_extensions():
-                    is_good = True
-                    for B in basis:
-                        if B.involved_in(Q,last_require=2):
-                            is_good = False
-                            insertion_locations[Q[-1]] = 0
-                            # break
-                    if is_good:
+	def extend_by_one(self, trust=True):
+		"""Extend `self` by right-extending its ultimate PermSet.
+		
+		Args:
+			trust (bool): Whether of not we can trust the insertion values of 
+				the ultimate PermSet. In this context, we generally can.
+		"""
+		logging.debug(f"Calling extend_by_one({self}, trust={trust})")
+		self.length += 1
+		self.append(self[-1].right_extensions(basis=self.basis, trust=trust))
+	
+	def extend_to_length(self, length, trust=True):
+		if length <= self.length:
+			return
 
-                        add_this_time.append(Q)
-                for Q in add_this_time:
-                    # print Q,'is good'
-                    # print '\tchanging IL from ',Q.insertion_locations,'to',(insertion_locations[:Q[-1]+1]+    insertion_locations[Q[-1]:])
-                    Q.insertion_locations = insertion_locations[:Q[-1]+1] + insertion_locations[Q[-1]:]
-                    self[n].add(Q)
+		for n in range(self.length+1, length+1):
+			self.extend_by_one(trust=trust)
 
-    def extend_to_length(self, l):
-        for i in range(self.length+1, l+1):
-            self.append(permset.PermSet())
-        if (l <= self.length):
-            return
-        old = self.length
-        self.length = l
-        for n in range(old+1,l+1):
-            for P in self[n-1]:
-                insertion_locations = P.insertion_locations
-                add_this_time = []
-                for Q in P.right_extensions():
-                    is_good = True
-                    for B in self.basis:
-                        if B.involved_in(Q,last_require=2):
-                            is_good = False
-                            insertion_locations[Q[-1]] = 0
-                            # break
-                    if is_good:
+	def extend_by_length(self, length, trust=True):
+		for n in range(length):
+			self.extend_by_one(trust=trust)
 
-                        add_this_time.append(Q)
-                for Q in add_this_time:
-                    # print Q,'is good'
-                    # print '\tchanging IL from ',Q.insertion_locations,'to',(insertion_locations[:Q[-1]+1]+    insertion_locations[Q[-1]:])
-                    Q.insertion_locations = insertion_locations[:Q[-1]+1] + insertion_locations[Q[-1]:]
-                    self[n].add(Q)
+	def right_juxtaposition(self, C, generate_perms=True):
+		A = PermSet()
+		max_length = max([len(P) for P in self.basis]) + max([len(P) for P in C.basis])
+		for n in range(2, max_length+1):
+			for i in range(0, factorial(n)):
+				P = Permutation(i,n)
+				for Q in self.basis:
+					for R in C.basis:
+						if len(Q) + len(R) == n:
+							if (Q == Permutation(P[0:len(Q)]) and R == Permutation(P[len(Q):n])):
+								A.add(P)
+						elif len(Q) + len(R) - 1 == n:
+							if (Q == Permutation(P[0:len(Q)]) and Permutation(R) == Permutation(P[len(Q)-1:n])):
+								A.add(P)
+		return AvClass(list(A.minimal_elements()), length=(8 if generate_perms else 0))
 
-    def right_juxtaposition(self, C, generate_perms=True):
-        A = permset.PermSet()
-        max_length = max([len(P) for P in self.basis]) + max([len(P) for P in C.basis])
-        for n in range(2, max_length+1):
-            for i in range(0, factorial(n)):
-                P = Permutation(i,n)
-                for Q in self.basis:
-                    for R in C.basis:
-                        if len(Q) + len(R) == n:
-                            if (Q == Permutation(P[0:len(Q)]) and R == Permutation(P[len(Q):n])):
-                                A.add(P)
-                        elif len(Q) + len(R) - 1 == n:
-                            if (Q == Permutation(P[0:len(Q)]) and Permutation(R) == Permutation(P[len(Q)-1:n])):
-                                A.add(P)
-        return AvClass(list(A.minimal_elements()), length=(8 if generate_perms else 0))
+	def above_juxtaposition(self, C, generate_perms=True):
+		inverse_class = AvClass([P.inverse() for P in C.basis], 0)
+		horizontal_juxtaposition = self.right_juxtaposition(inverse_class, generate_perms=False)
+		return AvClass([B.inverse() for B in horizontal_juxtaposition.basis], length=(8 if generate_perms else 0))
 
-    def above_juxtaposition(self, C, generate_perms=True):
-        inverse_class = AvClass([P.inverse() for P in C.basis], 0)
-        horizontal_juxtaposition = self.right_juxtaposition(inverse_class, generate_perms=False)
-        return AvClass([B.inverse() for B in horizontal_juxtaposition.basis], length=(8 if generate_perms else 0))
+	def contains(self, other):
+		"""Check if `self` contains `other` as a permutation class using their bases.
+		"""
+		for p in self.basis:
+			for q in other.basis:
+				if p in q:
+					break
+			else:
+				# If we're here, then `p` is not involved in any of the basis elements of `q`, so
+				# the permutation `p` lies in `other` but not `self`.
+				return False
+		return True
 
-    def contains(self, C):
-        for P in self.basis:
-            good = False
-            for Q in C.basis:
-                if P.involved_in(Q):
-                    good = True
-                    break
-            if not good:
-                return False
-        return True
+if __name__ == "__main__":
+	print()
+
+	B = [123]
+	A = AvClass(B, 12)
+	for idx, S in enumerate(A):
+		print(S)
+
 

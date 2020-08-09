@@ -5,43 +5,8 @@ from permpy import *
 from math import factorial
 import itertools
 from collections import Counter
+
 from permpy.RestrictedContainer import *
-
-
-def greedy_sum(p):
-  parts = []
-  sofar = 0
-  while sofar < len(p):
-    if len(p)-sofar == 1:
-      parts.append(Perm(1))
-      return parts
-    i = 1
-    while sofar+i <= len(p) and list(p[sofar:sofar+i]) == range(sofar,sofar+i):
-      i += 1
-    i -= 1
-    if i > 0:
-      parts.append(Perm(range(i)))
-    sofar += i
-    i = 2
-    while sofar+i <= len(p) and not (max(p[sofar:sofar+i]) - min(p[sofar:sofar+i])+1 == i and min(p[sofar:sofar+i]) == sofar):
-      i += 1
-    if sofar+i <= len(p):
-      parts.append(Perm(p[sofar:sofar+i]))
-    sofar += i
-  return parts
-
-def chom_sum(p):
-  L = []
-  p = greedy_sum(p)
-  for i in p:
-    if i.inversions() == 0:
-      L.extend([Perm(1)]*len(i))
-    else:
-      L.append(i)
-  return L
-
-def chom_skew(p):
-  return [r.reverse() for r in chom_sum(p.reverse())]
 
 def expected_basis(B):
   return PermSet([expected_basis_element(P) for P in B]).minimal_elements()
@@ -74,20 +39,20 @@ def check_combos(max_length, size_of_combos=0, verbose=False):
     expected = expected_basis(basis)
     B = make_restricted_container_class(basis).guess_basis()
     if B == expected:
-      print(str(basis) + '  -->  ' + str(B) + '  :  ok')
+      print(f"{basis}  -->  {B}  :  ok")
     else:
       bad_ones += 1
-      print(str(basis) + '  -->  ' + str(B) + '  : WHOA!')
+      print(f"{basis}  -->  {B}  : WHOA!")
     if verbose and so_far % 10 == 0:
-      print('----------------------------------------------------')
-      print('----------------------------------------------------')
-      print('       === SO FAR: ' + str(bad_ones) + ' BAD BASES OUT OF ' + str(so_far) + ' ===')
-      print('----------------------------------------------------')
-  print('----------------------------------------------------')
-  print('----------------------------------------------------')
-  print('----------------------------------------------------')
-  print('=== THERE WERE ' + str(bad_ones) + ' BAD BASES OUT OF ' + str(so_far) + ' ===')
-  print('----------------------------------------------------')
+      print(f'----------------------------------------------------')
+      print(f'----------------------------------------------------')
+      print(f' === SO FAR: {bad_ones} BAD BASES OUT OF {so_far} === ')
+      print(f'----------------------------------------------------')
+  print(f'----------------------------------------------------')
+  print(f'----------------------------------------------------')
+  print(f'----------------------------------------------------')
+  print(f'=== THERE WERE {bad_ones} BAD BASES OUT OF {so_far} ===')
+  print(f'----------------------------------------------------')
 
 
 def check_singleton_restricted_containers():
@@ -99,9 +64,9 @@ def check_singleton_restricted_containers():
       expected = expected_basis(P)
       B = make_restricted_container_class([P]).guess_basis()
       if B == expected:
-        print(str(P) + '  -->  ' + str(B) + '  :  ok')
+        print(f"{P}  -->  {B}  :  ok")
       else:
-        print(str(P) + '  -->  ' + str(B) + '  : WHOA!')
+        print(f"{P}  -->  {B}  : WHOA!")
   print('----------------------------------------------------')
 
 def make_restricted_container_class(basis,length=7):
@@ -191,7 +156,7 @@ def check_pattern(word_pairs, pattern):
     if y.find(pattern) != -1:
       n[1] += 1
   if n[0] == 0 or n[1] == 0:
-    print('\n\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n\t\t'+pattern+': ('+str(n[0])+', '+str(n[1])+')\n\n')
+    print(f"\n\n{'!'*40}\n\t\t{pattern}: ({str(n[0])}, {str(n[1])})\n\n")
   return n
 
 def check_pattern_list(word_pairs, patterns):
@@ -288,7 +253,8 @@ def rsk_shape(perm):
 	return([len(P[i]) for i in range(0,len(P))])
 	
 def shape_contains(A,B):
-	return(len(A) >= len(B) and all(B[i] <= A[i] for i in range(0,len(B))))
+	return (len(A) >= len(B) 
+		and all(b <= a for a, b in zip(A,B)))
 
 def check_stat(f, L1, L2, l=8):
   C = [sorted([f(P) for P in T[l]]) for T in L1]
@@ -402,30 +368,34 @@ def up_jump_lengths(P):
 
 
 def check_stats(L1, L2, l=8, add_syms=False, tups=1):
+  """Not sure what this does.
+
+  ME: I've updated some of this, but I don't know what many of these even do.
+  """
   if add_syms:
     L1 = [item for sublist in [list(PermSet(l1).all_syms()) for l1 in L1] for item in sublist]
     L2 = [item for sublist in [list(PermSet(l2).all_syms()) for l2 in L2] for item in sublist]
   stats = [
-    ('number of descents', Perm.descents),
-    ('position of descents', lambda P : [i for i in range(len(P)-1) if P[i] > P[i+1]]),
-    ('number of ascents', Perm.ascents),
-    ('position of ascents', lambda P : [i for i in range(len(P)-1) if P[i] < P[i+1]]),
-    ('number of ltrmin', lambda P : len(P.ltrmin())),
-    ('positions of ltrmin', Perm.ltrmin),
-    ('values of ltrmin', lambda P : [P[i] for i in P.ltrmin()]),
-    ('number of ltrmax', lambda P : len(P.ltrmax())),
-    ('positions of ltrmax', Perm.ltrmax),
-    ('values of ltrmax', lambda P : [P[i] for i in P.ltrmax()]),
-    ('number of rtlmin', lambda P : len(P.rtlmin())),
-    ('positions of rtlmin', Perm.rtlmin),
-    ('values of rtlmin', lambda P : [P[i] for i in P.rtlmin()]),
-    ('number of rtlmax', lambda P : len(P.rtlmax())),
-    ('positions of rtlmax', Perm.rtlmax),
-    ('values of rtlmax', lambda P : [P[i] for i in P.rtlmax()]),
-    ('number of sum decomposables', Perm.sum_decomposable),
-    ('number of sum components', lambda P: len(chom_sum(P))),
-    ('number of skew decomposables', Perm.skew_decomposable),
-    ('number of skew components', lambda P: len(chom_skew(P))),
+    ('number of descents', Perm.num_descents),
+    ('position of descents', Perm.descents),
+    ('number of ascents', Perm.num_ascents),
+    ('position of ascents', Perm.ascents),
+    ('number of ltrmin', Perm.num_ltr_min),
+    ('positions of ltrmin', Perm.ltr_min),
+    ('values of ltrmin', lambda P : [P[i] for i in P.ltr_min()]),
+    ('number of ltrmax', Perm.num_ltr_max),
+    ('positions of ltrmax', Perm.ltr_max),
+    ('values of ltrmax', lambda P : [P[i] for i in P.ltr_max()]),
+    ('number of rtlmin', Perm.num_rtl_min),
+    ('positions of rtlmin', Perm.rtl_min),
+    ('values of rtlmin', lambda P : [P[i] for i in P.rtl_min()]),
+    ('number of rtlmax', Perm.num_rtl_max),
+    ('positions of rtlmax', Perm.rtl_max),
+    ('values of rtlmax', lambda P : [P[i] for i in P.rtl_max()]),
+    ('is sum decomposable', Perm.sum_decomposable),
+    ('number of sum components', lambda P: len(P.sum_decomposition())),
+    ('is skew decomposable', Perm.skew_decomposable),
+    ('number of skew components', lambda P: len(P.skew_decomposition())),
     ('number of inflations of simples', lambda P : P.skew_decomposable() or P.sum_decomposable()),
     ('length of simple quotient', lambda P : len(P.decomposition()[0])),
     ('number of simple permutations', Perm.is_simple),

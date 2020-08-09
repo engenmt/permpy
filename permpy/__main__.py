@@ -1,14 +1,13 @@
 # import permpy
-from .permset import PermSet
-from .permutation import Permutation
-from .pegpermutation import PegPermutation
-from .permclass import PermClass
-from .avclass import AvClass
-from .pegpermset import PegPermSet
-from .geometricgridclass import GeometricGridClass
-from .InsertionEncoding import *
+from permpy.permset import PermSet
+from permpy.permutation import Permutation
+from permpy.pegpermutation import PegPermutation
+from permpy.permclass import PermClass
+from permpy.avclass import AvClass
+from permpy.pegpermset import PegPermSet
+from permpy.geometricgridclass import GeometricGridClass
+from permpy.InsertionEncoding import *
 import permpy.RestrictedContainer
 
 import doctest
 doctest.testmod()
-

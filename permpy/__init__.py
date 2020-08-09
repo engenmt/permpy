@@ -1,12 +1,14 @@
-from .permset import PermSet
 from .permutation import Permutation
-from .pegpermutation import PegPermutation
+from .permset import PermSet
 from .permclass import PermClass
 from .avclass import AvClass
+
+from .pegpermutation import PegPermutation
 from .pegpermset import PegPermSet
 from .geometricgridclass import GeometricGridClass
+
 from .InsertionEncoding import *
-import permpy.RestrictedContainer
+from .RestrictedContainer import *
 
 try:
     import matplotlib as mpl
@@ -16,9 +18,8 @@ try:
     mpl.rc('figure', fc='white')
     mpl_imported = True
 except ImportError:
-    print('Install matplotlib for extra plotting functionality')
+    print('Install matplotlib for extra plotting functionality.')
     pass
-
 
 Perm = Permutation
 Av = AvClass

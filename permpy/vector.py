@@ -1,4 +1,3 @@
-
 class Vector(tuple):
   def __new__(cls, v):
     for i in range(0, len(v)):
