@@ -1,0 +1,7 @@
+__pycache__/
+InsertionEncoding/__pycache__/
+RestrictedContainer/__pycache__/
+*.pynb
+.DS_store
+.texpadtmp
+
