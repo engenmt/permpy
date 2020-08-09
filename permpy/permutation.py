@@ -134,6 +134,10 @@ class Permutation(tuple):
             return L
 
     @classmethod
+    def all_perms(cls, n):
+        return Perm.listall(n)
+
+    @classmethod
     def standardize(cls, L):
         """Standardizes a list `L` of unique elements by mapping them to the set
         {0,1, ..., len(L)} by an order-preserving bijection"""
