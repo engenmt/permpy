@@ -1,3 +1,5 @@
+## TODO: What is this file for?
+
 # import permpy
 from permpy.permset import PermSet
 from permpy.permutation import Permutation
@@ -10,4 +12,5 @@ from permpy.InsertionEncoding import *
 import permpy.RestrictedContainer
 
 import doctest
+
 doctest.testmod()

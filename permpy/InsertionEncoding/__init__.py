@@ -1,3 +1,3 @@
-
-from .configuration import Configuration
 from .insertionscheme import InsertionScheme
+
+__all__ = ["InsertionScheme"]

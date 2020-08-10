@@ -1,4 +1,6 @@
 __pycache__/
 *.pynb
 .DS_store
-
+*.egg-info/
+.mypy_cache
+.tox/
