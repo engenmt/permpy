@@ -1,6 +1,7 @@
 from .permutation import Permutation
 from .permset import PermSet
 from .permclass import PermClass
+from .propertyclass import PropertyClass
 from .avclass import AvClass
 
 from .pegpermutation import PegPermutation

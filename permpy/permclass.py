@@ -1,6 +1,8 @@
 import copy
 import logging
 import time
+
+from collections import UserList
 from math import factorial
 
 from .permutation import Permutation
@@ -11,29 +13,53 @@ from .utils import copy_func
 logging.basicConfig(level=logging.INFO)
 
 
-class PermClass(list, PermClassDeprecatedMixin):
+class PermClass(UserList, PermClassDeprecatedMixin):
 	"""A minimal Python class representing a Permutation class.
 	
 	Notes:
 		Relies on the Permutation class being closed downwards, but does not assert this.
 	"""
-
-	def __init__(cls, C):
-		super(PermClass, cls).__init__(C)
-		cls.length = len(C)-1
-
+	def __init__(self, C):
+		super().__init__(C)
+		self.max_len = len(C)-1
+	
 	def __contains__(self, p):
 		p_length = len(p)
-		if p_length > self.length:
+		if p_length > self.max_len:
 			return False
 		return p in self[p_length]
+	
+	@classmethod
+	def all(cls, max_length):
+		"""Return the PermClass that contains all permutations up to the given length.
+		
+		Examples:
+			>>> C = PermClass.all(6)
+			>>> print([len(S) for S in C])
+			[1, 1, 2, 6, 24, 120, 720]
+		"""
+		return PermClass([PermSet.all(length) for length in range(max_length+1)])
 
-	def filter_by(self, test):
-		"""Modify `self` by removing those permutations that fail the test."""
-		for i, S in range(len(self)):
-			for p in list(self[i]):
-				if not test(p):
-					self[i].remove(p)
+	def filter_by(self, property):
+		"""Modify `self` by removing those permutations that do not satisfy the `property``.
+		
+		Examples:
+			>>> C = PermClass.all(6)
+			>>> p = Permutation(21)
+			>>> C.filter_by(lambda q: p not in q)
+			>>> all(len(S) == 1 for S in C)
+			True
+		"""
+		for length in range(len(self)):
+			for p in list(self[length]):
+				if not property(p):
+					self[length].remove(p)
+
+	def filtered_by(self, property):
+		"""Return a copy of `self` that has been filtered using the `property`."""
+		C = copy.deepcopy(self)
+		C.filter_by(property)
+		return C
 
 	def guess_basis(self, max_length=6, search_mode=False):
 		"""Guess a basis for the class up to "max_length" by iteratively
@@ -42,16 +68,26 @@ class PermClass(list, PermClassDeprecatedMixin):
 
 		Search mode goes up to the max length in the class and prints out the 
 		number of basis elements of each length on the way.
+		
+		Examples:
+			>>> p = Permutation(12)
+			>>> C = PermClass.all(8)
+			>>> C.filter_by(lambda q: p not in q) # Class of decreasing permutations
+			>>> C.guess_basis() == PermSet(p)
+			True
+			>>> D = C.sum_closure() # Class of layered permutations
+			>>> D.guess_basis() == PermSet([Permutation(312), Permutation(231)])
+			True
 		"""
-		assert max_length < self.length, 'Class not big enough to check that far!'
+		assert max_length <= self.max_len, 'The class is not big enough to check that far!'
 
 		# Find the first length at which perms are missing.
-		for idx, S in enumerate(self):
-			if len(S) < factorial(idx):
-				start_length = idx
+		for length, S in enumerate(self):
+			if len(S) < factorial(length):
+				start_length = length
 				break
 		else:
-			# If we're here, then self is the class of all permutations.
+			# If we're here, then `self` is the class of all permutations.
 			return PermSet()
 
 		# Add missing perms of minimum length to basis.
@@ -59,7 +95,7 @@ class PermClass(list, PermClassDeprecatedMixin):
 		basis = missing
 
 		length = start_length
-		current = PermSet(Permutation.gen_all(length-1))
+		current = PermSet.all(length-1)
 		current = current.right_extensions(basis=basis)
 
 		# Go up in length, adding missing perms at each step.
@@ -83,7 +119,7 @@ class PermClass(list, PermClassDeprecatedMixin):
 		permset = PermSet(set.union(*self)) # Collect all perms in self into one PermSet
 		permset.heatmap(**kwargs)
 	
-	def skew_closure(self, max_len=8, has_all_syms=False):
+	def skew_closure(self, max_len=8):
 		"""
 		Notes:
 			This could be done constructively.
@@ -91,12 +127,13 @@ class PermClass(list, PermClassDeprecatedMixin):
 			>>> p = Permutation(21)
 			>>> C = PermClass.all(8)
 			>>> C.filter_by(lambda q: p not in q) # Class of increasing permutations
-			>>> D = C.skew_closure()
-			>>> len(D[8]) == 128
+			>>> D = C.skew_closure(max_len=7)
+			>>> len(D[7]) == 64
 			True
 		"""
+		assert max_len <= self.max_len, "Can't make a skew-closure of that size!"
 		L = []
-		for length in range(len(self)):
+		for length in range(max_len+1):
 			new_set = PermSet()
 			for p in Permutation.gen_all(length):
 				if all(q in self for q in set(p.skew_decomposition())):
@@ -105,7 +142,7 @@ class PermClass(list, PermClassDeprecatedMixin):
 					
 		return PermClass(L)
 
-	def sum_closure(self, max_len=8, has_all_syms=False):
+	def sum_closure(self, max_len=8):
 		"""
 		Notes:
 			This could be done constructively.
@@ -113,19 +150,20 @@ class PermClass(list, PermClassDeprecatedMixin):
 			>>> p = Permutation(12)
 			>>> C = PermClass.all(8)
 			>>> C.filter_by(lambda q: p not in q) # Class of decreasing permutations
-			>>> D = C.skew_closure()
-			>>> len(D[8]) == 128
+			>>> D = C.sum_closure(max_len=7)
+			>>> len(D[7]) == 64
 			True
 		"""
-		if self.test:
-			test = copy.deepcopy(self.test)
-			def is_sum(p):
-				return all(test(q) for q in p.sum_decomposition())
-		else:
-			C = copy.deepcopy(self)
-			def is_sum(p):
-				return all(q in C for q in p.sum_decomposition())
-		return PermClass.class_from_test(is_sum, max_len=max_len, has_all_syms=has_all_syms)
+		assert max_len <= self.max_len, "Can't make a sum-closure of that size!"
+		L = []
+		for length in range(max_len+1):
+			new_set = PermSet()
+			for p in Permutation.gen_all(length):
+				if all(q in self for q in set(p.sum_decomposition())):
+					new_set.add(p)
+			L.append(new_set)
+					
+		return PermClass(L)
 
 if __name__ == "__main__":
 	pass

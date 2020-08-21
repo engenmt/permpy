@@ -5,185 +5,109 @@ from math import factorial
 
 from .permutation import Permutation
 from .permset import PermSet
-from .deprecated.permclassdeprecated import PermClassDeprecatedMixin
+from .permclass import PermClass
 from .utils import copy_func
 
 logging.basicConfig(level=logging.INFO)
 
 
-class PermClass(list, 
-                PermClassDeprecatedMixin):
+class PropertyClass(PermClass):
 
-	@staticmethod
-	def class_from_test(test, max_len=8, has_all_syms=False):
+	def __init__(self, property, max_len=8):
 		"""Return the smallest PermClass of all permutations that satisfy the test.
 
 		Args:
-			test (func): function that accepts a permutation and returns a Boolean. Should be closed downward.
+			property (func): function that accepts a permutation and returns a 
+				Boolean. Should be a hereditary property.
 			max_len (int): maximum length to be included in class
-			has_all_syms (bool): whether the class is known to be closed under all symmetries.
 
 		Returns:
-			PermClass: class of permutations that satisfy the test.
+			PropertyClass: class of permutations that satisfy the property.
 		"""
 
 		C = [PermSet(Permutation())] # List consisting of just the PermSet containing the empty Permutation
-		for length in range(1,max_len+1):
-			if len(C[length-1]) == 0:
-				return PermClass(C)
-
-			new_set = PermSet()
-			to_check = PermSet(set.union(*[p.covered_by() for p in C[length-1]]))
-			to_check = PermSet(p for p in to_check if PermSet(p.covers()).issubset(C[length-1]))
-			
-			while to_check:
-				p = to_check.pop()
-
-				if test(p):
-					if has_all_syms:
-						syms = PermSet(p.symmetries())
-						new_set += syms
-						to_check -= syms
-					else:
-						new_set.add(p)
-				else:
-					if has_all_syms:
-						to_check -= PermSet(p.symmetries())
-
-			C.append(new_set)
-
-		return PermClass(C, test)
-
-	def __init__(cls, property):
 		
-		super(PropertyClass, cls).__init__(C)
-		cls.length = len(C)+1
-		cls.test = test
+		for _ in range(max_len):
+			C.append(C[-1].right_extensions(test=property, trust=True))
+		
+		super().__init__(C)
+		self.max_len = max_len
+		self.property = property
 
 	def __contains__(self, p):
-		if len(p) > len(self):
-			return self.test(p)
+		p_length = len(p)
+		if p_length > self.length:
+			return self.property(p)
+		return p in self[p_length]
 
-		return p in self[len(p)]
-
-	def filter_by(self, test):
-		"""Modify self by removing those permutations that fail the test.
-
-		Note:
-			Does not actually ensure the result is a class.
-		"""
-		for i in range(len(self)):
-			for p in list(self[i]):
-				if not test(p):
-					self[i].remove(p)
-
-	def guess_basis(self, max_length=6, search_mode=False):
-		"""Guess a basis for the class up to "max_length" by iteratively
-		generating the class with basis elements known so far (initially {})
-		and adding elements that should be avoided to the basis.
-
-		Search mode goes up to the max length in the class and prints out the 
-		number of basis elements of each length on the way.
-		"""
-		assert max_length < len(self), 'Class not big enough to check that far!'
-
-		# Find the first length at which perms are missing.
-		for idx, S in enumerate(self):
-			if len(S) < factorial(idx):
-				start_length = idx
-				break
-		else:
-			# If we're here, then self is the class of all permutations.
-			return PermSet()
-
-		# Add missing perms of minimum length to basis.
-		missing = PermSet.all(start_length) - self[start_length]
-		basis = missing
-
-		length = start_length
-		current = PermSet(Permutation.gen_all(length-1))
-		current = current.right_extensions(basis=basis)
-
-		# Go up in length, adding missing perms at each step.
-		while length < max_length:
-			length += 1
-			current = current.right_extensions(basis=basis)
-
-			for perm in list(current):
-				if perm not in self[length]:
-					basis.add(perm)
-					current.remove(perm)
-
-		return basis
+	def add_property(self, property):
+		"""Modify self by removing those permutations that fail the test."""
+		for length in range(len(self)):
+			for p in list(self[length]):
+				if not property(p):
+					self[length].remove(p)
+		self.property = lambda p: self.property(p) and property(p)
 
 	def union(self, other):
 		"""
-		Notes: 
-			The resulting class has a test built from those of `self` and `other`.
+		Examples:
+			>>> inc = Permutation(12)
+			>>> D = PropertyClass(lambda p: inc not in p)
+			>>> dec = Permutation(21)
+			>>> I = PropertyClass(lambda p: dec not in p)
+			>>> U = D.union(I)
+			>>> len(U[8])
+			2
+			>>> U.extend(1)
+			>>> len(U[9])
+			2
 		"""
-		self_test = copy_func(self.test)
-		other_test = copy_func(other.test)
-		return PermClass([S_1 + S_2 for S_1, S_2 in zip(self, other)], 
-			test=lambda p: self_test(p) or other_test(p))
-
+		property_self = copy_func(self.property)
+		property_other = copy_func(other.property)
+		
+		C = PermClass.union(self, other)
+		C.__class__ = PropertyClass
+		C.property = lambda p: property_self(p) or property_other(p)
+		
+		return C
+	
 	def extend(self, t):
 		for i in range(t):
-			self.append(self[-1].right_extensions(test=self.test))
+			self.append(self[-1].right_extensions(test=self.property))
 
 	def extended(self, t):
 		C = copy.deepcopy(self)
 		C.extend(t)
 		return C
-
-	def heatmap(self, **kwargs):
-		permset = PermSet(set.union(*self)) # Collect all perms in self into one PermSet
-		permset.heatmap(**kwargs)
 	
-	def skew_closure(self, max_len=8, has_all_syms=False):
+	def skew_closure(self, max_len=8):
 		"""
-		Notes:
-			This will raise an IndexError if the resulting class is extended.
-		Todos: 
-			Check that the `test` works properly, even if `self` is modified. 
 		Examples:
 			>>> p = Permutation(21)
-			>>> C = PermClass.class_from_test(lambda q: p not in q)
-			>>> D = C.skew_closure()
-			>>> len(D[8]) == 128
+			>>> C = PropertyClass(lambda q: p not in q) # Class of increasing permutations
+			>>> D = C.skew_closure(max_len=7) # Class of co-layered permutations
+			>>> len(D[7]) == 64
 			True
 		"""
-		if self.test:
-			test = copy_func(self.test)
-			def is_skew(p):
-				return all(test(q) for q in p.skew_decomposition())
-		else:
-			C = copy.deepcopy(self)
-			def is_skew(p):
-				return all(q in C for q in p.skew_decomposition())
-		return PermClass.class_from_test(is_skew, max_len=max_len, has_all_syms=has_all_syms)
+		property = copy_func(self.property)
+		def is_skew(p):
+			return all(property(q) for q in p.skew_decomposition())
+		return PropertyClass(is_skew, max_len=max_len)
 
-	def sum_closure(self, max_len=8, has_all_syms=False):
+
+	def sum_closure(self, max_len=8):
 		"""
-		Notes:
-			This will raise an IndexError if the resulting class is extended.
-		Todos: 
-			Check that the `test` works properly, even if `self` is modified. 
 		Examples:
 			>>> p = Permutation(12)
-			>>> C = PermClass.class_from_test(lambda q: p not in q)
-			>>> D = C.sum_closure()
-			>>> len(D[8]) == 128
+			>>> C = PropertyClass(lambda q: p not in q) # Class of decreasing permutations
+			>>> D = C.sum_closure(max_len=7) # Class of layered permutations
+			>>> len(D[7]) == 64
 			True
 		"""
-		if self.test:
-			test = copy.deepcopy(self.test)
-			def is_sum(p):
-				return all(test(q) for q in p.sum_decomposition())
-		else:
-			C = copy.deepcopy(self)
-			def is_sum(p):
-				return all(q in C for q in p.sum_decomposition())
-		return PermClass.class_from_test(is_sum, max_len=max_len, has_all_syms=has_all_syms)
+		property = copy_func(self.property)
+		def is_skew(p):
+			return all(property(q) for q in p.sum_decomposition())
+		return PropertyClass(is_skew, max_len=max_len)
 
 if __name__ == "__main__":
 	pass
