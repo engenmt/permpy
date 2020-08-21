@@ -39,6 +39,18 @@ class PermClass(UserList, PermClassDeprecatedMixin):
 			[1, 1, 2, 6, 24, 120, 720]
 		"""
 		return PermClass([PermSet.all(length) for length in range(max_length+1)])
+	
+	def maximally_extend(self, additional_length=1):
+		"""Extend `self` maximally.
+		
+		Notes: Includes only those permutations whose downsets lie entirely in `self`.
+		"""
+		for _ in range(additional_length):
+			self.append(PermSet(
+				p for p in Permutation.gen_all(self.max_len+1) if p.covers().issubset(self[-1])
+			))
+			self.max_len += 1
+		
 
 	def filter_by(self, property):
 		"""Modify `self` by removing those permutations that do not satisfy the `property``.
