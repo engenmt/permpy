@@ -31,7 +31,6 @@ class PropertyClass(PermClass):
 			C.append(C[-1].right_extensions(test=property, trust=True))
 		
 		super().__init__(C)
-		self.max_len = max_len
 		self.property = property
 
 	def __contains__(self, p):
@@ -73,7 +72,7 @@ class PropertyClass(PermClass):
 	
 	def extend(self, t):
 		for i in range(t):
-			self.append(self[-1].right_extensions(test=self.property))
+			self.data.append(self[-1].right_extensions(test=self.property))
 
 	def extended(self, t):
 		C = copy.deepcopy(self)

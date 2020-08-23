@@ -2,7 +2,6 @@ import copy
 import logging
 import time
 
-from collections import UserList
 from math import factorial
 
 from .permutation import Permutation
@@ -13,15 +12,24 @@ from .utils import copy_func
 logging.basicConfig(level=logging.INFO)
 
 
-class PermClass(UserList, PermClassDeprecatedMixin):
+class PermClass(PermClassDeprecatedMixin):
 	"""A minimal Python class representing a Permutation class.
 	
 	Notes:
 		Relies on the Permutation class being closed downwards, but does not assert this.
 	"""
 	def __init__(self, C):
-		super().__init__(C)
+		self.data = C
 		self.max_len = len(C)-1
+	
+	def __len__(self):
+		return len(self.data)
+	
+	def __getitem__(self, idx):
+		return self.data[idx]
+	
+	def __add__(self, other):
+		return self.union(other)
 	
 	def __contains__(self, p):
 		p_length = len(p)
@@ -44,9 +52,15 @@ class PermClass(UserList, PermClassDeprecatedMixin):
 		"""Extend `self` maximally.
 		
 		Notes: Includes only those permutations whose downsets lie entirely in `self`.
+		Examples:
+			>>> C = PermClass.all(4)
+			>>> C[4].remove(Permutation(1234))
+			>>> C.maximally_extend(1)
+			>>> len(C[5]) # All but the 17 permutations covering 1234
+			103
 		"""
 		for _ in range(additional_length):
-			self.append(PermSet(
+			self.data.append(PermSet(
 				p for p in Permutation.gen_all(self.max_len+1) if p.covers().issubset(self[-1])
 			))
 			self.max_len += 1
