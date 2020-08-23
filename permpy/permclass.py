@@ -12,6 +12,10 @@ from .utils import copy_func
 logging.basicConfig(level=logging.INFO)
 
 
+class ClassTooShortError(Exception):
+	pass
+
+
 class PermClass(PermClassDeprecatedMixin):
 	"""A minimal Python class representing a Permutation class.
 	
@@ -26,7 +30,10 @@ class PermClass(PermClassDeprecatedMixin):
 		return len(self.data)
 	
 	def __getitem__(self, idx):
-		return self.data[idx]
+		try:
+			return self.data[idx]
+		except IndexError:
+			raise ClassTooShortError
 	
 	def __add__(self, other):
 		return self.union(other)
