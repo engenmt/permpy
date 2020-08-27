@@ -1,4 +1,4 @@
-from __future__ import print_function
+import logging
 
 from collections import Counter, defaultdict
 from itertools import combinations_with_replacement as cwr
@@ -8,20 +8,16 @@ def pretty_out(pi, k, vert_line = True, by_lines=False, width = 2):
 	If `by_lines == True`, then will return the list of strings by line,
 	in case you want to append some stuff to each line.
 	"""
-	print(pi, k)
+	print(f"{pi}, {k}")
 	lines = []
 	n = len(pi)
 	
-	max_width = len(str(n+1)) # This is the width of each value.
-	if max_width > width:
-		width = max_width
+	width = max(len(str(n+1)), width) # This is the width of each value.
 
 	blank = " " * width
-	for val in range(n)[::-1]:
+	for val in range(n-1,-1,-1): # val from n-1 to 0
 		idx = pi.index(val)
-		line = (blank * (idx) \
-				+ str(val+1).rjust(width)
-				+ blank * (n-idx-1))
+		line = blank * idx + f"{val+1:>{width}}" + blank * (n-idx-1)
 		lines.append(line)
 
 	if vert_line:
@@ -39,33 +35,7 @@ def pretty_out(pi, k, vert_line = True, by_lines=False, width = 2):
 	else:
 		return "\n".join(lines)
 
-def gen_compositions(n, k=0):
-	"""Generate all compositions (as lists) of `n` into `k` parts.
-	If `k == 0`, then generate all compositions of `n`.
-	"""
-	assert n >= k, "Need weight to be more than length: {} > {}".format(n, k)
-
-	if k == 0:
-		for i in xrange(1,n+1):
-			for c in compositions(n,i):
-				yield c
-	else:
-		if k == 1:
-			yield [n]
-		elif n == k:
-			yield [1]*n
-		else:
-			for i in xrange(1,n-k+2):
-				for c in compositions(n-i,k-1):
-					yield c+[i]
-
-def gen_weak_compositions(n, k):
-	"""Generate all weak compositions (as lists) of `n` into `k` parts.
-	"""
-	for c in compositions(n+k,k):
-		yield [part-1 for part in c]
-
-def gen_interval_divisions(m, k, shift = 0, reverse=False):
+def gen_interval_divisions(m, k, shift = 0, increasing=True):
 	"""Generate all ways of splitting the interval `[1, m]` shifted up by `shift` into `k` pieces.
 
 	Example:
@@ -78,26 +48,46 @@ def gen_interval_divisions(m, k, shift = 0, reverse=False):
 		]
 
 	"""
-	if reverse:
-		direction = -1
-	else:
-		direction = +1
+	direction = +1 if increasing else -1
 
-	# print("calling gid: {}, {}, {}, {}".format(m, k, shift, reverse))
+	logging.debug(f"calling gid: {m}, {k}, {shift}, {increasing}")
 	L = range(shift, shift+m)[::direction]
-	# print(L)
+	logging.debug(L)
 	for c in cwr(range(m+1),k-1):
 		# For each choice of divisions...
-		
-		# print("c = {} ->".format(c), end = " ")
+	
 		c = (0,) + c + (m,)
-		# print("d = {} ->".format([c[i+1]-c[i] for i in range(k)]), end = " ")
 
 		yield [tuple(val for val in L[c[i]:c[i+1]]) for i in range(k)]
 
-def all_vertical_extensions(pi, m, k, verbose = False):
-	"""Given a permutation `pi`, generate all ways to add an increasing sequence 
+def all_vertical_extensions(pi, m, k, increasing=True):
+	"""Given a permutation `pi`, generate all ways to add a monotone sequence  
 	of length `m` above its right `k` points.
+	
+	Example:
+		Here is permutation p, drawn with k = 2.
+		+-------+-----+
+		|       | x   |
+		| x     |     |
+		|     x |     |
+		|       |   x |
+		|   x   |     |
+		+-------+-----+
+		all_vertical_extensions(p, 3, 2, True) would generate each way of 
+		inserting 3 points in increasing position that lie above every point in p 
+		and, together with the k = 2 rightmost points of p, occupy the 3+2 rightmost 
+		positions of the new permutation. Here is one example:
+		        +-----------+
+		        |         x |
+		        |     x     |
+		        | x         |
+		+-------+-----------+
+		|       |   x       |
+		| x     |           |
+		|     x |           |
+		|       |       x   |
+		|   x   |           |
+		+-------+-----------+
 	"""
 	n = len(pi)
 
@@ -109,24 +99,21 @@ def all_vertical_extensions(pi, m, k, verbose = False):
 		prefix = pi[:-k]
 		suffix = pi[-k:]
 
-	if verbose:
-		print("vertically extending (pi, m, k) = {}".format((pi,m,k)))
-
-		print("prefix = {}".format(prefix))
-		print("suffix = {}".format(suffix))
+	logging.debug("vertically extending (pi, m, k) = ({pi}, {m}, {k})")
+	logging.debug("prefix = {prefix}")
+	logging.debug("suffix = {suffix}")
 
 	for uppers in gen_interval_divisions(m,k+1,shift = n):
 		# assert len(uppers) == k+1
 		# assert len(sum(uppers,())) == m
 		new_suffix = sum([uppers[i] + (suffix[i],) for i in range(k)], ()) + uppers[-1]
 
-		if verbose:
-			print("uppers = {:20}, new_suffix = {:20}".format(uppers,new_suffix))
-			print("yielding {}".format(prefix + new_suffix))
+		logging.debug(f"uppers = {uppers}, new_suffix = {new_suffix}")
+		logging.debug(f"yielding {prefix + new_suffix}")
 
 		yield prefix + new_suffix
 
-def all_horizontal_extensions(pi, m, k, verbose=False):
+def all_horizontal_extensions(pi, m, k):
 	"""Given a permutation `pi`, generate all ways to add an decreasing sequence 
 	of length `m` to the right of its upper `k` points.
 	"""
@@ -141,25 +128,21 @@ def all_horizontal_extensions(pi, m, k, verbose=False):
 		prefix = tau[:-k]
 		suffix = tau[-k:]
 
-	if verbose:
-		print("horizontally extending (pi, m, k) = {}".format((pi,m,k)))
+	logging.debug(f"horizontally extending (pi, m, k) = ({pi}, {m}, {k})")
+	logging.debug("prefix = {prefix}")
+	logging.debug("suffix = {suffix}")
 
-		print("prefix = {}".format(prefix))
-		print("suffix = {}".format(suffix))
-
-	for uppers in gen_interval_divisions(m,k+1,shift = n,reverse=True):
+	for uppers in gen_interval_divisions(m, k+1, shift=n, reverse=True):
 		new_suffix = sum([uppers[i] + (suffix[i],) for i in range(k)], ()) + uppers[-1]
 		
-		if verbose:
-			print("uppers = {:20}, new_suffix = {:20}".format(uppers,new_suffix))
-			print("yielding the inverse of {}".format(prefix + new_suffix))
+		logging.debug(f"uppers = {uppers}, new_suffix = {new_suffix}")
+		logging.debug(f"yielding {prefix + new_suffix}")
+		logging.debug(f"yielding the inverse of {prefix + new_suffix}")
 
 		yield inverse(prefix + new_suffix)
 
 def inverse(pi):
-	# print("taking inverse of pi = {}".format(pi))
-	q = tuple(pi.index(val) for val in range(len(pi)))
-	return q
+	return tuple(pi.index(val) for val in range(len(pi)))
 
 def first_two_cells(n):
 	"""Return the set of initial configurations of points in the first two cells.

@@ -1,5 +1,6 @@
 import collections
 import itertools
+import logging
 import operator
 from math import factorial
 
@@ -7,86 +8,142 @@ from .permutation import Permutation
 from .permset import PermSet
 from .permclass import PermClass
 
+logging.basicConfig(level=10)
+
+class BadMatrixException(Exception):
+	pass
+
 class GeometricGridClass(PermClass):
 	
 	## Todo: Automatic row/col signs if possible, otherwise use the x2 trick
 
 	def __init__(self, M, col=None, row=None, max_length=8, generate=True): 
-
+		"""M goes from top to bottom, then left to right.
+		"""
+		
 		M = M[::-1]
 		M = list(map(list, zip(*M)))
 		self.M = M
+		# self.M goes left to right, bottom to top.
+		
 		self.col = col
 		self.row = row
-		list.__init__(self, [PermSet() for i in range(0, max_length+1)])
+		PermClass.__init__(self, [PermSet() for _ in range(max_length+1)])
 
-		if self.col == None or self.row == None:
-			(self.col, self.row) = self.guess_signs(self.M)
-
-		self.alphabet_size = sum([(1 if self.M[i][j] != 0 else 0) for i in range(0,len(self.M)) for j in range(0,len(self.M[i]))])
-		self.alphabet = [(i,j) for i in range(0, len(self.M)) for j in range(0,len(self.M[i])) if self.M[i][j] != 0]
+		if self.col is None or self.row is None:
+			self.compute_signs()
+		
+		self.alphabet = [
+			(col_idx, row_idx)
+			for col_idx, col in enumerate(self.M) 
+			for row_idx, val in enumerate(col) 
+			if val
+		]
+		self.alphabet_size = len(self.alphabet)
 
 		self.commuting_pairs = []
 
-		self.dots = []
-		for (index, coords) in enumerate(self.alphabet):
-			if self.M[coords[0]][coords[1]] == 2:
-				self.dots.append(index)
+		self.dots = [
+			idx 
+			for idx, (x,y) in enumerate(self.alphabet)
+			if self.M[x][y] == 2
+		]
 		
-		for (i,l) in enumerate(self.alphabet):
-			for j in range(i,len(self.alphabet)):
-				if self.alphabet[i][0] != self.alphabet[j][0] and self.alphabet[i][1] != self.alphabet[j][1]:
+		for i, l_i in enumerate(self.alphabet):
+			for j, l_j in enumerate(self.alphabet[i+1:], i+1):
+				if l_i[0] != l_j[0] and l_i[1] != l_j[1]:
 					self.commuting_pairs.append((i,j))
 
-		self.alphabet_indices = [i for i in range(0,len(self.alphabet))]     
+		self.alphabet_indices = list(range(self.alphabet_size))
 
 		if generate:
 			self.generate_perms(max_length)
 
-		self.length = max_length
-
-	def find_word_for_perm(self, P):
-		l = len(P)
-
-		M = self.M
-		column_signs = self.col
-		row_signs = self.row
+	def find_word_for_perm(self, p):
 		
-		all_words = itertools.product(self.alphabet_indices,repeat=l)
+		all_words = itertools.product(self.alphabet_indices, repeat=len(p))
 			
 		for word in all_words:
 			perm = self.dig_word_to_perm(word)
-			if perm == P:
+			if perm == p:
 				return dig_to_num(word)
 
-	def guess_signs(self, M):
-		col = [0]*len(M)
-		row = [0]*len(M[0])
-
-		for c in range(len(col)):
-			kc = 1
-			for r in range(len(row)):
-				if row[r] != 0 and M[c][r] != 0 and M[c][r] != 2:
-					kc = row[r] * M[c][r]
-			col[c] = kc
-
-			for r in range(len(row)):
-				if M[c][r] != 0 and M[c][r] != 2:
-					row[r] = col[c] * M[c][r]
+	def compute_signs(self):
+		"""
+		Examples:
+			>>> M = [[0,1,-1],[1,0,1]]
+			>>> G = GeometricGridClass(M, generate=False)
+			>>> (G.col, G.row) == ([1,-1,1], [1,-1])
+			True
+		"""
+		col_signs = [0 for _ in range(len(self.M))]
+		row_signs = [0 for _ in range(len(self.M[0]))]
+	
+		unsigned_vals = {0,2} # These represent empty cells and point-cells respectively
+	
+		for col_idx, col in enumerate(self.M):
+			if all(val in unsigned_vals for val in col):
+				# This column has no entries that need a sign, so we set it arbitrarily.
+				col_signs[col_idx] = 1
+	
+		for row_idx in range(len(row_signs)):
+			if all(col[row_idx] in unsigned_vals for col in self.M):
+				# This row has no entries that need a sign, so we set it arbitrarily.
+				row_signs[row_idx] = 1
+	
+		while not (all(col_signs) and all(row_signs)):
+			# This loop will continue until all col_signs and row_signs are non-zero
+			# It will make at most one "arbitrary" column assignment per loop.
+			logging.debug(f"Starting loop again.")
+			logging.debug(f"\tself.M = {self.M}")
+			logging.debug(f"\tcol_signs = {col_signs}")
+			logging.debug(f"\trow_signs = {row_signs}")
+			choice_made = False
+		
+			for col_idx, col in enumerate(self.M):
+				if col_signs[col_idx]:
+					# This column has a sign already.
+					continue
+			
+				for row_idx, (row_sign, entry) in enumerate(zip(row_signs, col)):
+					if entry in unsigned_vals:
+						continue
+				
+					if not row_sign:
+						continue
+				
+					# If we're here, then:
+					# - there's a signed entry in entry = self.M[col_idx][row_idx]
+					# - row_sign = row_signs[row_idx] is defined.
+					col_signs[col_idx] = entry * row_sign
+					break
 				else:
-					row[r] = col[c]
-
-		# print 'col:',col,'\t\trow:',row
-		# print M
+					# If we're here, then col_signs[col_idx] is undefined.
+					if not choice_made:
+						# Make our arbitrary choice.
+						col_signs[col_idx] = 1
+						choice_made = True
+			
+				if col_signs[col_idx]:
+					for row_idx, entry in enumerate(col):
+						if entry in unsigned_vals:
+							continue
+						if row_signs[row_idx]:
+							assert row_signs[row_idx] == entry * col_signs[col_idx], \
+								f"The signs are all messed up now: {self.M}, {col_signs}, {row_signs} ({col_idx}, {row_idx})"
+						else:
+							row_signs[row_idx] = entry * col_signs[col_idx]
 
 		# CHECKING
-		for c in range(len(col)):
-			for r in range(len(row)):
-				if M[c][r] != 0 and M[c][r] != 2 and M[c][r] != col[c] * row[r]:
-					# print 'c:',c,',  r:',r,',  M:',M[c][r]
-					raise Exception("Unable to find row and columns signs. Please enter them manually.")
-					# return (False, False)
-		return (col, row)
+		for col_idx, (col, col_sign) in enumerate(zip(self.M, col_signs)):
+			for row_idx, (entry, row_sign) in enumerate(zip(col, row_signs)):
+				if entry not in unsigned_vals: 
+					if entry != col_sign * row_sign:
+						raise BadMatrixException(f"Signs can't be computed for this matrix: {self.M}")
+	
+		self.col = col_signs
+		self.row = row_signs
+
 		
 	def generate_perms(self, max_length):
 		M = self.M
@@ -189,7 +246,7 @@ class GeometricGridClass(PermClass):
 #   return ''.join([chr(a+97) for a in w])
 
 if __name__ == "__main__":
-	pass
+	G = GeometricGridClass([[1,1],[1,-1]], generate=False)
 
 
 
