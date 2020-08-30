@@ -3,12 +3,14 @@ import logging
 from collections import Counter, defaultdict
 from itertools import combinations_with_replacement as cwr
 
+logging.basicConfig(level=10)
+
 def pretty_out(pi, k, vert_line = True, by_lines=False, width = 2):
 	"""Return a nice string to visualize `pi`.
 	If `by_lines == True`, then will return the list of strings by line,
 	in case you want to append some stuff to each line.
 	"""
-	print(f"{pi}, {k}")
+	logging.debug(f"{pi}, {k}")
 	lines = []
 	n = len(pi)
 	
@@ -48,17 +50,24 @@ def gen_interval_divisions(m, k, shift = 0, increasing=True):
 		]
 
 	"""
-	direction = +1 if increasing else -1
-
-	logging.debug(f"calling gid: {m}, {k}, {shift}, {increasing}")
-	L = range(shift, shift+m)[::direction]
-	logging.debug(L)
-	for c in cwr(range(m+1),k-1):
-		# For each choice of divisions...
-	
-		c = (0,) + c + (m,)
-
-		yield [tuple(val for val in L[c[i]:c[i+1]]) for i in range(k)]
+	logging.debug(f"Called gen_interval_divisions({m}, {k}, shift={shift}, increasing={increasing})")
+	max_val = shift+m
+	if increasing:
+		if k == 1:
+			yield (tuple(range(shift+1, max_val+1)),)
+		else:
+			for last_interval_size in range(0,m+1):
+				last_interval = (tuple(range(max_val+1-last_interval_size,max_val+1)),)
+				for division in gen_interval_divisions(m-last_interval_size, k-1, shift=shift, increasing=increasing):
+					yield division + last_interval
+	else:
+		if k == 1:
+			yield (tuple(range(max_val, shift, -1)),)
+		else:
+			for last_interval_size in range(0,m+1):
+				first_interval = (tuple(range(max_val,max_val-last_interval_size,-1)),)
+				for division in gen_interval_divisions(m-last_interval_size, k-1, shift=shift, increasing=increasing):
+					yield first_interval + division
 
 def all_vertical_extensions(pi, m, k, increasing=True):
 	"""Given a permutation `pi`, generate all ways to add a monotone sequence  
@@ -66,28 +75,28 @@ def all_vertical_extensions(pi, m, k, increasing=True):
 	
 	Example:
 		Here is permutation p, drawn with k = 2.
-		+-------+-----+
-		|       | x   |
-		| x     |     |
-		|     x |     |
-		|       |   x |
-		|   x   |     |
-		+-------+-----+
+		 +-------+-----+
+		4|       | x   |
+		3| x     |     |
+		2|     x |     |
+		1|       |   x |
+		0|   x   |     |
+		 +-------+-----+
 		all_vertical_extensions(p, 3, 2, True) would generate each way of 
 		inserting 3 points in increasing position that lie above every point in p 
 		and, together with the k = 2 rightmost points of p, occupy the 3+2 rightmost 
 		positions of the new permutation. Here is one example:
-		        +-----------+
-		        |         x |
-		        |     x     |
-		        | x         |
-		+-------+-----------+
-		|       |   x       |
-		| x     |           |
-		|     x |           |
-		|       |       x   |
-		|   x   |           |
-		+-------+-----------+
+		         +-----------+
+		7        |         x |
+		6        |     x     |
+		5        | x         |
+		 +-------+-----------+
+		4|       |   x       |
+		3| x     |           |
+		2|     x |           |
+		1|       |       x   |
+		0|   x   |           |
+		 +-------+-----------+
 	"""
 	n = len(pi)
 
@@ -99,181 +108,138 @@ def all_vertical_extensions(pi, m, k, increasing=True):
 		prefix = pi[:-k]
 		suffix = pi[-k:]
 
-	logging.debug("vertically extending (pi, m, k) = ({pi}, {m}, {k})")
-	logging.debug("prefix = {prefix}")
-	logging.debug("suffix = {suffix}")
+	logging.debug(f"vertically extending (pi, m, k) = ({pi}, {m}, {k})")
+	logging.debug(f"\tprefix = {prefix}")
+	logging.debug(f"\tsuffix = {suffix}")
 
-	for uppers in gen_interval_divisions(m,k+1,shift = n):
+	for uppers in gen_interval_divisions(m, k+1, shift=n-1, increasing=increasing):
 		# assert len(uppers) == k+1
 		# assert len(sum(uppers,())) == m
-		new_suffix = sum([uppers[i] + (suffix[i],) for i in range(k)], ()) + uppers[-1]
+		new_suffix = sum((uppers[i] + (pt,) for i, pt in enumerate(suffix)), ()) + uppers[-1]
 
-		logging.debug(f"uppers = {uppers}, new_suffix = {new_suffix}")
-		logging.debug(f"yielding {prefix + new_suffix}")
+		logging.debug(f"\tuppers = {uppers}, new_suffix = {new_suffix}")
+		logging.debug(f"\tyielding {prefix + new_suffix}")
 
 		yield prefix + new_suffix
 
-def all_horizontal_extensions(pi, m, k):
-	"""Given a permutation `pi`, generate all ways to add an decreasing sequence 
+def all_horizontal_extensions(pi, m, k, increasing=True):
+	"""Given a permutation `pi`, generate all ways to add a monotone sequence 
 	of length `m` to the right of its upper `k` points.
-	"""
-
-	tau = inverse(pi)
-	n = len(tau)
-
-	if k == 0:
-		prefix = tau
-		suffix = ()
-	else:
-		prefix = tau[:-k]
-		suffix = tau[-k:]
-
-	logging.debug(f"horizontally extending (pi, m, k) = ({pi}, {m}, {k})")
-	logging.debug("prefix = {prefix}")
-	logging.debug("suffix = {suffix}")
-
-	for uppers in gen_interval_divisions(m, k+1, shift=n, reverse=True):
-		new_suffix = sum([uppers[i] + (suffix[i],) for i in range(k)], ()) + uppers[-1]
 		
-		logging.debug(f"uppers = {uppers}, new_suffix = {new_suffix}")
-		logging.debug(f"yielding {prefix + new_suffix}")
-		logging.debug(f"yielding the inverse of {prefix + new_suffix}")
-
-		yield inverse(prefix + new_suffix)
+	Example:
+		Here is permutation p, drawn with k = 2.
+		+-----------+
+		|       x   |
+		| x         |
+		+-----------+
+		|     x     |
+		|         x |
+		|   x       |
+		+-----------+
+		all_horizontal_extensions(p, 3, 2, True) would generate each way of 
+		inserting 3 points in increasing position that lie east every point in p 
+		and, together with the k = 2 uppermost points of p, occupy the 3+2 uppermost 
+		positions of the new permutation. Here is one example:
+		+-----------+-------+
+		|           |     x |
+		|       x   |       |
+		|           |   x   |
+		| x         |       |
+		|           | x     |
+		+-----------+-------+
+		|     x     |
+		|         x |
+		|   x       |
+		+-----------+
+	"""
+	logging.debug(f"horizontally extending (pi, m, k) = ({pi}, {m}, {k})")
+	tau = inverse(pi)
+	for tau_ext in all_vertical_extensions(tau, m, k, increasing=increasing):
+		yield inverse(tau_ext)
 
 def inverse(pi):
 	return tuple(pi.index(val) for val in range(len(pi)))
+	
+def one_cell(max_len, increasing):
+	if increasing:
+		return {tuple(range(m)): m for m in range(max_len+1)}
+	else:
+		return {tuple(range(m-1,-1,-1)): m for m in range(max_len+1)}
 
-def first_two_cells(n):
-	"""Return the set of initial configurations of points in the first two cells.
-	"""
+def add_horizontal_cell(C, max_len, increasing):
+	D = defaultdict(int)
+	for pi, k in C.items():
+		logging.debug(f"\tOld perm: {pi}, {k}.")
+		if pi not in D:
+			D[pi] = 0
+		
+		if not k:
+			continue
+		
+		for num_pts in range(1, max_len-len(pi)+1):			
+			for tau in all_horizontal_extensions(pi, num_pts, k, increasing=increasing):
+				logging.debug(f"\t\tNew perm: {tau}, {num_pts}")
+				D[tau] = max(D[tau], num_pts)
+	
+	return D
 
-	initial = ((), 0)
-	R = set([initial]) # The set containing the empty tuple.
+def add_vertical_cell(C, max_len, increasing):
+	D = defaultdict(int)
+	for pi, k in C.items():
+		logging.debug(f"\tOld perm: {pi}, {k}.")
+		if pi not in D:
+			D[pi] = 0
+		
+		if not k:
+			continue
+		
+		for num_pts in range(1, max_len-len(pi)+1):			
+			for tau in all_vertical_extensions(pi, num_pts, k, increasing=increasing):
+				logging.debug(f"\t\tNew perm: {tau}, {num_pts}")
+				D[tau] = max(D[tau], num_pts)
+	
+	return D
 
-	S = set()
-
-	for pi, k in R:
-		for m in range(0,n+1):
-			S.update((tau, m) for tau in all_vertical_extensions(pi, m, k))
-			# S.update((pi, k) for pi in all_horizontal_extensions(initial, k, 0))
-
-	# E = defaultdict(list)
-	# for tau, k in S:
-	# 	E[len(tau)].append((tau, k))
-
-	# for idx, val in sorted(E.items()):
-	# 	for perm in val:
-	# 		print(pretty_out(*perm, vert_line=False))
-	# 		print("="*10)
-
-	T = set()
-
-	for pi, k in S:
-		if k == 0 and len(pi) != 0:
-			T.add((pi, 0))
+def staircase(n, cell_seq):
+	cell_seq = [val == 1 for val in cell_seq]
+	
+	C = one_cell(n, increasing=cell_seq[0])
+	by_length = [set() for _ in range(n+1)]
+	for pi, v in C.items():
+		by_length[len(pi)].add((pi, v))
+	
+	logging.info(f" 1 cell,  {[len(S) for S in by_length]}")
+	for S in by_length:
+		logging.debug(f"\t{sorted(S)}")
+	
+	for cell_idx, cell_dir in enumerate(cell_seq[1:]):
+		# cell_idx = 0 corresponds to the second cell and so on.
+		
+		if cell_idx % 2:
+			# Odd cell, add vertically
+			C = add_vertical_cell(C, max_len=n, increasing=cell_dir)
 		else:
-			for m in range(0,n-len(pi)+1):
-				T.update((tau, m) for tau in all_horizontal_extensions(pi, m, k))
+			# Even cell, add horizontally
+			C = add_horizontal_cell(C, max_len=n, increasing=cell_dir)
+		by_length = [set() for _ in range(n+1)]
+		for pi, v in C.items():
+			by_length[len(pi)].add((pi, v))
+		
+		logging.info(f"{cell_idx+2:>2} cells, {[len(S) for S in by_length]}")
+		for S in by_length:
+			logging.debug(f"\t{sorted(S)}")
 
-	# E = defaultdict(list)
-	# for tau, m in T:
-	# 	E[len(tau)].append((tau, m))
+def increasing_staircase(n):
+	increasing_seq = [1 for _ in range(n//2+1)]
+	return staircase(n, increasing_seq)
 
-	# for idx, val in sorted(E.items()):
-	# 	for perm in val:
-	# 		print(pretty_out(*perm, vert_line=True))
-	# 		print("="*10)
-
-	return T
-
-def add_two_cells(R, n, verbose=False):
-	# if verbose:
-	# 	print("Adding two cells!")
-	# 	print("Current state of affairs: ")
-
-
-	S = set()
-	for pi, k in R:
-		S.add((pi, 0))	
-		for m in range(1,n-len(pi)+1):
-			S.update((tau, m) for tau in all_vertical_extensions(pi, m, k))
-
-	# E = defaultdict(list)
-	# for tau, k in S:
-	# 	E[len(tau)].append((tau, k))
-
-	# for idx, val in sorted(E.items()):
-	# 	for perm in val:
-	# 		print(pretty_out(*perm, vert_line=False))
-	# 		print("="*10)
-
-	T = set()
-	for pi, k in S:
-		T.add((pi, 0))
-		for m in range(1,n-len(pi)+1):
-			T.update((tau, m) for tau in all_horizontal_extensions(pi, m, k))
-
-	return T
+def decreasing_staircase(n):
+	decreasing_seq = [-1 for _ in range(n)]
+	return staircase(n, decreasing_seq)
 
 if __name__ == "__main__":
-
-	for pi in all_vertical_extensions((0, 1), 1, 0):
-		print(pretty_out(pi, 1))
-		print("-"*6)
-
-	# n = 12
-	# A = first_two_cells(n)
-	# # print("before running, A = ")
-
-	# for total_cells in range(2,n+6,2):
-
-	# 	S = set()
-	# 	D = Counter()
-	# 	E = defaultdict(list)
-
-	# 	for tau, m in A:
-	# 		S.add(tau)
-	# 		E[len(tau)].append((tau, m))
-	# 		D[len(tau)] += 1
-
-	# 	# for idx, val in sorted(E.items()):
-	# 	# 	for perm in sorted(val):
-	# 	# 		print(pretty_out(*perm))
-	# 	# 		print("-"*10)
-
-	# 	C = Counter()
-
-	# 	# print("cells = {:2},".format(total_cells), end = "")
-
-	# 	# print(S)
-
-	# 	for s in S:
-	# 		C[len(s)] += 1
-
-	# 	for idx in [total_cells-4, total_cells-3]:
-	# 		if 0 <= idx <= n:
-	# 			print("cells = {:2}, n = {:2}, grids = {:8}, perms = {:8}".format(total_cells, idx, D[idx], C[idx]))
-
-	# 	A = add_two_cells(A, n)
-	# 	# print(A)
-
-	# # print(S)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	n = 4
+	S = decreasing_staircase(n)
+	
+# 	print(list(all_vertical_extensions((0,), 2, 1, increasing=True)))
+	
