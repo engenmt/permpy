@@ -33,36 +33,31 @@ class GeometricGridClass(PermClass):
 		# M = list(map(list, zip(*M)))
 		M = [list(col) for col in zip(*M)]
 		self.M = M
-		# self.M goes left to right, bottom to top.
-		
-		self.col = col
-		self.row = row
-		PermClass.__init__(self, [PermSet() for _ in range(max_length+1)])
+		# self.M goes left to right, bottom to top.		
 
-		if self.col is None or self.row is None:
-			self.compute_signs()
+		if col is None or row is None:
+			self.col, self.row = self.compute_signs()
+		else:
+			self.col, self.row = col, row
 		
+		# Our alphabet consists of Cartesian coordinates of cells
 		self.alphabet = [
 			(col_idx, row_idx)
 			for col_idx, col in enumerate(self.M) 
 			for row_idx, val in enumerate(col) 
 			if val
 		]
-		# self.alphabet_size = len(self.alphabet)
 
 		self.dots = [
-			(x,y)
-			for x,y in self.alphabet
+			(x, y)
+			for x, y in self.alphabet
 			if self.M[x][y] == 2
 		]
 		
 		self.commuting_pairs = [
-			(j, k)                                                              # The pairs of indices of letters
-			for j, k in combinations(self.alphabet, 2) # For each pair of indices, letters
-			if all(coord_i != coord_j for coord_i, coord_j in zip(l_i, l_j))    # If all coordinates differ
+			pair for pair in combinations(self.alphabet, 2)              # For each pair of letters
+			if all(coord_i != coord_j for coord_i, coord_j in zip(*pair) # If all coordinates differ
 		]
-
-		self.alphabet_indices = list(range(self.alphabet_size))
 
 		if generate:
 			L = self.build_perms(max_length)
@@ -76,7 +71,7 @@ class GeometricGridClass(PermClass):
 			
 		for word in all_words:
 			perm = self.dig_word_to_perm(word)
-			if perm == p:
+			if perm == wp:
 				return dig_to_num(word)
 
 	def compute_signs(self):
@@ -152,24 +147,18 @@ class GeometricGridClass(PermClass):
 					if entry != col_sign * row_sign:
 						raise BadMatrixException(f"Signs can't be computed for this matrix: {self.M}")
 	
-		self.col = col_signs
-		self.row = row_signs
+		return col_signs, row_signs
 
 		
 	def build_perms(self, max_length):
-		M = self.M
-		column_signs = self.col
-		row_signs = self.row
 
 		L = [PermSet.all(0), PermSet.all(1)]
 		
 		for length in range(2,max_length+1):
-			''' Try all words of length 'length' with alphabet 
-			equal to the cell alphabet of M.'''
+			# Try all words of length 'length' with alphabet equal to the cell alphabet of M.
 			this_length = PermSet()
-			all_words = itertools.product(self.alphabet_indices, repeat=length)
 			
-			for word in all_words:
+			for word in itertools.product(self.alphabet, repeat=length):
 				p = self.dig_word_to_perm(word)
 				if p:
 					this_length.add(p)
