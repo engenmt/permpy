@@ -3,15 +3,23 @@ import itertools
 import logging
 import operator
 from math import factorial
+from itertools import combinations
 
 from .permutation import Permutation
 from .permset import PermSet
 from .permclass import PermClass
 
+
 logging.basicConfig(level=10)
+
 
 class BadMatrixException(Exception):
 	pass
+
+
+class BadWordException(Exception):
+	pass
+
 
 class GeometricGridClass(PermClass):
 	
@@ -22,7 +30,8 @@ class GeometricGridClass(PermClass):
 		"""
 		
 		M = M[::-1]
-		M = list(map(list, zip(*M)))
+		# M = list(map(list, zip(*M)))
+		M = [list(col) for col in zip(*M)]
 		self.M = M
 		# self.M goes left to right, bottom to top.
 		
@@ -39,25 +48,27 @@ class GeometricGridClass(PermClass):
 			for row_idx, val in enumerate(col) 
 			if val
 		]
-		self.alphabet_size = len(self.alphabet)
-
-		self.commuting_pairs = []
+		# self.alphabet_size = len(self.alphabet)
 
 		self.dots = [
-			idx 
-			for idx, (x,y) in enumerate(self.alphabet)
+			(x,y)
+			for x,y in self.alphabet
 			if self.M[x][y] == 2
 		]
 		
-		for i, l_i in enumerate(self.alphabet):
-			for j, l_j in enumerate(self.alphabet[i+1:], i+1):
-				if l_i[0] != l_j[0] and l_i[1] != l_j[1]:
-					self.commuting_pairs.append((i,j))
+		self.commuting_pairs = [
+			(j, k)                                                              # The pairs of indices of letters
+			for j, k in combinations(self.alphabet, 2) # For each pair of indices, letters
+			if all(coord_i != coord_j for coord_i, coord_j in zip(l_i, l_j))    # If all coordinates differ
+		]
 
 		self.alphabet_indices = list(range(self.alphabet_size))
 
 		if generate:
-			self.generate_perms(max_length)
+			L = self.build_perms(max_length)
+			super().__init__(self, L)
+		else:
+			super().__init__(self, [PermSet() for _ in range(max_length+1)])
 
 	def find_word_for_perm(self, p):
 		
@@ -76,8 +87,8 @@ class GeometricGridClass(PermClass):
 			>>> (G.col, G.row) == ([1,-1,1], [1,-1])
 			True
 		"""
-		col_signs = [0 for _ in range(len(self.M))]
-		row_signs = [0 for _ in range(len(self.M[0]))]
+		col_signs = self.col or [0 for _ in range(len(self.M))]
+		row_signs = self.row or [0 for _ in range(len(self.M[0]))]
 	
 		unsigned_vals = {0,2} # These represent empty cells and point-cells respectively
 	
@@ -145,23 +156,27 @@ class GeometricGridClass(PermClass):
 		self.row = row_signs
 
 		
-	def generate_perms(self, max_length):
+	def build_perms(self, max_length):
 		M = self.M
 		column_signs = self.col
 		row_signs = self.row
 
-		list.__init__(self, [PermSet() for i in range(0, max_length+1)])
-		self[1].add(Permutation([1])) 
+		L = [PermSet.all(0), PermSet.all(1)]
 		
 		for length in range(2,max_length+1):
 			''' Try all words of length 'length' with alphabet 
 			equal to the cell alphabet of M.'''
-			all_words = itertools.product(self.alphabet_indices,repeat=length)
+			this_length = PermSet()
+			all_words = itertools.product(self.alphabet_indices, repeat=length)
 			
 			for word in all_words:
-				P = self.dig_word_to_perm(word)
-				if P:
-					self[length].add(P)
+				p = self.dig_word_to_perm(word)
+				if p:
+					this_length.add(p)
+
+			L.append(this_length)
+
+		return L
 
 	def dig_word_to_perm(self, word, ignore_bad=False):
 		if not ignore_bad:
@@ -171,23 +186,30 @@ class GeometricGridClass(PermClass):
 					return False
 			if not self.is_valid_word(word):
 				return False
+
+		# Let's build a permutation in the Geometric Grid Class.
+		# Imagine each "signed" cell having a line segment at 45º either 
+		# oriented up-and-to-the-right if the cell has a positive sign or
+		# oriented down-and-to-the-right if the cell has a negative sign with
+		# len(word)+1 open slots on it.
 		points = []
 		height = len(word)+2
-		for (position, letter) in enumerate(word):
-			if self.col[self.alphabet[letter][0]] == 1:
-				x_point = (self.alphabet[letter][0]+1)*height - position
+		for position, letter_idx in enumerate(word):
+			letter_x, letter_y = self.alphabet[letter_idx]
+
+			if self.col[letter_x] == 1:
+				x_point = letter_x * height + position
 			else:
-				x_point = (self.alphabet[letter][0])*height + position
-			if self.row[self.alphabet[letter][1]] == 1:
-				y_point = (self.alphabet[letter][1]+1)*height - position
+				x_point = (letter_x + 1) * height - position
+
+			if self.row[letter_y] == 1:
+				y_point = letter_y * height + position
 			else:
-				y_point = (self.alphabet[letter][1])*height + position
+				y_point = (letter_y + 1) * height - position
+
 			points.append((x_point,y_point))
-		points.sort(key=operator.itemgetter(0))  
-		widths = [p[0] for p in points] 
-		heights = [p[1] for p in points] 
-		new_points = Permutation.standardize(heights)
-		return Permutation(new_points)
+
+		return Permutation([y for x,y in sorted(points)])
 
 #   def alpha_word_to_perm(self, word):
 #     w = []
@@ -199,10 +221,7 @@ class GeometricGridClass(PermClass):
 #     return self.dig_word_to_perm(w, ignore_bad=True)
 
 	def is_valid_word(self, word):
-		for i in range(0,len(word)-1):
-			if (word[i+1], word[i]) in self.commuting_pairs:
-				return False
-		return True
+		return all(word[i:i+2][::-1] not in self.commuting_pairs for i in range(len(word)-1))
 
 #   def find_inflations_avoiders(self, basis):
 #     max_basis_length = max([len(B) for B in basis])
@@ -247,6 +266,7 @@ class GeometricGridClass(PermClass):
 
 if __name__ == "__main__":
 	G = GeometricGridClass([[1,1],[1,-1]], generate=False)
+
 
 
 
