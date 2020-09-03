@@ -22,23 +22,52 @@ class BadWordException(Exception):
 
 
 class GeometricGridClass(PermClass):
-	
-	## Todo: Automatic row/col signs if possible, otherwise use the x2 trick
 
 	def __init__(self, M, col=None, row=None, max_length=8, generate=True): 
-		"""M goes from top to bottom, then left to right.
 		"""
 		
-		M = M[::-1]
-		# M = list(map(list, zip(*M)))
-		M = [list(col) for col in zip(*M)]
+		Args:
+			M (list of lists of ints): A 2D matrix to build the GGC from.
+				Goes from left-to-right, bottom-to-top. That is, M[0] is the 
+				leftmost column, and M[0][0] is the lowest entry of this column.
+				Entries should be -1, 0, +1, or 2. A 0 represents an empty cell,
+				and a 2 represents a cell that has at most one point in it.
+				Otherwise, a +1 represents an increasing cell, and 
+				a -1 represents a decreasing cell.
+			col (list of ints, optional): A vector representing the orientation
+				of the columns. Entries should be +1 or -1. If col[i] is +1,
+				then the i'th column is oriented from left to right, and 
+				if col[i] is -1, then it is oriented from right to left.
+			row (list of ints, optional): A vector representing the orientation
+				of the rows. Entries should be +1 or -1. If row[j] is +1,
+				then the j'th row is oriented from bottom to top, and 
+				if row[j] is -1, then it is oriented from top to bottom.
+
+		Notes:
+			The following example represents the matrix
+			    +-+-+-+
+                | | |/|
+                +-+-+-+
+			M = | |/|/|
+			    +-+-+-+
+			    |/|/| |
+			    +-+-+-+
+
+		Examples:
+			>>> M = [[1, 0, 0], \
+			         [1, 1, 0], \
+			         [0, 1, 1]] # Partial increasing staircase.
+			>>> G = GeometricGridClass(M) # This will the same as Av(321) until length 9.
+			>>> print([len(S) for S in G])
+			[1, 1, 2, 5, 14, 42, 132, 429, 1430]
+
+		"""
 		self.M = M
-		# self.M goes left to right, bottom to top.		
+		
+		self.col, self.row = col, row
 
 		if col is None or row is None:
-			self.col, self.row = self.compute_signs()
-		else:
-			self.col, self.row = col, row
+			self.compute_signs()
 		
 		# Our alphabet consists of Cartesian coordinates of cells
 		self.alphabet = [
@@ -55,15 +84,16 @@ class GeometricGridClass(PermClass):
 		]
 		
 		self.commuting_pairs = [
-			pair for pair in combinations(self.alphabet, 2)              # For each pair of letters
-			if all(coord_i != coord_j for coord_i, coord_j in zip(*pair) # If all coordinates differ
+			pair for pair in combinations(self.alphabet, 2)               # Each pair of letters
+			if all(coord_1 != coord_2 for coord_1, coord_2 in zip(*pair)) # where all coordinates differ
 		]
 
 		if generate:
 			L = self.build_perms(max_length)
-			super().__init__(self, L)
 		else:
-			super().__init__(self, [PermSet() for _ in range(max_length+1)])
+			L = [PermSet() for _ in range(max_length+1)]
+
+		PermClass.__init__(self, L)
 
 	def find_word_for_perm(self, p):
 		
@@ -75,12 +105,32 @@ class GeometricGridClass(PermClass):
 				return dig_to_num(word)
 
 	def compute_signs(self):
-		"""
+		r"""
+		The following matrix example represents
+		    +-+-+-+
+		    | |/|\|
+		M = +-+-+-+
+		    |/| |/|
+		    +-+-+-+
+
+		It should have signs:
+
+		    +-+-+-+
+		    | |/|\|↓
+		M = +-+-+-+
+		    |/| |/|↑
+		    +-+-+-+
+		     → ← →
+
+		Meaning col = [1, -1, 1] and row = [1, -1].
+
 		Examples:
-			>>> M = [[0,1,-1],[1,0,1]]
+			>>> M = [[ 1, 0], [ 0, 1], [ 1,-1]]
 			>>> G = GeometricGridClass(M, generate=False)
-			>>> (G.col, G.row) == ([1,-1,1], [1,-1])
-			True
+			>>> G.col
+			[1, -1, 1]
+			>>> G.row
+			[1, -1]
 		"""
 		col_signs = self.col or [0 for _ in range(len(self.M))]
 		row_signs = self.row or [0 for _ in range(len(self.M[0]))]
@@ -140,24 +190,25 @@ class GeometricGridClass(PermClass):
 						else:
 							row_signs[row_idx] = entry * col_signs[col_idx]
 
-		# CHECKING
+		# This verifies that everything is consistent.
 		for col_idx, (col, col_sign) in enumerate(zip(self.M, col_signs)):
 			for row_idx, (entry, row_sign) in enumerate(zip(col, row_signs)):
 				if entry not in unsigned_vals: 
 					if entry != col_sign * row_sign:
 						raise BadMatrixException(f"Signs can't be computed for this matrix: {self.M}")
 	
-		return col_signs, row_signs
-
+		self.col = col_signs
+		self.row = row_signs
 		
 	def build_perms(self, max_length):
 
-		L = [PermSet.all(0), PermSet.all(1)]
-		
+		L = [PermSet.all(length) for length in range(2)]
+		# Include all the length-0 and length-1 perms.
+
 		for length in range(2,max_length+1):
 			# Try all words of length 'length' with alphabet equal to the cell alphabet of M.
 			this_length = PermSet()
-			
+
 			for word in itertools.product(self.alphabet, repeat=length):
 				p = self.dig_word_to_perm(word)
 				if p:
@@ -170,8 +221,8 @@ class GeometricGridClass(PermClass):
 	def dig_word_to_perm(self, word, ignore_bad=False):
 		if not ignore_bad:
 			bad_word = False
-			for index in self.dots:
-				if word.count(index) > 1:
+			for letter in self.dots:
+				if word.count(letter) > 1:
 					return False
 			if not self.is_valid_word(word):
 				return False
@@ -183,8 +234,7 @@ class GeometricGridClass(PermClass):
 		# len(word)+1 open slots on it.
 		points = []
 		height = len(word)+2
-		for position, letter_idx in enumerate(word):
-			letter_x, letter_y = self.alphabet[letter_idx]
+		for position, (letter_x, letter_y) in enumerate(word):
 
 			if self.col[letter_x] == 1:
 				x_point = letter_x * height + position
@@ -200,58 +250,9 @@ class GeometricGridClass(PermClass):
 
 		return Permutation([y for x,y in sorted(points)])
 
-#   def alpha_word_to_perm(self, word):
-#     w = []
-#     for i in range(0, len(word)):
-#       n = ord(word[i])-97
-#       if n < 0 or n >= self.alphabet_size:
-#         return False
-#       w.append(n)
-#     return self.dig_word_to_perm(w, ignore_bad=True)
-
 	def is_valid_word(self, word):
-		return all(word[i:i+2][::-1] not in self.commuting_pairs for i in range(len(word)-1))
+		return all(s not in self.commuting_pairs for s in zip(word[1:], word))
 
-#   def find_inflations_avoiders(self, basis):
-#     max_basis_length = max([len(B) for B in basis])
-#     allowed_inflations = [Permutation([1])]
-#     allowed_inflations.extend(list(set([P for sublist in [B.all_intervals(return_patterns=True) for B in basis] for P in sublist])))
-#     avoidence_inflations = []
-#     print(allowed_inflations)
-#     for length in range(2,max_basis_length):
-#       all_words = itertools.product(self.alphabet_indices,repeat=length)
-#       for word in all_words:
-#         P = self.dig_word_to_perm(word)
-#         if not P:
-#           continue
-#         combos = itertools.product(range(0,len(allowed_inflations)),repeat=len(P))
-#         for combo in combos:
-#           components = [allowed_inflations[i] for i in combo]
-#           Q = P.inflate(components)
-#           if Q in basis:
-#             what_to_avoid = [chr(e+97)+'_'+str(allowed_inflations.index(components[i])) for (i,e) in enumerate(word)]
-#             print(what_to_avoid,'=',Q)
-#             if what_to_avoid not in avoidence_inflations:
-#               avoidence_inflations.append(what_to_avoid)
-#     return avoidence_inflations
-
-#   def inflation_rules(self, basis):
-#     avoidence_inflations = self.find_inflations_avoiders(basis)
-#     rules = []
-#     letters = set()
-#     for ai in avoidence_inflations:
-#       rule = 'SS, '
-#       rule += (', SS, '.join(ai))
-#       rule += ', SS'
-#       rules.append('C(P('+rule+'))')
-#       letters = letters.union(ai)
-#     big_rule = 'I(' + (','.join(rules)) + ')'
-#     letters = list(letters)
-#     letters.sort()
-#     return (letters, big_rule)
-
-# def dig_to_num(w):
-#   return ''.join([chr(a+97) for a in w])
 
 if __name__ == "__main__":
 	G = GeometricGridClass([[1,1],[1,-1]], generate=False)
