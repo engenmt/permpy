@@ -83,6 +83,7 @@ class GeometricGridClass(PermClass):
 			if self.M[x][y] == 2
 		]
 		
+		# We will only use words that do _not_ contain these as factors.
 		self.commuting_pairs = [
 			pair for pair in combinations(self.alphabet, 2)               # Each pair of letters
 			if all(coord_1 != coord_2 for coord_1, coord_2 in zip(*pair)) # where all coordinates differ
@@ -251,7 +252,7 @@ class GeometricGridClass(PermClass):
 		return Permutation([y for x,y in sorted(points)])
 
 	def is_valid_word(self, word):
-		return all(s not in self.commuting_pairs for s in zip(word[1:], word))
+		return all(w[i:i+2] not in self.commuting_pairs for i in range(len(w)-1))
 
 
 if __name__ == "__main__":
