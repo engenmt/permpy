@@ -102,8 +102,8 @@ class GeometricGridClass(PermClass):
 			
 		for word in all_words:
 			perm = self.dig_word_to_perm(word)
-			if perm == wp:
-				return dig_to_num(word)
+			if perm == p:
+				return word
 
 	def compute_signs(self):
 		r"""
