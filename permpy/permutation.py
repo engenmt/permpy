@@ -1172,21 +1172,28 @@ class Permutation(tuple,
 
 	def inflate(self, components):
 		"""Inflate the entries of self by the given components.
+
+		Notes:
+			Inflates from the bottom up, keeping track of the vertical shift for
+			subsequent points.
 		
 		Raises:
 			ValueError if the wrong number of components is given.
 		"""
-		if len(self) != len(components):
+		n = len(self)
+		if n != len(components):
 			raise ValueError(f"{self.__repr__()}.inflate({components}) is invalid!")
-		L = list(self)
-		NL = list(self)
-		current_entry = 0
-		for entry in range(0, len(self)):
-			index = L.index(entry)
-			NL[index] = [components[index][i]+current_entry for i in range(0, len(components[index]))]
-			current_entry += len(components[index])
-		NL_flat = [a for sl in NL for a in sl]
-		return Permutation(NL_flat)
+		
+		inflated = [[]]*n
+		vertical_shift = 0
+		for value in range(n):
+			index = self.index(value)
+			component = components[index]
+			inflated[index] = [component_value + vertical_shift for component_value in component]
+			vertical_shift += len(component)
+
+		inflated_flat = [val for component in inflated for val in component]
+		return Permutation(inflated_flat)
 
 	def right_extensions(self, test=None, basis=None, trust=False):
 		"""Returns the list of right extensions of `self`, only including those 

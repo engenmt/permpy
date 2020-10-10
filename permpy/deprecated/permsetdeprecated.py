@@ -13,6 +13,10 @@ class PermSetDeprecatedMixin:
 		return self.symmetries()
 
 	@deprecated
+	def extensions(self, test):
+		return PermSet(p for p in self.covered_by() if test(p))
+
+	@deprecated
 	def threepats(self):
 		return {str(p): count for p, count in self.pattern_counts(3).items()}
 

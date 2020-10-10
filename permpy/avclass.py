@@ -1,6 +1,8 @@
 from math import factorial
-import types
+import logging
 import sys
+import types
+
 
 from .permutation import Permutation
 from .permset import PermSet
@@ -25,11 +27,12 @@ class AvClass(PermClass):
 
 		list.__init__(self, [PermSet()])
 		self.basis = [Permutation(b) for b in basis]
+		self.test = lambda p: all(b not in p for b in basis)
 
-		P = Permutation([0],clean=True)
+		p = Permutation([0], clean=True)
 		if length >= 1:
-			if P not in self.basis:
-				self.append(PermSet([P]))
+			if p not in self.basis:
+				self.append(PermSet(p))
 				self.length = 1
 				self.extend_to_length(length,verbose=verbose)
 			else:
@@ -37,7 +40,7 @@ class AvClass(PermClass):
 					self.append(PermSet())
 
 	def extend_by_one(self, test=None, verbose=0, return_info=False):
-		# print(f"Calling extend_by_one({self}, test={test}, verbose={verbose}, return_info={return_info})")
+		logging.info(f"Calling extend_by_one({self}, test={test}, verbose={verbose}, return_info={return_info})")
 		self.length += 1
 		if test is None:
 			upset = self[-1].upset(basis=self.basis, verbose=verbose)
@@ -79,18 +82,16 @@ class AvClass(PermClass):
 		horizontal_juxtaposition = self.right_juxtaposition(inverse_class, generate_perms=False)
 		return AvClass([B.inverse() for B in horizontal_juxtaposition.basis], length=(8 if generate_perms else 0))
 
-	def contains(self, C):
-		"""Check if `self` contains `C` as a permutation class using their bases.
-
-		ME: Done!
+	def contains(self, other):
+		"""Check if `self` contains `other` as a permutation class using their bases.
 		"""
-		for P in self.basis:
-			for Q in C.basis:
-				if P.involved_in(Q):
+		for p in self.basis:
+			for q in other.basis:
+				if p in q:
 					break
 			else:
-				# If we're here, then `P` is not involved in any of the basis elements of `C`, so
-				# the permutation `P` lies in `C` but not `self`.
+				# If we're here, then `p` is not involved in any of the basis elements of `q`, so
+				# the permutation `p` lies in `other` but not `self`.
 				return False
 		return True
 

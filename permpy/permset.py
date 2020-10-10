@@ -58,7 +58,7 @@ class PermSet(set, PermSetDeprecatedMixin):
 			length (int): the length of the permutations
 
 		Examples:
-			>>> p = Permutation(12); q = Permutation(21)q
+			>>> p = Permutation(12); q = Permutation(21)
 			>>> PermSet.all(2) == PermSet([p, q])
 			True
 		"""
@@ -82,7 +82,7 @@ class PermSet(set, PermSetDeprecatedMixin):
 		return D
 
 
-	def get_length(self, length=None):
+	def get_length(self, length):
 		"""Returns the subset of permutations which have the specified length.
 
 		Args:
@@ -110,52 +110,25 @@ class PermSet(set, PermSetDeprecatedMixin):
 		shortest_perms = PermSet(p for p in self if len(p) == shortest_len)
 		S = PermSet(p for p in s if p.avoids(B = shortest_perms))
 
-		return S.minimal_elements + shortest_perms
+		return shortest_perms + S.minimal_elements()
 
 	def symmetries(self):
 		"""Return the PermSet of all symmetries of all permutations in `self`."""
 		S = set(self)
-		S.update([P.reverse()    for P in S])
-		S.update([P.complement() for P in S])
-		S.update([P.inverse()    for P in S])
+		S.update([p.reverse()    for p in S])
+		S.update([p.complement() for p in S])
+		S.update([p.inverse()    for p in S])
 		return PermSet(S)
 
 	def covers(self, verbose=0):
 		"""Return those permutations that `self` covers."""
-		S = PermSet()
+		return PermSet(set.union(*[p.covers() for p in self]))
 
-		if verbose:
-			n = len(self)
-			for idx, P in enumerate(self):
-				if idx % verbose == 0:
-					print(f"\t{idx} of {n}. Now with {len(S)}.")
-				S.update(P.covers())
-		else:
-			for P in self:
-				S.update(P.covers())
-
-		return S
-
-	def covered_by(self, verbose=0):
+	def covered_by(self):
 		"""Return those permutations that `self` is covered by."""
-		S = PermSet()
+		return PermSet(set.union(*[p.covered_by() for p in self]))
 
-		if verbose:
-			n = len(self)
-			for idx, P in enumerate(self):
-				if idx % verbose == 0:
-					print(f"\t{idx} of {n}. Now with {len(S)}.")
-				S.update(P.covered_by())
-		else:
-			for P in self:
-				S.update(P.covered_by())
-
-		return S
-
-	def extensions(self, test):
-		return PermSet(p for p in self.covered_by() if test(p))
-
-	def right_extensions(self, trust=False, basis=None, test=None):
+	def right_extensions(self, basis=None, test=None, trust=False):
 		"""Return the 'one layer' upset of `self`.
 
 		Notes:
@@ -172,20 +145,19 @@ class PermSet(set, PermSetDeprecatedMixin):
 		"""
 		if len(self) == 0:
 			return PermSet()
-		if basis is None and test is None:
-			def test(p): return True
-		elif basis is not None:
+
+		if basis is not None:
 			if trust:
 				lr = 2
 				# If we trust the previous insertion_values, then right-extending
-				# a permutation with an inserton value only makes us fail the test
+				# a permutation with an insertion value only makes us fail the test
 				# when the rightmost two entries are used.
 			else:
 				lr = 1
 			def test(p): return p.avoids(B = basis, lr = lr)
 
 		S = set.union(*[set(p.right_extensions(test=test)) for p in self])
-		return PermSet()
+		return PermSet(S)
 
 	def upset(self, up_to_length):
 		"""Return the upset of `self`, stratified by length.
