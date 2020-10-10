@@ -9,7 +9,7 @@ import itertools
 
 from collections import Counter, defaultdict
 try:
-    from math improt comb as binom
+    from math import comb as binom
 except ImportError:
     from scipy.special import binom
 
