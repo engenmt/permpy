@@ -238,7 +238,8 @@ class PegPermutation(Permutation):
         lq = len(q)
         indices[next] = indices[next-1]+1
         while indices[next] < lq:
-            if self.involvement_fits(upper_bound, lower_bound, indices, q, next) and self.involvement_check(upper_bound, lower_bound, indices, q, next+1):
+            if (self.involvement_fits(upper_bound, lower_bound, indices, q, next) 
+            	and self.involvement_check(upper_bound, lower_bound, indices, q, next+1)):
                 newsigns = [q.signs[i] for i in indices]
                 if self.sign_subset(q): 
                     return True

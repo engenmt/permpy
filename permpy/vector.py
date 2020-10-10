@@ -1,23 +1,22 @@
 class Vector(tuple):
   def __new__(cls, v):
-    for i in range(0, len(v)):
-      v[i] = int(v[i])
-      assert v[i] >= 0, 'vector entries must be nonnegative integers'
+    for i, val in enumerate(v):
+      v[i] = int(val)
+      assert v[i] >= 0, 'Vector entries must be nonnegative integers!'
     return tuple.__new__(cls, v)
 
-  def meet(self, V):
-  	assert len(V) == len(self), 'vectors must be same length to meet'
-  	new_vector = []
-  	for i in range(0, len(V)):
-  	  new_vector.append(max(V[i], self[i]))
-  	return Vector(new_vector)
+  def __contains__(self, other):
+    """Return True if `other` is contained in `self`.
+    """
+    assert len(v) == len(self), 'Vectors must be same length to check containment!'
+    return all(self_val >= other_val for self_val, other_val in zip(self, other))
 
-  def contained_in(self, V):
-    assert len(V) == len(self), 'vectors must be same length to check containment'
-    for i in range(0, len(V)):
-      if self[i] > V[i]:
-        return False
-    return True
+  def meet(self, v):
+  	assert len(v) == len(self), 'Vectors must be same length to meet!'
+  	return Vector([max(self_val, v_val) for self_val, v_val in zip(self, v)])
+
+  def contained_in(self, other):
+    return other.__contains__(self)
 
   def norm(self):
     return sum(self)
