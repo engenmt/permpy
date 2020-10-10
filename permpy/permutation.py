@@ -8,7 +8,10 @@ import fractions
 import itertools
 
 from collections import Counter, defaultdict
-from scipy.special import binom
+try:
+    from scipy.special import binom
+except ModuleNotFoundError:
+    from math import comb as binom
 
 from .permstats import PermutationStatsMixin
 from .permmisc import PermutationMiscMixin
