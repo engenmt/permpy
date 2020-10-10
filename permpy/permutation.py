@@ -9,9 +9,9 @@ import itertools
 
 from collections import Counter, defaultdict
 try:
+    from math improt comb as binom
+except ImportError:
     from scipy.special import binom
-except ModuleNotFoundError:
-    from math import comb as binom
 
 from .permstats import PermutationStatsMixin
 from .permmisc import PermutationMiscMixin
