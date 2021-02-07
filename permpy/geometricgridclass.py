@@ -46,8 +46,8 @@ class GeometricGridClass(PermClass):
 		Notes:
 			The following example represents the matrix
 			    +-+-+-+
-                | | |/|
-                +-+-+-+
+			    | | |/|
+			    +-+-+-+
 			M = | |/|/|
 			    +-+-+-+
 			    |/|/| |
@@ -252,7 +252,7 @@ class GeometricGridClass(PermClass):
 		return Permutation([y for x,y in sorted(points)])
 
 	def is_valid_word(self, word):
-		return all(w[i:i+2] not in self.commuting_pairs for i in range(len(w)-1))
+		return all(word[i:i+2] not in self.commuting_pairs for i in range(len(word)-1))
 
 
 if __name__ == "__main__":
