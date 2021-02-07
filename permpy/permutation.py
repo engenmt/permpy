@@ -188,7 +188,7 @@ class Permutation(tuple,
 
 		"""
 		if not isinstance(k, int):
-			raise ValuError(
+			raise ValueError(
 				f"Got confused: Permutation.ind_to_perm(k={k}, n={n}) was called.")
 
 		result = list(range(n))
