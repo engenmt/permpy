@@ -143,12 +143,12 @@ class Permutation(tuple,
 		"""
 		return list(cls.gen_all(n))
 
-        @classmethod
-        def all_perms(cls, n):
-                """Returns a list of all permutations of length `n`. Same as
-                other functions, adding for convenience'
-                """
-            return Perm.list_all(n)
+    @classmethod
+    def all_perms(cls, n):
+            """Returns a list of all permutations of length `n`. Same as
+            other functions, adding for convenience'
+            """
+        return Perm.list_all(n)
 
 	@classmethod
 	def standardize(cls, L):
