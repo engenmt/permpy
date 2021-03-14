@@ -28,6 +28,10 @@ class PermClass(PermClassDeprecatedMixin):
 	
 	def __len__(self):
 		return len(self.data)
+
+	def __iter__(self):
+		for idx in range(len(self)):
+			yield self[idx]
 	
 	def __getitem__(self, idx):
 		try:
