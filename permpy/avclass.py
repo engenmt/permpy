@@ -3,10 +3,10 @@ import logging
 import sys
 import types
 
-
 from .permutation import Permutation
 from .permset import PermSet
 from .permclass import PermClass
+from .propertyclass import PropertyClass
 
 class AvClass(PermClass):
 	"""An object representing an avoidance class. 
@@ -16,36 +16,37 @@ class AvClass(PermClass):
 
 	Examples:
 		>>> B = [123]
-		>>> A = AvClass(B, length=4)
+		>>> A = AvClass(B, max_len=4)
 		>>> for S in A:
 		...    print(S)
 		... 
-		Set of 0 permutations
+		Set of 1 permutations
 		Set of 1 permutations
 		Set of 2 permutations
 		Set of 5 permutations
 		Set of 14 permutations
 	"""
-	def __init__(self, basis, length=8, verbose=0):
+	def __init__(self, basis, max_len=8):
 
-		list.__init__(self, [PermSet()])
 		if isinstance(basis, Permutation):
-			self.basis = [basis]
+			basis = [basis]
 		else:
-			self.basis = [Permutation(b) for b in basis]
+			basis = [Permutation(b) for b in basis]
 		
-		self.test = lambda p: all(b not in p for b in basis)
-
-		p = Permutation([0], clean=True)
-		if length >= 1:
-			if p not in self.basis:
-				self.append(PermSet(p))
-				self.length = 1
-				self.extend_to_length(length)
+		C = [PermSet(Permutation())] # List consisting of just the PermSet containing the empty Permutation
+		
+		if max_len > 0:
+			if Permutation(1) not in basis:
+				C.append(PermSet(Permutation(1)))
 			else:
-				for _ in range(length):
-					self.append(PermSet())
-
+				C.append(PermSet())
+			
+			for length in range(max_len-1):
+				C.append(C[-1].right_extensions(basis=basis, trust=True))
+		
+		super().__init__(C)
+		self.basis = basis
+	
 	def extend_by_one(self, trust=True):
 		"""Extend `self` by right-extending its ultimate PermSet.
 		

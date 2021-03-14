@@ -242,7 +242,7 @@ class Permutation(tuple,
 
 		"""
 		if p is None:
-			return tuple.__new__(cls,[])
+			return tuple.__new__(cls, [])
 		elif clean:
 			return tuple.__new__(cls, p)
 		elif isinstance(p, Permutation):
