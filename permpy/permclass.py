@@ -28,6 +28,9 @@ class PermClass(PermClassDeprecatedMixin):
 	
 	def __len__(self):
 		return len(self.data)
+
+	def __iter__(self):
+		return iter(self.data)
 	
 	def __getitem__(self, idx):
 		try:
