@@ -18,8 +18,7 @@ class Node(object):
 		label = str(self.label)
 
 		if width:
-			s = r"{:" + str(width) + r"s}"
-			label = s.format(label)
+			label = f'{label:{width}s}'
 		else: 
 			width = len(label)
 
