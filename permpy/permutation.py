@@ -148,7 +148,7 @@ class Permutation(tuple,
 
 	@classmethod
 	def all_perms(cls, n):
-		"""Returns a list of all permutations of length `n`. Same as
+		"""Return a list of all permutations of length `n`. Same as
 		other functions, adding for convenience'
 		"""
 		return Perm.list_all(n)

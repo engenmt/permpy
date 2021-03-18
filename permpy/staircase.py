@@ -43,7 +43,7 @@ def gen_compositions(n, k=0):
 	"""Generate all compositions (as lists) of `n` into `k` parts.
 	If `k == 0`, then generate all compositions of `n`.
 	"""
-	assert n >= k, "Need weight to be more than length: {} > {}".format(n, k)
+	assert n >= k, f"Need weight to be at least length: {n} ≥ {k}"
 
 	if k == 0:
 		for i in xrange(1,n+1):
@@ -83,16 +83,11 @@ def gen_interval_divisions(m, k, shift = 0, reverse=False):
 	else:
 		direction = +1
 
-	# print("calling gid: {}, {}, {}, {}".format(m, k, shift, reverse))
 	L = range(shift, shift+m)[::direction]
-	# print(L)
 	for c in cwr(range(m+1),k-1):
 		# For each choice of divisions...
-		
-		# print("c = {} ->".format(c), end = " ")
-		c = (0,) + c + (m,)
-		# print("d = {} ->".format([c[i+1]-c[i] for i in range(k)]), end = " ")
 
+		c = (0,) + c + (m,)
 		yield [tuple(val for val in L[c[i]:c[i+1]]) for i in range(k)]
 
 def all_vertical_extensions(pi, m, k, verbose = False):
@@ -110,10 +105,9 @@ def all_vertical_extensions(pi, m, k, verbose = False):
 		suffix = pi[-k:]
 
 	if verbose:
-		print("vertically extending (pi, m, k) = {}".format((pi,m,k)))
-
-		print("prefix = {}".format(prefix))
-		print("suffix = {}".format(suffix))
+		print(f"Vertically extending (pi, m, k) = {(pi, m, k)}")
+		print(f"prefix = {prefix}")
+		print(f"suffix = {suffix}")
 
 	for uppers in gen_interval_divisions(m,k+1,shift = n):
 		# assert len(uppers) == k+1
@@ -121,8 +115,8 @@ def all_vertical_extensions(pi, m, k, verbose = False):
 		new_suffix = sum([uppers[i] + (suffix[i],) for i in range(k)], ()) + uppers[-1]
 
 		if verbose:
-			print("uppers = {:20}, new_suffix = {:20}".format(uppers,new_suffix))
-			print("yielding {}".format(prefix + new_suffix))
+			print(f"uppers = {uppers:20}, new_suffix = {new_suffix:20}")
+			print(f"Yielding {prefix + new_suffix}.")
 
 		yield prefix + new_suffix
 
@@ -142,22 +136,20 @@ def all_horizontal_extensions(pi, m, k, verbose=False):
 		suffix = tau[-k:]
 
 	if verbose:
-		print("horizontally extending (pi, m, k) = {}".format((pi,m,k)))
-
-		print("prefix = {}".format(prefix))
-		print("suffix = {}".format(suffix))
+		print(f"Horizontally extending (pi, m, k) = {(pi,m,k)}")
+		print(f"prefix = {prefix}")
+		print(f"suffix = {suffix}")
 
 	for uppers in gen_interval_divisions(m,k+1,shift = n,reverse=True):
 		new_suffix = sum([uppers[i] + (suffix[i],) for i in range(k)], ()) + uppers[-1]
 		
 		if verbose:
-			print("uppers = {:20}, new_suffix = {:20}".format(uppers,new_suffix))
-			print("yielding the inverse of {}".format(prefix + new_suffix))
+			print(f"uppers = {uppers:20}, new_suffix = {new_suffix:20}")
+			print(f"Yielding the inverse of {prefix + new_suffix}.")
 
 		yield inverse(prefix + new_suffix)
 
 def inverse(pi):
-	# print("taking inverse of pi = {}".format(pi))
 	q = tuple(pi.index(val) for val in range(len(pi)))
 	return q
 
@@ -173,16 +165,6 @@ def first_two_cells(n):
 	for pi, k in R:
 		for m in range(0,n+1):
 			S.update((tau, m) for tau in all_vertical_extensions(pi, m, k))
-			# S.update((pi, k) for pi in all_horizontal_extensions(initial, k, 0))
-
-	# E = defaultdict(list)
-	# for tau, k in S:
-	# 	E[len(tau)].append((tau, k))
-
-	# for idx, val in sorted(E.items()):
-	# 	for perm in val:
-	# 		print(pretty_out(*perm, vert_line=False))
-	# 		print("="*10)
 
 	T = set()
 
@@ -193,42 +175,19 @@ def first_two_cells(n):
 			for m in range(0,n-len(pi)+1):
 				T.update((tau, m) for tau in all_horizontal_extensions(pi, m, k))
 
-	# E = defaultdict(list)
-	# for tau, m in T:
-	# 	E[len(tau)].append((tau, m))
-
-	# for idx, val in sorted(E.items()):
-	# 	for perm in val:
-	# 		print(pretty_out(*perm, vert_line=True))
-	# 		print("="*10)
-
 	return T
 
 def add_two_cells(R, n, verbose=False):
-	# if verbose:
-	# 	print("Adding two cells!")
-	# 	print("Current state of affairs: ")
-
-
 	S = set()
 	for pi, k in R:
 		S.add((pi, 0))	
-		for m in range(1,n-len(pi)+1):
+		for m in range(1, n-len(pi)+1):
 			S.update((tau, m) for tau in all_vertical_extensions(pi, m, k))
-
-	# E = defaultdict(list)
-	# for tau, k in S:
-	# 	E[len(tau)].append((tau, k))
-
-	# for idx, val in sorted(E.items()):
-	# 	for perm in val:
-	# 		print(pretty_out(*perm, vert_line=False))
-	# 		print("="*10)
 
 	T = set()
 	for pi, k in S:
 		T.add((pi, 0))
-		for m in range(1,n-len(pi)+1):
+		for m in range(1, n-len(pi)+1):
 			T.update((tau, m) for tau in all_horizontal_extensions(pi, m, k))
 
 	return T
@@ -261,7 +220,7 @@ if __name__ == "__main__":
 
 	# 	C = Counter()
 
-	# 	# print("cells = {:2},".format(total_cells), end = "")
+	# 	# print(f"cells = {total_cells:2},", end = "")
 
 	# 	# print(S)
 
@@ -270,7 +229,7 @@ if __name__ == "__main__":
 
 	# 	for idx in [total_cells-4, total_cells-3]:
 	# 		if 0 <= idx <= n:
-	# 			print("cells = {:2}, n = {:2}, grids = {:8}, perms = {:8}".format(total_cells, idx, D[idx], C[idx]))
+	# 			print(f"cells = {total_cells:2}, n = {idx:2}, grids = {D[idx]:8}, perms = {C[idx]:8}")
 
 	# 	A = add_two_cells(A, n)
 	# 	# print(A)
