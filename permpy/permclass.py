@@ -58,6 +58,10 @@ class PermClass(PermClassDeprecatedMixin):
 		"""
 		return PermClass([PermSet.all(length) for length in range(max_length+1)])
 	
+	def append(self, S):
+		self.max_len += 1
+		self.data.append(S)
+	
 	def maximally_extend(self, additional_length=1):
 		"""Extend `self` maximally.
 		
