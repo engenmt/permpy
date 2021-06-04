@@ -55,18 +55,14 @@ class AvClass(PermClass):
 				the ultimate PermSet. In this context, we generally can.
 		"""
 		logging.debug(f"Calling extend_by_one({self}, trust={trust})")
-		self.length += 1
 		self.append(self[-1].right_extensions(basis=self.basis, trust=trust))
 	
 	def extend_to_length(self, length, trust=True):
-		if length <= len(self):
-			return
-
-		for n in range(self.length+1, length+1):
+		for _ in range(len(self)+1, length+1):
 			self.extend_by_one(trust=trust)
 
 	def extend_by_length(self, length, trust=True):
-		for n in range(length):
+		for _ in range(length):
 			self.extend_by_one(trust=trust)
 
 	def right_juxtaposition(self, C, generate_perms=True):
