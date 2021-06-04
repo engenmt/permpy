@@ -59,7 +59,7 @@ class AvClass(PermClass):
 		self.append(self[-1].right_extensions(basis=self.basis, trust=trust))
 	
 	def extend_to_length(self, length, trust=True):
-		if length <= self.length:
+		if length <= len(self):
 			return
 
 		for n in range(self.length+1, length+1):
