@@ -5,22 +5,14 @@ try:
 except ImportError:
     from distutils.core import setup
 
-setup(name         = 'permpy',
-      version      = '0.0.3',
-      description  = 'Permutation (patterns) workshop in Python',
-      author       = 'Michael Engen and Cheyne Homberger and Jay Pantone',
-      author_email = 'cheyne.homberger@gmail.com',
-      url          ='https://github.com/cheyneh/permpy',
-      keywords     = [
-        'permutations', 
-        'patterns', 
-        'research',
-        'enumeration'
-      ],
-      classifiers  = [],
-      packages     = [
-        'permpy', 
-        'permpy.InsertionEncoding', 
-        'permpy.RestrictedContainer'
-      ]
-     )
+setup(
+    name="permpy",
+    version="0.0.3",
+    description="Permutation (patterns) workshop in Python",
+    author="Michael Engen and Cheyne Homberger and Jay Pantone",
+    author_email="cheyne.homberger@gmail.com",
+    url="https://github.com/cheyneh/permpy",
+    keywords=["permutations", "patterns", "research", "enumeration"],
+    classifiers=[],
+    packages=["permpy", "permpy.InsertionEncoding", "permpy.RestrictedContainer"],
+)
