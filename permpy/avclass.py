@@ -6,7 +6,7 @@ import types
 from .permutation import Permutation
 from .permset import PermSet
 from .permclass import PermClass
-from .propertyclass import PropertyClass
+# from .propertyclass import PropertyClass
 
 class AvClass(PermClass):
 	"""An object representing an avoidance class. 
@@ -58,7 +58,7 @@ class AvClass(PermClass):
 		self.append(self[-1].right_extensions(basis=self.basis, trust=trust))
 	
 	def extend_to_length(self, length, trust=True):
-		for _ in range(len(self)+1, length+1):
+		for _ in range(self.max_len+1, length+1):
 			self.extend_by_one(trust=trust)
 
 	def extend_by_length(self, length, trust=True):

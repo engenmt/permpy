@@ -35,7 +35,7 @@ class PropertyClass(PermClass):
 
 	def __contains__(self, p):
 		p_length = len(p)
-		if p_length > len(self):
+		if p_length > self.max_len:
 			return self.property(p)
 		return p in self[p_length]
 
