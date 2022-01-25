@@ -5,7 +5,7 @@ X = namedtuple("X", ["v", "s"])
 
 
 def next_states(S, mul):
-    """Compute the states which would arise from the given state."""
+    """Compute the states that would arise from the given state."""
     to_return = Counter()
 
     def include(new_v, new_s):

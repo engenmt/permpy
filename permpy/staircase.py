@@ -8,6 +8,7 @@ def pretty_out(pi, k, vert_line=True, by_lines=False, width=2):
     """Return a nice string to visualize `pi`.
     If `by_lines == True`, then will return the list of strings by line,
     in case you want to append some stuff to each line.
+
     """
     print(pi, k)
     lines = []
@@ -42,12 +43,13 @@ def pretty_out(pi, k, vert_line=True, by_lines=False, width=2):
 def gen_compositions(n, k=0):
     """Generate all compositions (as lists) of `n` into `k` parts.
     If `k == 0`, then generate all compositions of `n`.
+
     """
     assert n >= k, f"Need weight to be at least length: {n} ≥ {k}"
 
     if k == 0:
-        for i in xrange(1, n + 1):
-            for c in compositions(n, i):
+        for i in range(1, n + 1):
+            for c in gen_compositions(n, i):
                 yield c
     else:
         if k == 1:
@@ -55,14 +57,14 @@ def gen_compositions(n, k=0):
         elif n == k:
             yield [1] * n
         else:
-            for i in xrange(1, n - k + 2):
-                for c in compositions(n - i, k - 1):
+            for i in range(1, n - k + 2):
+                for c in gen_compositions(n - i, k - 1):
                     yield c + [i]
 
 
 def gen_weak_compositions(n, k):
     """Generate all weak compositions (as lists) of `n` into `k` parts."""
-    for c in compositions(n + k, k):
+    for c in gen_compositions(n + k, k):
         yield [part - 1 for part in c]
 
 
@@ -70,14 +72,13 @@ def gen_interval_divisions(m, k, shift=0, reverse=False):
     """Generate all ways of splitting the interval `[1, m]` shifted up by `shift` into `k` pieces.
 
     Example:
-            >>> list(gen_interval_divisions(4, 2))
-            [[ ()          , (0, 1, 2, 3) ],
-             [ (0,)        ,    (1, 2, 3) ],
-             [ (0, 1)      ,       (2, 3) ],
-             [ (0, 1, 2)   ,          (3,)],
-             [ (0, 1, 2, 3),            ()]
-            ]
-
+        >>> list(gen_interval_divisions(4, 2))
+        [[ ()          , (0, 1, 2, 3) ],
+            [ (0,)        ,    (1, 2, 3) ],
+            [ (0, 1)      ,       (2, 3) ],
+            [ (0, 1, 2)   ,          (3,)],
+            [ (0, 1, 2, 3),            ()]
+        ]
     """
     if reverse:
         direction = -1
@@ -95,6 +96,7 @@ def gen_interval_divisions(m, k, shift=0, reverse=False):
 def all_vertical_extensions(pi, m, k, verbose=False):
     """Given a permutation `pi`, generate all ways to add an increasing sequence
     of length `m` above its right `k` points.
+
     """
     n = len(pi)
 
@@ -126,6 +128,7 @@ def all_vertical_extensions(pi, m, k, verbose=False):
 def all_horizontal_extensions(pi, m, k, verbose=False):
     """Given a permutation `pi`, generate all ways to add an decreasing sequence
     of length `m` to the right of its upper `k` points.
+
     """
 
     tau = inverse(pi)

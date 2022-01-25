@@ -14,19 +14,20 @@ class AvClass(PermClass):
     """An object representing an avoidance class.
 
     Notes:
-            Does not contain the empty permutation.
+        Does not contain the empty permutation.
 
     Examples:
-            >>> B = [123]
-            >>> A = AvClass(B, max_len=4)
-            >>> for S in A:
-            ...    print(S)
-            ...
-            Set of 1 permutations
-            Set of 1 permutations
-            Set of 2 permutations
-            Set of 5 permutations
-            Set of 14 permutations
+        >>> B = [123]
+        >>> A = AvClass(B, max_len=4)
+        >>> for S in A:
+        ...    print(S)
+        ...
+        Set of 1 permutations
+        Set of 1 permutations
+        Set of 2 permutations
+        Set of 5 permutations
+        Set of 14 permutations
+
     """
 
     def __init__(self, basis, max_len=8):
@@ -56,8 +57,9 @@ class AvClass(PermClass):
         """Extend `self` by right-extending its ultimate PermSet.
 
         Args:
-                trust (bool): Whether of not we can trust the insertion values of
-                        the ultimate PermSet. In this context, we generally can.
+            trust (bool): Whether of not we can trust the insertion values of
+                the ultimate PermSet. In this context, we generally can.
+
         """
         logging.debug(f"Calling extend_by_one({self}, trust={trust})")
         self.append(self[-1].right_extensions(basis=self.basis, trust=trust))
