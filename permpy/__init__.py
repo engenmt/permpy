@@ -13,13 +13,13 @@ from .RestrictedContainer import *
 
 try:
     import matplotlib as mpl
-    mpl.rc('axes', fc='E5E5E5', ec='white', lw='1',
-            grid='True', axisbelow='True')
-    mpl.rc('grid', c='white', ls='-')
-    mpl.rc('figure', fc='white')
+
+    mpl.rc("axes", fc="E5E5E5", ec="white", lw="1", grid="True", axisbelow="True")
+    mpl.rc("grid", c="white", ls="-")
+    mpl.rc("figure", fc="white")
     mpl_imported = True
 except ImportError:
-    print('Install matplotlib for extra plotting functionality.')
+    print("Install matplotlib for extra plotting functionality.")
     pass
 
 Perm = Permutation

@@ -10,4 +10,5 @@ from permpy.InsertionEncoding import *
 import permpy.RestrictedContainer
 
 import doctest
+
 doctest.testmod()
