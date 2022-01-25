@@ -162,7 +162,7 @@ class PermClass(PermClassDeprecatedMixin):
 
     def heatmap(self, **kwargs):
         permset = PermSet(
-            set.union(*self)
+            set().union(*self)
         )  # Collect all perms in self into one PermSet
         permset.heatmap(**kwargs)
 
