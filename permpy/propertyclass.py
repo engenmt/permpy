@@ -16,12 +16,13 @@ class PropertyClass(PermClass):
         """Return the smallest PermClass of all permutations that satisfy the test.
 
         Args:
-                property (func): function that accepts a permutation and returns a
-                        Boolean. Should be a hereditary property.
-                max_len (int): maximum length to be included in class
+            property (func): function that accepts a permutation and returns a
+                Boolean. Should be a hereditary property.
+            max_len (int): maximum length to be included in class
 
         Returns:
-                PropertyClass: class of permutations that satisfy the property.
+            PropertyClass: class of permutations that satisfy the property.
+
         """
 
         C = [
@@ -51,16 +52,16 @@ class PropertyClass(PermClass):
     def union(self, other):
         """
         Examples:
-                >>> inc = Permutation(12)
-                >>> D = PropertyClass(lambda p: inc not in p)
-                >>> dec = Permutation(21)
-                >>> I = PropertyClass(lambda p: dec not in p)
-                >>> U = D.union(I)
-                >>> len(U[8])
-                2
-                >>> U.extend(1)
-                >>> len(U[9])
-                2
+            >>> inc = Permutation(12)
+            >>> D = PropertyClass(lambda p: inc not in p)
+            >>> dec = Permutation(21)
+            >>> I = PropertyClass(lambda p: dec not in p)
+            >>> U = D.union(I)
+            >>> len(U[8])
+            2
+            >>> U.extend(1)
+            >>> len(U[9])
+            2
         """
         property_self = copy_func(self.property)
         property_other = copy_func(other.property)
@@ -83,11 +84,11 @@ class PropertyClass(PermClass):
     def skew_closure(self, max_len=8):
         """
         Examples:
-                >>> p = Permutation(21)
-                >>> C = PropertyClass(lambda q: p not in q) # Class of increasing permutations
-                >>> D = C.skew_closure(max_len=7) # Class of co-layered permutations
-                >>> len(D[7]) == 64
-                True
+            >>> p = Permutation(21)
+            >>> C = PropertyClass(lambda q: p not in q) # Class of increasing permutations
+            >>> D = C.skew_closure(max_len=7) # Class of co-layered permutations
+            >>> len(D[7]) == 64
+            True
         """
         property = copy_func(self.property)
 
@@ -99,11 +100,11 @@ class PropertyClass(PermClass):
     def sum_closure(self, max_len=8):
         """
         Examples:
-                >>> p = Permutation(12)
-                >>> C = PropertyClass(lambda q: p not in q) # Class of decreasing permutations
-                >>> D = C.sum_closure(max_len=7) # Class of layered permutations
-                >>> len(D[7]) == 64
-                True
+            >>> p = Permutation(12)
+            >>> C = PropertyClass(lambda q: p not in q) # Class of decreasing permutations
+            >>> D = C.sum_closure(max_len=7) # Class of layered permutations
+            >>> len(D[7]) == 64
+            True
         """
         property = copy_func(self.property)
 

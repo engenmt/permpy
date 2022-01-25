@@ -1,3 +1,5 @@
+import itertools
+
 from math import gcd
 
 
@@ -13,7 +15,7 @@ class PermutationMiscMixin:
 
     @classmethod
     def one_cycles(cls, n):
-        """Generate those permutations of length n which consist of one cycle."""
+        """Generate those permutations of length n that consist of one cycle."""
         for pi in itertools.permutations(range(n - 1)):
             cycle = [n - 1] + list(pi)
             tau = [None for _ in range(n)]
