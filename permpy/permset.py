@@ -86,7 +86,7 @@ class PermSet(set, PermSetDeprecatedMixin):
 
     def by_length(self):
         """Return a dictionary stratifying the permutations in `self`."""
-        D = defaultdictionary(PermSet)
+        D = defaultdict(PermSet)
         for p in self:
             D[len(p)].add(p)
         return D
@@ -115,7 +115,7 @@ class PermSet(set, PermSetDeprecatedMixin):
 
         shortest_len = min(len(p) for p in self)
         shortest_perms = PermSet(p for p in self if len(p) == shortest_len)
-        S = PermSet(p for p in s if p.avoids(B=shortest_perms))
+        S = PermSet(p for p in self if p.avoids(B=shortest_perms))
 
         return shortest_perms + S.minimal_elements()
 
@@ -129,11 +129,11 @@ class PermSet(set, PermSetDeprecatedMixin):
 
     def covers(self, verbose=0):
         """Return those permutations that `self` covers."""
-        return PermSet(set.union(*[p.covers() for p in self]))
+        return PermSet(set().union(*[p.covers() for p in self]))
 
     def covered_by(self):
         """Return those permutations that `self` is covered by."""
-        return PermSet(set.union(*[p.covered_by() for p in self]))
+        return PermSet(set().union(*[p.covered_by() for p in self]))
 
     def right_extensions(self, basis=None, test=None, trust=False):
         """Return the 'one layer' upset of `self`.
@@ -165,7 +165,7 @@ class PermSet(set, PermSetDeprecatedMixin):
             def test(p):
                 return p.avoids(B=basis, lr=lr)
 
-        S = set.union(*[set(p.right_extensions(test=test)) for p in self])
+        S = set().union(*[set(p.right_extensions(test=test)) for p in self])
         return PermSet(S)
 
     def upset(self, up_to_length):
@@ -190,7 +190,7 @@ class PermSet(set, PermSetDeprecatedMixin):
 
         for length in range(min_length + 1, max_length + 1):
             prev_length = upset[length - 1] + by_length[-1]
-            upset.append(PermSet(set.union(p.covered_by() for p in prev_length)))
+            upset.append(PermSet(set().union(p.covered_by() for p in prev_length)))
 
         return upset
 
