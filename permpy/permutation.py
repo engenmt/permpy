@@ -155,7 +155,7 @@ class Permutation(
         """Return a list of all permutations of length `n`. Same as
         other functions, adding for convenience'
         """
-        return Perm.list_all(n)
+        return cls.list_all(n)
 
     @classmethod
     def standardize(cls, L):
@@ -924,7 +924,7 @@ class Permutation(
         """
         max_idx = 0
         max_len = 0
-        current_run_min = n
+        current_run_min = len(self)
         current_run_idx = 0
         current_run_len = 0
         for idx, val in enumerate(self):
@@ -980,7 +980,7 @@ class Permutation(
         if stratified:
             return L
         else:
-            return set.union(*L)
+            return set().union(*L)
 
     def set_up_bounds(self):
         """
