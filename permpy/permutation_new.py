@@ -123,7 +123,9 @@ class Permutation(
             >>> p.involves(123)
             False
 
-        TODO: Ideally, we should use MCMC for this.
+        Todo:
+            Ideally, we should use MCMC for this.
+
         """
 
         i = 1
@@ -856,7 +858,9 @@ class Permutation(
                 >>> Permutation(3142).breadth()
                 3
 
-        TODO: Currently uses the naive algorithm--can be improved, probably.
+        Todo:
+            Currently uses the naive algorithm---can be improved, probably.
+
         """
 
         min_dist = len(self)
@@ -1021,7 +1025,6 @@ class Permutation(
                 >>> Permutation(123456).avoids(123)
                 False
 
-        TODO: Am I correct on the lr?
         """
         if p is not None:
             p = Permutation(p)

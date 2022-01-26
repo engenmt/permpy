@@ -79,7 +79,8 @@ class PermutationStatsMixin:
     def is_simple(self):
         """Determine if `self` is simple.
 
-        Todo: Implement this better, if possible.
+        Todo:
+            Implement this better, if possible.
 
         """
         (i, j) = self.simple_location()
