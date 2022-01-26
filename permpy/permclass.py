@@ -122,6 +122,7 @@ class PermClass(PermClassDeprecatedMixin):
             >>> D = C.sum_closure() # Class of layered permutations
             >>> D.guess_basis() == PermSet([Permutation(312), Permutation(231)])
             True
+
         """
         assert (
             max_length <= self.max_len

@@ -151,9 +151,10 @@ class PermSet(set, PermSetDeprecatedMixin):
         Args:
             basis (iter:optional): permutations to avoid. Useful for building classes.
             test (optional): Function that accepts a permutation and returns a boolean.
-                    Only returns those permutations that pass the test.
+                Only returns those permutations that pass the test.
             trust (boolean:optional): Whether or not to trust the `insertion_values`
-                    existing in the Permutations in `self`.
+                existing in the Permutations in `self`.
+
         """
         if len(self) == 0:
             return PermSet()
@@ -230,7 +231,8 @@ class PermSet(set, PermSetDeprecatedMixin):
 
         Notes:
             Works as long as the statistic is a number. If the statistic is a
-            Counter or something, this will fail as written.
+                Counter or something, this will fail as written.
+
         """
         return sum((statistic(p) for p in self), default)
 

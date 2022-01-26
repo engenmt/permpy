@@ -67,6 +67,7 @@ class Permutation(
         Examples:
             >>> Permutation.monotone_increasing(5)
             1 2 3 4 5
+
         """
         return cls(range(n), clean=True)
 
@@ -77,16 +78,13 @@ class Permutation(
         Examples:
             >>> Permutation.monotone_decreasing(5)
             5 4 3 2 1
+
         """
         return cls(range(n - 1, -1, -1), clean=True)
 
     @classmethod
     def identity(cls, n):
-        """Return the identity permutation of length n.
-
-        Notes:
-            Same as monotone_increasing.
-        """
+        """Wrapper for Permutation.monotone_increasing."""
         return cls.monotone_increasing(n)
 
     @classmethod
@@ -96,6 +94,7 @@ class Permutation(
         Examples:
             >>> len( Permutation.random(10) ) == 10
             True
+
         """
         L = list(range(n))
         random.shuffle(L)
@@ -110,12 +109,12 @@ class Permutation(
             n (int): length of permutation to generate
             B (iterable): Iterable of permutation-like objects to avoid.
             simple (Boolean, optional): Whether the returned Permutation should be simple.
-                    Defaults to False.
+                Defaults to False.
             involution (Boolean, optional): Whether the returned Permutation should be an involution.
-                    Defaults to False.
+                Defaults to False.
             verbose (int, optional): Level of verbosity (-1 for no verbosity)
-                    Doubling the integer doubles the number of messages printed.
-                    Defaults to -1.
+                Doubling the integer doubles the number of messages printed.
+                Defaults to -1.
 
         Returns:
             p (Permutation): A permutation avoiding all the patterns in `B`
@@ -125,7 +124,9 @@ class Permutation(
             >>> p.involves(123)
             False
 
-        TODO: Ideally, we should use MCMC for this.
+        Todo:
+            Ideally, we should use MCMC for this.
+
         """
 
         i = 1
@@ -154,10 +155,7 @@ class Permutation(
 
     @classmethod
     def all_perms(cls, n):
-        """Return a list of all permutations of length `n`. Same as
-        other functions, adding for convenience'
-
-        """
+        """Wrapper for Permutation.list_all."""
         return cls.list_all(n)
 
     @classmethod
@@ -304,6 +302,7 @@ class Permutation(
             True
             >>> Permutation(231) in Permutation(1234)
             False
+
         """
         return other.involved_in(self)
 
@@ -857,7 +856,9 @@ class Permutation(
             >>> Permutation(3142).breadth()
             3
 
-        TODO: Currently uses the naive algorithm--can be improved, probably.
+        Todo:
+            Currently uses the naive algorithm---can be improved, probably.
+
         """
 
         min_dist = len(self)
@@ -897,7 +898,7 @@ class Permutation(
         """Return the (inital) index and length of a longest ascending run of `self`.
 
         Notes:
-            An ascending run is a consecutive sequence of increasing entries.
+            An ascending run is a contiguous increasing sequence of entries.
 
         """
         max_idx = 0
@@ -922,7 +923,7 @@ class Permutation(
         """Return the (inital) index and length of a longest descending run of `self`.
 
         Notes:
-            A run is a contiguous subsequence of self.
+            A descending run is a contiguous decreasing sequence of entries.
 
         """
         max_idx = 0
@@ -1023,7 +1024,8 @@ class Permutation(
             >>> Permutation(123456).avoids(123)
             False
 
-        TODO: Am I correct on the lr?
+        Todo:
+            Am I correct on the lr?
         """
         if p is not None:
             p = Permutation(p)
