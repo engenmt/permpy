@@ -124,12 +124,13 @@ class GeometricGridClass(PermClass):
         Meaning col = [1, -1, 1] and row = [1, -1].
 
         Examples:
-                >>> M = [[ 1, 0], [ 0, 1], [ 1,-1]]
-                >>> G = GeometricGridClass(M, generate=False)
-                >>> G.col
-                [1, -1, 1]
-                >>> G.row
-                [1, -1]
+            >>> M = [[ 1, 0], [ 0, 1], [ 1,-1]]
+            >>> G = GeometricGridClass(M, generate=False)
+            >>> G.col
+            [1, -1, 1]
+            >>> G.row
+            [1, -1]
+
         """
         col_signs = self.col or [0 for _ in range(len(self.M))]
         row_signs = self.row or [0 for _ in range(len(self.M[0]))]

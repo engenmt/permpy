@@ -7,8 +7,7 @@ def av_test(p):
 
 
 def copy_func(f, name=None):
-    """
-    return a function with same code, globals, defaults, closure, and
+    """Return a function with same code, globals, defaults, closure, and
     name (or provide a new name)
     """
     fn = types.FunctionType(

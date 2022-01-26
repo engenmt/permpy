@@ -4,8 +4,8 @@ from .permdeprecated import deprecated
 class PermSetDeprecatedMixin:
     @deprecated
     def layer_down(self, verbose=0):
-        """Return the PermSet of those permutations which are covered by an element of `self`."""
-        return self.covers(verbose=0)
+        """Return the PermSet of those permutations that are covered by an element of `self`."""
+        return self.covers(verbose=verbose)
 
     @deprecated
     def all_syms(self):
