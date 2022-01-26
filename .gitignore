@@ -1,4 +1,5 @@
 __pycache__/
 *.pynb
 .DS_store
-
+dist/
+permpy.egg-info/
