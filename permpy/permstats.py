@@ -1,6 +1,3 @@
-from collections import Counter
-
-
 class PermutationStatsMixin:
     def num_fixed_points(self):
         return len(self.fixed_points())
@@ -54,27 +51,30 @@ class PermutationStatsMixin:
         return True
 
     def is_increasing(self):
-        return self.is_identity()
-
-    def is_decreasing(self):
-        for idx, val in enumerate(self[::-1]):
-            if idx != val:
-                return False
-        return True
-
-    def is_identity(self):
-        """Determine if the permutation is the identity.
+        """Determine if the permutation is increasing.
 
         Examples:
             >>> p = Permutation.random(10)
-            >>> (p * p.inverse()).is_identity()
+            >>> (p * p.inverse()).is_increasing()
             True
 
         """
-        for idx, val in enumerate(self):
-            if idx != val:
-                return False
-        return True
+        return all(idx == val for idx, val in enumerate(self))
+
+    def is_decreasing(self):
+        """Determine if the permutation is increasing.
+
+        Examples:
+            >>> p = Permutation(range(10,0,-1))
+            >>> p.is_decreasing()
+            True
+
+        """
+        return all(idx == val for idx, val in enumerate(self[::-1]))
+
+    def is_identity(self):
+        """Wrapper for is_increasing."""
+        return self.is_increasing()
 
     def is_simple(self):
         """Determine if `self` is simple.
@@ -83,7 +83,7 @@ class PermutationStatsMixin:
             Implement this better, if possible.
 
         """
-        (i, j) = self.simple_location()
+        (i, _) = self.simple_location()
         return i == 0
 
     def is_strongly_simple(self):

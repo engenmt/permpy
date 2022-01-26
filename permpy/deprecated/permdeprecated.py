@@ -1,8 +1,6 @@
 import warnings
 import functools
 
-from collections import Counter
-
 
 def deprecated(func):
     """This is a decorator that can be used to mark functions
@@ -55,7 +53,7 @@ class PermutationDeprecatedMixin:
     def _ascii_plot(self):
         """Prints a simple plot of the given Permutation."""
         n = len(self)
-        array = [[" " for i in range(n)] for j in range(n)]
+        array = [[" " for _ in range(n)] for _ in range(n)]
         for i in range(n):
             array[self[i]][i] = "*"
         array.reverse()
@@ -114,7 +112,7 @@ class PermutationDeprecatedMixin:
         n = self.__len__()
         q = [0] + [p[i] + 1 for i in range(n)]
         grayperm = range(1, n + 1) + [0]
-        blackperm = [0 for i in range(n + 1)]
+        blackperm = [0 for _ in range(n + 1)]
         for i in range(n + 1):
             ind = q.index(i)
             blackperm[i] = q[ind - 1]
@@ -224,7 +222,7 @@ class PermutationDeprecatedMixin:
         n = self.__len__()
         q = [0] + [p[i] + 1 for i in range(n)]
         grayperm = [n] + range(n)
-        blackperm = [0 for i in range(n + 1)]
+        blackperm = [0 for _ in range(n + 1)]
         for i in range(n + 1):
             ind = q.index(i)
             blackperm[i] = q[ind - 1]

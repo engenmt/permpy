@@ -13,14 +13,14 @@ def bend_list(perm):
     raise NotImplementedError
 
     # this isn't quite correct....
-    return len(
-        [
-            i
-            for i in range(1, len(perm) - 1)
-            if (perm[i - 1] > perm[i] and perm[i + 1] > perm[i])
-            or (perm[i - 1] < perm[i] and perm[i + 1] < perm[i])
-        ]
-    )
+    # return len(
+    #     [
+    #         i
+    #         for i in range(1, len(perm) - 1)
+    #         if (perm[i - 1] > perm[i] and perm[i + 1] > perm[i])
+    #         or (perm[i - 1] < perm[i] and perm[i + 1] < perm[i])
+    #     ]
+    # )
 
 
 def order(perm):
@@ -58,7 +58,7 @@ def christiecycles(perm):
     n = perm.__len__()
     q = [0] + [p[i] + 1 for i in range(n)]
     grayperm = range(1, n + 1) + [0]
-    blackperm = [0 for i in range(n + 1)]
+    blackperm = [0 for _ in range(n + 1)]
     for i in range(n + 1):
         ind = q.index(i)
         blackperm[i] = q[ind - 1]
@@ -77,7 +77,7 @@ def othercycles(perm):
     n = perm.__len__()
     q = [0] + [p[i] + 1 for i in range(n)]
     grayperm = [n] + range(n)
-    blackperm = [0 for i in range(n + 1)]
+    blackperm = [0 for _ in range(n + 1)]
     for i in range(n + 1):
         ind = q.index(i)
         blackperm[i] = q[ind - 1]

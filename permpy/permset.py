@@ -1,6 +1,4 @@
 import random
-import fractions
-from functools import reduce
 
 from collections import Counter, defaultdict
 
@@ -132,7 +130,7 @@ class PermSet(set, PermSetDeprecatedMixin):
         S.update([p.inverse() for p in S])
         return PermSet(S)
 
-    def covers(self, verbose=0):
+    def covers(self):
         """Return those permutations that `self` covers."""
         return PermSet(set().union(*[p.covers() for p in self]))
 
@@ -253,7 +251,6 @@ class PermSet(set, PermSetDeprecatedMixin):
         except ImportError as exc:
             raise exc("PermSet.heatmap requires numpy to be imported!")
         # first group permutations by length
-        total_size = len(self)
         perms_by_length = self.by_length()
 
         # if given a length, ignore all other lengths
@@ -278,7 +275,6 @@ class PermSet(set, PermSetDeprecatedMixin):
                     small_grid[length - val - 1, idx] += 1
             mul = grid_size // length
             inflated = inflate(small_grid, mul)
-            num_perms = len(permset)
             inflated /= inflated.max()
             grid += inflated
 
@@ -360,4 +356,4 @@ def unpush(state):
 
 
 if __name__ == "__main__":
-    import doctest
+    pass

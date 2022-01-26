@@ -4,10 +4,9 @@ import subprocess
 import time
 import math
 import random
-import fractions
 import itertools
 
-from collections import Counter, defaultdict
+from collections import Counter
 
 try:
     from math import comb as binom
@@ -33,15 +32,6 @@ Todo:
 """
 
 
-def _is_iter(obj):
-    try:
-        iter(obj)
-        return True
-    except TypeError:
-        return False
-
-
-# a class for creating permutation objects
 class Permutation(
     tuple, PermutationStatsMixin, PermutationMiscMixin, PermutationDeprecatedMixin
 ):
@@ -557,15 +547,15 @@ class Permutation(
             ...     print(repr(line))
             ...
             '                  10'
-            '   9                '
-            '               8    '
-            '       7            '
-            '           6        '
-            '         5          '
-            '             4      '
-            '     3              '
-            '                 2  '
-            ' 1                  '
+            '   9'
+            '               8'
+            '       7'
+            '           6'
+            '         5'
+            '             4'
+            '     3'
+            '                 2'
+            ' 1'
 
         """
         lines = []
@@ -573,11 +563,9 @@ class Permutation(
 
         width = max(width, len(str(n)))  # This is the width of each value.
 
-        blank = " " * width
         for val in range(n - 1, -1, -1):
-            line = "".join(
-                f"{val+1:>{width}}" if val == other_val else blank for other_val in self
-            )
+            idx = self.index(val)
+            line = f"{val+1:>{width*(idx+1)}}"
             lines.append(line)
 
         if by_lines:
@@ -828,9 +816,9 @@ class Permutation(
 
         """
         L = [
-            (i, j + i + 1)
+            (i, j)
             for i, val_i in enumerate(self)
-            for j, val_j in enumerate(self[i + 1 :])
+            for j, val_j in enumerate(self[i + 1 :], start=i + 1)
             if val_i >= val_j
         ]
         return L
@@ -839,12 +827,17 @@ class Permutation(
         """Return the list of noninversions of the permutation, i.e., the
         pairs (i,j) such that i < j and self(i) < self(j).
 
+        Examples:
+            >>> Permutation(4132).noninversions()
+            [(1, 2), (1, 3)]
+            >>> Permutation.monotone_decreasing(7).noninversions()
+            []
+
         """
-        n = len(self)
         L = [
-            (i, j + i + 1)
+            (i, j)
             for i, val_i in enumerate(self)
-            for j, val_j in enumerate(self[i + 1 :])
+            for j, val_j in enumerate(self[i + 1 :], start=i + 1)
             if val_i <= val_j
         ]
         return L
@@ -884,14 +877,11 @@ class Permutation(
         """Return a Counter (dictionary) counting the occurrences of each perm of length `k` in `self`.
 
         Examples:
-            >>> a = Permutation(1324)
-            >>> a.pattern_counts(3)
+            >>> Permutation(1324).pattern_counts(3)
             Counter({1 2 3: 2, 1 3 2: 1, 2 1 3: 1})
 
         """
-        C = Counter()
-        for vals in itertools.combinations(self, k):
-            C[Permutation(vals)] += 1
+        C = Counter(Permutation(vals) for vals in itertools.combinations(self, k))
         return C
 
     def max_ascending_run(self):
@@ -974,7 +964,7 @@ class Permutation(
 
         """
         n = len(self)
-        L = [set()] * n
+        L = [set() for _ in range(n)]
         L.append(set([self]))
         for i in range(n + 1, height + 1):
             new_set = set()
@@ -991,6 +981,7 @@ class Permutation(
         """
         Notes:
             ME: I don't know what this does.
+
         """
         L = list(self)
         n = len(L)
@@ -1232,11 +1223,12 @@ class Permutation(
     def decomposition(self):
         """
         Notes:
-                ME: I don't know what this is.
+            ME: I don't know what this is.
+
         """
 
         base = Permutation(self)
-        components = [Permutation([1]) for i in range(0, len(base))]
+        components = [Permutation(1) for _ in range(0, len(base))]
         while not base.is_simple():
             assert len(base) == len(components)
             (i, j) = base.maximal_interval()
@@ -1261,6 +1253,7 @@ class Permutation(
 
         Raises:
             ValueError if the wrong number of components is given.
+
         """
         n = len(self)
         if n != len(components):
@@ -1279,7 +1272,7 @@ class Permutation(
         inflated_flat = [val for component in inflated for val in component]
         return Permutation(inflated_flat)
 
-    def right_extensions(self, test=None, basis=None, trust=False):
+    def right_extensions(self, test=None, basis=None):
         """Returns the list of right extensions of `self`, only including those
         in which the new value comes from `self.insertion_values`.
 
@@ -1333,7 +1326,7 @@ class Permutation(
         ys = [val + Permutation._BASE for val in self]
         if not ax:
             ax = plt.gca()
-        scat = ax.scatter(xs, ys, s=40, c="k")
+        ax.scatter(xs, ys, s=40, c="k")
         ax_settings = {
             "xticks": xs,
             "yticks": ys,
@@ -1507,14 +1500,3 @@ class Permutation(
 
 if __name__ == "__main__":
     pass
-
-    # B = [Permutation([1]) - Permutation(b) for b in [312,231,123]]
-    # for b in B:
-    # 	print(b)
-
-    # n = 5
-    # for pi in Permutation.gen_all(n):
-    # 	if all(pi.avoids(b) for b in B):
-    # 		if not pi.sum_decomposable():
-    # 			print(pi.pretty_out())
-    # 			print("-"*(2*n))

@@ -1,13 +1,11 @@
 import copy
 import logging
-import time
 
 from math import factorial
 
 from .permutation import Permutation
 from .permset import PermSet
 from .deprecated.permclassdeprecated import PermClassDeprecatedMixin
-from .utils import copy_func
 
 logging.basicConfig(level=logging.INFO)
 
@@ -56,6 +54,7 @@ class PermClass(PermClassDeprecatedMixin):
             >>> C = PermClass.all(6)
             >>> print([len(S) for S in C])
             [1, 1, 2, 6, 24, 120, 720]
+
         """
         return PermClass([PermSet.all(length) for length in range(max_length + 1)])
 
@@ -73,6 +72,7 @@ class PermClass(PermClassDeprecatedMixin):
             >>> C.maximally_extend(1)
             >>> len(C[5]) # All but the 17 permutations covering 1234
             103
+
         """
         for _ in range(additional_length):
             self.data.append(
@@ -93,6 +93,7 @@ class PermClass(PermClassDeprecatedMixin):
             >>> C.filter_by(lambda q: p not in q)
             >>> all(len(S) == 1 for S in C)
             True
+
         """
         for length in range(len(self)):
             for p in list(self[length]):
@@ -105,7 +106,7 @@ class PermClass(PermClassDeprecatedMixin):
         C.filter_by(property)
         return C
 
-    def guess_basis(self, max_length=6, search_mode=False):
+    def guess_basis(self, max_length=6):
         """Guess a basis for the class up to "max_length" by iteratively
         generating the class with basis elements known so far (initially the
         empty set) and adding elements that should be avoided to the basis.
@@ -194,8 +195,6 @@ class PermClass(PermClassDeprecatedMixin):
 
     def sum_closure(self, max_len=8):
         """Return the sum closure of `self`.
-        Notes:
-            This could be done constructively.
 
         Examples:
             >>> p = Permutation(12)
@@ -204,6 +203,9 @@ class PermClass(PermClassDeprecatedMixin):
             >>> D = C.sum_closure(max_len=7)
             >>> len(D[7]) == 64
             True
+
+        Todo:
+            Implement constructively.
 
         """
         assert max_len <= self.max_len, "Can't make a sum-closure of that size!"
