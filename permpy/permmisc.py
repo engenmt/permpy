@@ -85,15 +85,15 @@ class PermutationMiscMixin:
             for i in range(1, max([len(p) for p in S]) + 1)
         ]
 
-    def sum_indec_bdd_by(self, n):
-        l = [1]
-        S = list(self.children())
-        while len(S) > 0 and len(S[0]) > 0:
-            l = [len([s for s in S if not s.sum_decomposable()])] + l
-            if l[0] > n:
-                return False
-            S = list(permset.PermSet(S).layer_down())
-        return True
+    # def sum_indec_bdd_by(self, n):
+    #     l = [1]
+    #     S = list(self.children())
+    #     while len(S) > 0 and len(S[0]) > 0:
+    #         l = [len([s for s in S if not s.sum_decomposable()])] + l
+    #         if l[0] > n:
+    #             return False
+    #         S = list(permset.PermSet(S).layer_down())
+    #     return True
 
     def contains_locations(self, Q):
         locs = []
@@ -123,23 +123,6 @@ class PermutationMiscMixin:
             layers.append(positions)
             P = Permutation([P[i] for i in range(len(P)) if i not in positions])
         return layers
-
-    def sum_indecomposable_sequence(self):
-        S = self.downset()
-        return [
-            len([p for p in S if len(p) == i and not p.sum_decomposable()])
-            for i in range(1, max([len(p) for p in S]) + 1)
-        ]
-
-    def sum_indec_bdd_by(self, n):
-        l = [1]
-        S = list(self.children())
-        while len(S) > 0 and len(S[0]) > 0:
-            l = [len([s for s in S if not s.sum_decomposable()])] + l
-            if l[0] > n:
-                return False
-            S = list(permset.PermSet(S).layer_down())
-        return True
 
     def contains_locations(self, Q):
         locs = []

@@ -1,4 +1,4 @@
-from math import factorial, fabs
+from math import fabs
 from sympy import *
 from itertools import chain, combinations
 
@@ -39,7 +39,6 @@ class PegPermutation(Permutation):
 
     def __eq__(self, other):
         return hash(self) == hash(other)
-        # return super(PegPermutation, self).__eq__(other) and self.signs == other.signs
 
     def num_signs(self):
         return sum([1 for s in self.signs if s != "."])
@@ -242,7 +241,6 @@ class PegPermutation(Permutation):
             if self.involvement_check(
                 self.upper_bound, self.lower_bound, indices, P, 1
             ):
-                newsigns = [P.signs[i] for i in indices]
                 if self.sign_subset(P):
                     return True
             indices[0] += 1
@@ -260,7 +258,6 @@ class PegPermutation(Permutation):
             ) and self.involvement_check(
                 upper_bound, lower_bound, indices, q, next + 1
             ):
-                newsigns = [q.signs[i] for i in indices]
                 if self.sign_subset(q):
                     return True
             indices[next] += 1

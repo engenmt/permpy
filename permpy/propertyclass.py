@@ -1,7 +1,5 @@
 import copy
 import logging
-import time
-from math import factorial
 
 from .permutation import Permutation
 from .permset import PermSet
@@ -62,6 +60,7 @@ class PropertyClass(PermClass):
             >>> U.extend(1)
             >>> len(U[9])
             2
+
         """
         property_self = copy_func(self.property)
         property_other = copy_func(other.property)
@@ -73,7 +72,7 @@ class PropertyClass(PermClass):
         return C
 
     def extend(self, t):
-        for i in range(t):
+        for _ in range(t):
             self.data.append(self[-1].right_extensions(test=self.property))
 
     def extended(self, t):

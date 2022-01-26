@@ -1,13 +1,9 @@
 from math import factorial
 import logging
-import sys
-import types
 
 from .permutation import Permutation
 from .permset import PermSet
 from .permclass import PermClass
-
-# from .propertyclass import PropertyClass
 
 
 class AvClass(PermClass):
@@ -116,9 +112,4 @@ class AvClass(PermClass):
 
 
 if __name__ == "__main__":
-    print()
-
-    B = [123]
-    A = AvClass(B, 12)
-    for idx, S in enumerate(A):
-        print(S)
+    pass
