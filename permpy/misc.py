@@ -1,4 +1,4 @@
-""" This is working code which may or may not be added to a class at some point."""
+""" This is working code that may or may not be added to a class at some point."""
 
 from __future__ import print_function
 from permpy import *

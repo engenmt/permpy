@@ -36,9 +36,10 @@ class PermSet(set, PermSetDeprecatedMixin):
         """Return the union of the two permutation sets.
 
         Examples:
-                >>> S = PermSet.all(3) + PermSet.all(4)
-                >>> S
-                Set of 30 permutations
+            >>> S = PermSet.all(3) + PermSet.all(4)
+            >>> S
+            Set of 30 permutations
+
         """
         return PermSet(super().__or__(other))
 
@@ -50,9 +51,10 @@ class PermSet(set, PermSetDeprecatedMixin):
         """Return the union of the two permutation sets.
 
         Examples:
-                >>> S = PermSet.all(3) - PermSet(Permutation(123))
-                >>> len(S)
-                5
+            >>> S = PermSet.all(3) - PermSet(Permutation(123))
+            >>> len(S)
+            5
+
         """
         return PermSet(super().__sub__(other))
 
@@ -61,12 +63,13 @@ class PermSet(set, PermSetDeprecatedMixin):
         """Return the set of all permutations of a given length.
 
         Args:
-                length (int): the length of the permutations
+            length (int): the length of the permutations
 
         Examples:
-                >>> p = Permutation(12); q = Permutation(21)
-                >>> PermSet.all(2) == PermSet([p, q])
-                True
+            >>> p = Permutation(12); q = Permutation(21)
+            >>> PermSet.all(2) == PermSet([p, q])
+            True
+
         """
         return PermSet(Permutation.gen_all(length))
 
@@ -78,9 +81,10 @@ class PermSet(set, PermSetDeprecatedMixin):
         """Return a random element from the set.
 
         Examples:
-                >>> p = PermSet.all(4).get_random()
-                >>> p in PermSet.all(4) and len(p) == 4
-                True
+            >>> p = PermSet.all(4).get_random()
+            >>> p in PermSet.all(4) and len(p) == 4
+            True
+
         """
         return random.sample(self, 1)[0]
 
@@ -95,12 +99,13 @@ class PermSet(set, PermSetDeprecatedMixin):
         """Return the subset of permutations that have the specified length.
 
         Args:
-                length (int): length of permutations to be returned
+            length (int): length of permutations to be returned
 
         Examples:
-                >>> S = PermSet.all(4) + PermSet.all(3)
-                >>> S.get_length(3) == PermSet.all(3)
-                True
+            >>> S = PermSet.all(4) + PermSet.all(3)
+            >>> S.get_length(3) == PermSet.all(3)
+            True
+
         """
         return PermSet(p for p in self if len(p) == length)
 
@@ -139,16 +144,17 @@ class PermSet(set, PermSetDeprecatedMixin):
         """Return the 'one layer' upset of `self`.
 
         Notes:
-                Requires each permutation in `self` to be the same size.
-                Requires either basis or test.
-                Implicit assumption is that the test is hereditary.
+            Requires each permutation in `self` to be the same size.
+            Requires either basis or test.
+            Implicit assumption is that the test is hereditary.
 
         Args:
-                basis (iter:optional): permutations to avoid. Useful for building classes.
-                test (optional): Function that accepts a permutation and returns a boolean.
-                        Only returns those permutations that pass the test.
-                trust (boolean:optional): Whether or not to trust the `insertion_values`
-                        existing in the Permutations in `self`.
+            basis (iter:optional): permutations to avoid. Useful for building classes.
+            test (optional): Function that accepts a permutation and returns a boolean.
+                Only returns those permutations that pass the test.
+            trust (boolean:optional): Whether or not to trust the `insertion_values`
+                existing in the Permutations in `self`.
+
         """
         if len(self) == 0:
             return PermSet()
@@ -172,7 +178,7 @@ class PermSet(set, PermSetDeprecatedMixin):
         """Return the upset of `self`, stratified by length.
 
         Args:
-                basis (iter:optional): permutations to avoid. Useful for building classes.
+            basis (iter:optional): permutations to avoid. Useful for building classes.
         """
         if not self:
             return []
@@ -224,8 +230,9 @@ class PermSet(set, PermSetDeprecatedMixin):
         """Return the sum of the given statistic over all perms in `self`.
 
         Notes:
-                Works as long as the statistic is a number. If the statistic is a
+            Works as long as the statistic is a number. If the statistic is a
                 Counter or something, this will fail as written.
+
         """
         return sum((statistic(p) for p in self), default)
 
@@ -234,7 +241,7 @@ class PermSet(set, PermSetDeprecatedMixin):
         the relative frequency of each value in each position.
 
         Args:
-                only_length (int:optional):  If given, restrict to the permutations of this length.
+            only_length (int:optional):  If given, restrict to the permutations of this length.
         """
         if not mpl_imported:
             raise NotImplementedError(
