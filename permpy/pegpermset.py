@@ -1,9 +1,7 @@
-import copy
 import time
 import gc
-import sys
 
-from itertools import chain, combinations, combinations_with_replacement
+from itertools import combinations_with_replacement
 from sympy import *
 from sympy.core.cache import clear_cache
 

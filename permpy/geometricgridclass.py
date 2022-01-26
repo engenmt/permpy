@@ -1,8 +1,5 @@
-import collections
 import itertools
 import logging
-import operator
-from math import factorial
 from itertools import combinations
 
 from .permutation import Permutation
@@ -226,7 +223,6 @@ class GeometricGridClass(PermClass):
 
     def dig_word_to_perm(self, word, ignore_bad=False):
         if not ignore_bad:
-            bad_word = False
             for letter in self.dots:
                 if word.count(letter) > 1:
                     return False
@@ -263,5 +259,4 @@ class GeometricGridClass(PermClass):
 
 
 if __name__ == "__main__":
-
-    G = GeometricGridClass([[1, 1], [1, -1]], generate=False)
+    pass

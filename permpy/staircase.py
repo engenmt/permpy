@@ -1,6 +1,5 @@
 from __future__ import print_function
 
-from collections import Counter, defaultdict
 from itertools import combinations_with_replacement as cwr
 
 
@@ -73,7 +72,8 @@ def gen_interval_divisions(m, k, shift=0, reverse=False):
 
     Example:
         >>> list(gen_interval_divisions(4, 2))
-        [[ ()          , (0, 1, 2, 3) ],
+        [
+            [ ()          , (0, 1, 2, 3) ],
             [ (0,)        ,    (1, 2, 3) ],
             [ (0, 1)      ,       (2, 3) ],
             [ (0, 1, 2)   ,          (3,)],
@@ -114,8 +114,6 @@ def all_vertical_extensions(pi, m, k, verbose=False):
         print(f"suffix = {suffix}")
 
     for uppers in gen_interval_divisions(m, k + 1, shift=n):
-        # assert len(uppers) == k+1
-        # assert len(sum(uppers,())) == m
         new_suffix = sum([uppers[i] + (suffix[i],) for i in range(k)], ()) + uppers[-1]
 
         if verbose:
@@ -185,7 +183,7 @@ def first_two_cells(n):
     return T
 
 
-def add_two_cells(R, n, verbose=False):
+def add_two_cells(R, n):
     S = set()
     for pi, k in R:
         S.add((pi, 0))
@@ -202,45 +200,8 @@ def add_two_cells(R, n, verbose=False):
 
 
 if __name__ == "__main__":
+    pass
 
-    for pi in all_vertical_extensions((0, 1), 1, 0):
-        print(pretty_out(pi, 1))
-        print("-" * 6)
-
-    # n = 12
-    # A = first_two_cells(n)
-    # # print("before running, A = ")
-
-    # for total_cells in range(2,n+6,2):
-
-    # 	S = set()
-    # 	D = Counter()
-    # 	E = defaultdict(list)
-
-    # 	for tau, m in A:
-    # 		S.add(tau)
-    # 		E[len(tau)].append((tau, m))
-    # 		D[len(tau)] += 1
-
-    # 	# for idx, val in sorted(E.items()):
-    # 	# 	for perm in sorted(val):
-    # 	# 		print(pretty_out(*perm))
-    # 	# 		print("-"*10)
-
-    # 	C = Counter()
-
-    # 	# print(f"cells = {total_cells:2},", end = "")
-
-    # 	# print(S)
-
-    # 	for s in S:
-    # 		C[len(s)] += 1
-
-    # 	for idx in [total_cells-4, total_cells-3]:
-    # 		if 0 <= idx <= n:
-    # 			print(f"cells = {total_cells:2}, n = {idx:2}, grids = {D[idx]:8}, perms = {C[idx]:8}")
-
-    # 	A = add_two_cells(A, n)
-    # 	# print(A)
-
-    # # print(S)
+    # for pi in all_vertical_extensions((0, 1), 1, 0):
+    #     print(pretty_out(pi, 1))
+    #     print("-" * 6)
