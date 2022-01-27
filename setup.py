@@ -7,7 +7,7 @@ except ImportError:
 
 setup(
     name="permpy",
-    version="0.0.3",
+    version="0.0.4",
     description="Permutation (patterns) workshop in Python",
     author="Michael Engen and Cheyne Homberger and Jay Pantone",
     author_email="cheyne.homberger@gmail.com",
