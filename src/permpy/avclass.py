@@ -49,6 +49,9 @@ class AvClass(PermClass):
         super().__init__(C)
         self.basis = basis
 
+    def __repr__(self):
+        return f"Av({','.join(self.basis)})"
+
     def extend_by_one(self, trust=True):
         """Extend `self` by right-extending its ultimate PermSet.
 
