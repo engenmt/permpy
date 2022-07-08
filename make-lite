@@ -1,0 +1,15 @@
+set -e
+export VERSION=0.1.$1
+python -m build
+python -m twine upload \
+    --repository testpypi \
+    --username engenmt \
+    --password R25hn9RY8ryDfGi \
+    dist/permpy-lite-$VERSION-py3-none-any.whl
+python -m twine upload \
+    --repository testpypi \
+    --username engenmt \
+    --password R25hn9RY8ryDfGi \
+    dist/permpy-lite-$VERSION.tar.gz
+sleep 2
+python -m pip install --index-url https://test.pypi.org/simple/ --no-deps permpy-lite==$VERSION
