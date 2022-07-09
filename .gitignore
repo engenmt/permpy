@@ -1,5 +1,6 @@
-__pycache__/
+**/__pycache__/
+**/.DS_store
+.pytest_cache
 *.pynb
-.DS_store
 dist/
 permpy.egg-info/
