@@ -46,5 +46,5 @@ Set of 720 permutations
 For a summary of how PermPy is built, go [here](https://py-pkgs.org/03-how-to-package-a-python#summary-and-next-steps).
 ```bash
 $ python -m poetry build
-$ python -m poetry publish -r test-pypi
+$ python -m poetry publish
 ```
