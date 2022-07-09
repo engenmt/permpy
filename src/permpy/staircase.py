@@ -197,11 +197,3 @@ def add_two_cells(R, n):
             T.update((tau, m) for tau in all_horizontal_extensions(pi, m, k))
 
     return T
-
-
-if __name__ == "__main__":
-    pass
-
-    # for pi in all_vertical_extensions((0, 1), 1, 0):
-    #     print(pretty_out(pi, 1))
-    #     print("-" * 6)

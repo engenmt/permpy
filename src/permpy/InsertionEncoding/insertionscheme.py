@@ -3,7 +3,6 @@ from ..avclass import AvClass
 from ..permset import PermSet
 from .configuration import Configuration
 import sympy
-import random
 
 
 class InsertionScheme:

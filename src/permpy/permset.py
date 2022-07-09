@@ -177,6 +177,7 @@ class PermSet(set, PermSetDeprecatedMixin):
 
         Args:
             basis (iter:optional): permutations to avoid. Useful for building classes.
+
         """
         if not self:
             return []
@@ -309,7 +310,8 @@ class PermSet(set, PermSetDeprecatedMixin):
         """Return the PermSet of stack-inverses of elements of self.
 
         Notes:
-                Uses dynamic programming!
+            Uses dynamic programming!
+
         """
         A = [tuple([val + 1 for val in pi]) for pi in self]
         n = len(A[0])
@@ -353,7 +355,3 @@ def unpush(state):
         return (after, stack[:-1], (stack[-1],) + before)
     else:
         return
-
-
-if __name__ == "__main__":
-    pass

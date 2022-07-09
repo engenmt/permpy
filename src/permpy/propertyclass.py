@@ -111,7 +111,3 @@ class PropertyClass(PermClass):
             return all(property(q) for q in p.sum_decomposition())
 
         return PropertyClass(is_skew, max_len=max_len)
-
-
-if __name__ == "__main__":
-    pass

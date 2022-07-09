@@ -112,7 +112,3 @@ class AvClass(PermClass):
                 # the permutation `p` lies in `other` but not `self`.
                 return False
         return True
-
-
-if __name__ == "__main__":
-    pass

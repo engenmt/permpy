@@ -6,7 +6,7 @@ from permpy.permutation import Permutation
 
 
 def bend_list(perm):
-    """Returns the list of indices at that the permutation changes
+    """Return the list of indices at that the permutation changes
     direction. That is, the number of non-monotone consecutive triples of
     the permutation. A permutation p can be expressed as the concatenation
     of len(p.bend_list()) + 1 monotone segments."""
