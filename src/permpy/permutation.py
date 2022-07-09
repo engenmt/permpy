@@ -222,7 +222,7 @@ class Permutation(
                 Accepts Permutation, tuple, str, int, or iterable.
             n (int, optional): If this is provided, the method appeals to Permutation.ind_to_perm(p, n).
             clean (Boolean, optional): Whether the input is known to be an
-                iterable containing each element from range(len(p)) exactly once.
+                iterable containing each element from range(len(p)) precisely once.
 
         Raises:
             ValueError if the passed arguments fail to properly create a permutation.
@@ -259,14 +259,8 @@ class Permutation(
             entries = Permutation.standardize(entries)
             return tuple.__new__(cls, entries)
 
-    def __init__(self, p=None, n=None, clean=False):
-        """Initialize the Permutation.
-
-        Notes:
-            self.insertion_values is used for creating classes later.
-            If only the "bad spots" are noted, then initializing perms is faster!
-
-        """
+    def __init__(self, *args, **kwargs):
+        """Initialize the Permutation."""
         self.insertion_values = list(range(len(self) + 1))
 
     def __call__(self, i):
@@ -482,15 +476,15 @@ class Permutation(
 
     def restrict(self, indices=None, values=None):
         """Return the permutation obtained by restricting self to the given indices or values."""
-        if indices is None and values is None:
-            raise ValueError(
-                f"Permutation({self}).restrict(None, None) called, doesn't make sense!"
-            )
+        if indices is None:
+            if values is None:
+                raise ValueError(
+                    f"Permutation({self}).restrict(None, None) called, but either indices or values must be provided!"
+                )
 
-        if indices is not None:
-            return Permutation(val for idx, val in enumerate(self) if idx in indices)
+            return Permutation(val for val in self if val in values)
 
-        return Permutation(val for val in self if val in values)
+        return Permutation(val for idx, val in enumerate(self) if idx in indices)
 
     def complement(self):
         """Return the complement of the permutation. That is, the permutation
@@ -524,7 +518,7 @@ class Permutation(
             q[val] = idx
         return Permutation(q, clean=True)
 
-    def pretty_out(self, by_lines=False, width=2):
+    def pretty_out(self, width=2):
         """Return a nice string to visualize `self`.
 
         Notes:
@@ -543,19 +537,6 @@ class Permutation(
                  3
                              2
              1
-            >>> for line in Permutation([1,9,3,7,5,6,4,8,2,10]).pretty_out(by_lines = True):
-            ...     print(repr(line))
-            ...
-            '                  10'
-            '   9'
-            '               8'
-            '       7'
-            '           6'
-            '         5'
-            '             4'
-            '     3'
-            '                 2'
-            ' 1'
 
         """
         lines = []
@@ -568,10 +549,7 @@ class Permutation(
             line = f"{val+1:>{width*(idx+1)}}"
             lines.append(line)
 
-        if by_lines:
-            return lines
-        else:
-            return "\n".join(lines)
+        return "\n".join(lines)
 
     def fixed_points(self):
         """Return the fixed points of the permutation as a list. Recall that
@@ -1496,7 +1474,3 @@ class Permutation(
                 best_perms.append(tau)
 
         return best_perms
-
-
-if __name__ == "__main__":
-    pass

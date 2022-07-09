@@ -35,7 +35,7 @@ class RestrictedContainer(object):
         )
 
     def __repr__(self):
-        return "{} | {} | {}".format(self.output_list, self.container, self.input_list)
+        return f"{self.output_list} | {self.container} | {self.input_list}"
 
     def container_size(self):
         return len(self.container)

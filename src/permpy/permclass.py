@@ -218,7 +218,3 @@ class PermClass(PermClassDeprecatedMixin):
             L.append(new_set)
 
         return PermClass(L)
-
-
-if __name__ == "__main__":
-    pass

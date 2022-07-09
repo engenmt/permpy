@@ -256,7 +256,3 @@ class GeometricGridClass(PermClass):
         return all(
             word[i : i + 2] not in self.commuting_pairs for i in range(len(word) - 1)
         )
-
-
-if __name__ == "__main__":
-    pass
