@@ -2,9 +2,9 @@ from math import fabs
 from sympy import *
 from itertools import chain, combinations
 
-from .permutation import Permutation
-from .permset import *
-from .permclass import *
+from ..permutation import Permutation
+from ..permset import *
+from ..permclass import *
 from .vectorset import *
 
 
@@ -14,15 +14,15 @@ def powerset(iterable):
 
 
 class PegPermutation(Permutation):
+    allowable_signs = {"-", ".", "+"}
+
     def __new__(cls, p, signs):
         if isinstance(p, int):
-            p = list(str(p))
-        assert len(p) == len(signs), "improper sign string"
-        for i in range(0, len(signs)):
-            assert (
-                signs[i] == "+" or signs[i] == "-" or signs[i] == "."
-            ), "improper sign string"
-
+            p = tuple(str(p))
+        assert len(p) == len(signs), "Incorrect number of signs given."
+        assert all(
+            sign in PegPermutation.allowable_signs for sign in signs
+        ), "Invalid sign given."
         return Permutation.__new__(cls, p)
 
     def __init__(self, p, signs):
