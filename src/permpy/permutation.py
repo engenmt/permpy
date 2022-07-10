@@ -245,11 +245,11 @@ class Permutation(
         if p is None:
             return tuple.__new__(cls, [])
 
-        if n is not None:
-            return Permutation.ind_to_perm(p, n)
-
         if isinstance(p, Permutation):
             return p
+
+        if n is not None:
+            return Permutation.ind_to_perm(p, n)
 
         if isinstance(p, int):
             p = str(p)
