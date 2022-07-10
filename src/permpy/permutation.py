@@ -8,7 +8,10 @@ import itertools
 
 from collections import Counter
 
-from math import comb as binom
+try:
+    from math import comb as binom
+except ImportError:
+    from scipy.special import binom
 
 from .permstats import PermutationStatsMixin
 from .permmisc import PermutationMiscMixin
@@ -236,29 +239,25 @@ class Permutation(
             True
 
         """
-        if clean:
-            return tuple.__new__(cls, p)
-
         if p is None:
             return tuple.__new__(cls, [])
-
-        if n is not None:
-            return Permutation.ind_to_perm(p, n)
-
-        if isinstance(p, Permutation):
+        elif clean:
+            return tuple.__new__(cls, p)
+        elif isinstance(p, Permutation):
             return p
-
-        if isinstance(p, int):
-            p = str(p)
-            assert len(p) <= 10, "Integer given has too many digits. "
-
-        if isinstance(p, str):
-            p = p.strip()
-            if " " in p:
-                p = p.split()
-            p = tuple(int(v) for v in p)
-
-        return tuple.__new__(cls, Permutation.standardize(p))
+        elif n is not None:
+            return Permutation.ind_to_perm(p, n)
+        else:
+            if isinstance(p, str):
+                if " " in p:
+                    p = p.split()
+                entries = [int(digit) for digit in p]
+            elif isinstance(p, int):
+                entries = [int(digit) for digit in str(p)]
+            else:
+                entries = p
+            entries = Permutation.standardize(entries)
+            return tuple.__new__(cls, entries)
 
     def __init__(self, *args, **kwargs):
         """Initialize the Permutation."""
