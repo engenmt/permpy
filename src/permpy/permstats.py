@@ -26,6 +26,12 @@ class PermutationStatsMixin:
     def num_rtl_max(self):
         return len(self.rtl_max())
 
+    def num_rtlmin_ltrmax_layers(self):
+        return len(self.rtlmin_ltrmax_decomposition())
+
+    def num_rtlmax_ltrmin_layers(self):
+        return len(self.rtlmax_ltrmin_decomposition())
+
     def trivial(self):
         return 0
 

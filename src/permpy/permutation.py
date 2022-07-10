@@ -1,28 +1,12 @@
-import sys
-import os
-import subprocess
-import time
 import math
 import random
 import itertools
 
 from collections import Counter
 
-try:
-    from math import comb as binom
-except ImportError:
-    from scipy.special import binom
-
 from .permstats import PermutationStatsMixin
 from .permmisc import PermutationMiscMixin
 from .deprecated.permdeprecated import PermutationDeprecatedMixin
-
-try:
-    import matplotlib.pyplot as plt
-
-    mpl_imported = True
-except ImportError:
-    mpl_imported = False
 
 __author__ = "Michael Engen, Cheyne Homberger, Jay Pantone"
 
@@ -960,11 +944,7 @@ class Permutation(
             return set().union(*L)
 
     def set_up_bounds(self):
-        """
-        Notes:
-            ME: I don't know what this does.
-
-        """
+        """Set up the bounds of the permutation for use with checking involvement."""
         L = list(self)
         n = len(L)
         upper_bound = [-1] * n
@@ -1088,7 +1068,7 @@ class Permutation(
     def involvement_check(self, upper_bound, lower_bound, indices, q, next):
         if next < 0:
             return True
-        # print indices,next
+
         indices[next] = indices[next + 1] - 1
 
         while indices[next] >= 0:
@@ -1294,91 +1274,6 @@ class Permutation(
 
         return L
 
-    def plot(self, show=True, ax=None, use_mpl=True, fname=None, **kwargs):
-        """Draw a matplotlib plot of the permutation. Can be used for both
-        quick visualization, or to build a larger figure. Unrecognized arguments
-        are passed as options to the axes object to allow for customization
-        (i.e., setting a figure title, or setting labels on the axes). Falls
-        back to an ascii_plot if matplotlib isn't found, or if use_mpl is set to
-        False.
-        """
-        if not mpl_imported or not use_mpl:
-            return self._ascii_plot()
-        xs = [val + Permutation._BASE for val in range(len(self))]
-        ys = [val + Permutation._BASE for val in self]
-        if not ax:
-            ax = plt.gca()
-        ax.scatter(xs, ys, s=40, c="k")
-        ax_settings = {
-            "xticks": xs,
-            "yticks": ys,
-            "xticklabels": "",
-            "yticklabels": "",
-            "xlim": (min(xs) - 1, max(xs) + 1),
-            "ylim": (min(ys) - 1, max(ys) + 1),
-        }
-        ax.set(**ax_settings)
-        ax.set(**kwargs)
-        ax.set_aspect("equal")
-        if fname:
-            fig = plt.gcf()
-            fig.savefig(fname, dpi=300)
-        if show:
-            plt.show()
-        return ax
-
-    def _show(self):
-        if sys.platform == "linux2":
-            opencmd = "gnome-open"
-        else:
-            opencmd = "open"
-        s = r"\documentclass{standalone}\n\usepackage{tikz}\n\n\\begin{document}\n\n"
-        s += self.to_tikz()
-        s += "\n\n\end{document}"
-        dname = random.randint(1000, 9999)
-        os.system("mkdir t_" + str(dname))
-        with open("t_" + str(dname) + "/t.tex", "w") as f:
-            f.write(s)
-        subprocess.call(
-            [
-                "pdflatex",
-                "-output-directory=t_" + str(dname),
-                "t_" + str(dname) + "/t.tex",
-            ],
-            stderr=subprocess.PIPE,
-            stdout=subprocess.PIPE,
-        )
-        # os.system('pdflatex -output-directory=t_'+str(dname)+' t_'+str(dname)+'/t.tex')
-        subprocess.call(
-            [opencmd, "t_" + str(dname) + "/t.pdf"],
-            stderr=subprocess.PIPE,
-            stdout=subprocess.PIPE,
-        )
-        time.sleep(1)
-        if sys.platform != "linux2":
-            subprocess.call(["rm", "-r", "t_" + str(dname) + "/"])
-
-    def to_tikz(self):
-        """Return a pure-tikz simple plot of `self`."""
-        s = "\n\t".join(
-            [
-                r"\begin{tikzpicture}[scale=.3,baseline=(current bounding box.center)]",
-                rf"\draw[ultra thick] (1,0) -- ({len(self)},0);",
-                rf"\draw[ultra thick] (0,1) -- (0,{len(self)});",
-                r"\foreach \x in {1,...," + f"{len(self)}" + r"} {",
-                "\t" + r"\draw[thick] (\x,.09)--(\x,-.5);",
-                "\t" + r"\draw[thick] (.09,\x)--(-.5,\x);",
-                r"}",
-            ]
-            + [
-                rf"\draw[fill=black] ({i+1},{e+1}) circle (5pt);"
-                for (i, e) in enumerate(self)
-            ]
-        )
-
-        s += "\n" + r"\end{tikzpicture}"
-        return s
-
     def downset(self):
         """Return the downset D of `self` stratified by length."""
         new_perms = {self: 0}
@@ -1463,7 +1358,7 @@ class Permutation(
     def density_of(self, pi):
         """Return the density of copies of `pi` in `self`."""
         num_copies = self.num_copies(pi)
-        return num_copies / binom(len(self), len(pi))
+        return num_copies / math.comb(len(self), len(pi))
 
     def optimizers(self, n):
         """Return the list of permutations of length `n` that contain the most possible copies of `self`."""

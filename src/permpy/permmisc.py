@@ -1,4 +1,16 @@
 import itertools
+import os
+import subprocess
+import sys
+import time
+
+try:
+    import matplotlib.pyplot as plt
+
+    mpl_imported = True
+except ImportError:
+    mpl_imported = False
+
 
 from math import gcd
 
@@ -97,9 +109,6 @@ class PermutationMiscMixin:
     def rank_val(self, i):
         return len([j for j in range(i + 1, len(self)) if self[j] < self[i]])
 
-    def num_rtlmax_ltrmin_layers(self):
-        return len(self.rtlmax_ltrmin_decomposition())
-
     def rtlmax_ltrmin_decomposition(self):
         P = Permutation(self)
         num_layers = 0
@@ -126,15 +135,19 @@ class PermutationMiscMixin:
     def rank_encoding(self):
         return [self.rank_val(i) for i in range(len(self))]
 
-    def num_rtlmax_ltrmin_layers(self):
-        return len(self.rtlmax_ltrmin_decomposition())
-
     def rtlmax_ltrmin_decomposition(self):
         P = Permutation(self)
-        num_layers = 0
         layers = []
         while len(P) > 0:
-            num_layers += 1
+            positions = sorted(list(set(P.rtlmax() + P.ltrmin())))
+            layers.append(positions)
+            P = Permutation([P[i] for i in range(len(P)) if i not in positions])
+        return layers
+
+    def rtlmin_ltrmax_decomposition(self):
+        P = Permutation(self)
+        layers = []
+        while len(P) > 0:
             positions = sorted(list(set(P.rtlmax() + P.ltrmin())))
             layers.append(positions)
             P = Permutation([P[i] for i in range(len(P)) if i not in positions])
@@ -175,3 +188,88 @@ class PermutationMiscMixin:
                     P = Permutation(P[:i] + P[i + 1 :])
                     break
         return P
+
+    def plot(self, show=True, ax=None, use_mpl=True, fname=None, **kwargs):
+        """Draw a matplotlib plot of the permutation. Can be used for both
+        quick visualization, or to build a larger figure. Unrecognized arguments
+        are passed as options to the axes object to allow for customization
+        (i.e., setting a figure title, or setting labels on the axes). Falls
+        back to an ascii_plot if matplotlib isn't found, or if use_mpl is set to
+        False.
+        """
+        if not mpl_imported or not use_mpl:
+            return self._ascii_plot()
+        xs = [val + Permutation._BASE for val in range(len(self))]
+        ys = [val + Permutation._BASE for val in self]
+        if not ax:
+            ax = plt.gca()
+        ax.scatter(xs, ys, s=40, c="k")
+        ax_settings = {
+            "xticks": xs,
+            "yticks": ys,
+            "xticklabels": "",
+            "yticklabels": "",
+            "xlim": (min(xs) - 1, max(xs) + 1),
+            "ylim": (min(ys) - 1, max(ys) + 1),
+        }
+        ax.set(**ax_settings)
+        ax.set(**kwargs)
+        ax.set_aspect("equal")
+        if fname:
+            fig = plt.gcf()
+            fig.savefig(fname, dpi=300)
+        if show:
+            plt.show()
+        return ax
+
+    def _show(self):
+        if sys.platform == "linux2":
+            opencmd = "gnome-open"
+        else:
+            opencmd = "open"
+        s = r"\documentclass{standalone}\n\usepackage{tikz}\n\n\\begin{document}\n\n"
+        s += self.to_tikz()
+        s += "\n\n\end{document}"
+        dname = random.randint(1000, 9999)
+        os.system("mkdir t_" + str(dname))
+        with open("t_" + str(dname) + "/t.tex", "w") as f:
+            f.write(s)
+        subprocess.call(
+            [
+                "pdflatex",
+                "-output-directory=t_" + str(dname),
+                "t_" + str(dname) + "/t.tex",
+            ],
+            stderr=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+        )
+        # os.system('pdflatex -output-directory=t_'+str(dname)+' t_'+str(dname)+'/t.tex')
+        subprocess.call(
+            [opencmd, "t_" + str(dname) + "/t.pdf"],
+            stderr=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+        )
+        time.sleep(1)
+        if sys.platform != "linux2":
+            subprocess.call(["rm", "-r", "t_" + str(dname) + "/"])
+
+    def to_tikz(self):
+        """Return a pure-tikz simple plot of `self`."""
+        s = "\n\t".join(
+            [
+                r"\begin{tikzpicture}[scale=.3,baseline=(current bounding box.center)]",
+                rf"\draw[ultra thick] (1,0) -- ({len(self)},0);",
+                rf"\draw[ultra thick] (0,1) -- (0,{len(self)});",
+                r"\foreach \x in {1,...," + f"{len(self)}" + r"} {",
+                "\t" + r"\draw[thick] (\x,.09)--(\x,-.5);",
+                "\t" + r"\draw[thick] (.09,\x)--(-.5,\x);",
+                r"}",
+            ]
+            + [
+                rf"\draw[fill=black] ({i+1},{e+1}) circle (5pt);"
+                for (i, e) in enumerate(self)
+            ]
+        )
+
+        s += "\n" + r"\end{tikzpicture}"
+        return s
