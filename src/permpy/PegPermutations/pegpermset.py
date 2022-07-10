@@ -2,11 +2,12 @@ import time
 import gc
 
 from itertools import combinations_with_replacement
-from sympy import *
+
 from sympy.core.cache import clear_cache
 
-from .pegpermutation import *
-from .permset import *
+from .pegpermutation import PegPermutation
+from .vectorset import VectorSet
+from ..permset import PermSet
 
 
 class PegPermSet(PermSet):
@@ -18,7 +19,7 @@ class PegPermSet(PermSet):
         assert d == int(d), "must be given an integer"
         assert d >= 0, "must be given a nonnegative integer"
         start = PegPermutation(1, "+")
-        sortable = PegPermSet([start])
+        sortable = PegPermSet(start)
         for i in range(0, d):
             copy = set(sortable)
             for P in copy:
@@ -47,7 +48,7 @@ class PegPermSet(PermSet):
         assert d == int(d), "must be given an integer"
         assert d >= 0, "must be given a nonnegative integer"
         start = PegPermutation(1, "+")
-        sortable = PegPermSet([start])
+        sortable = PegPermSet(start)
         for i in range(0, d):
             copy = set(sortable)
             for P in copy:
@@ -257,72 +258,6 @@ class PegPermSet(PermSet):
             # print 'adding gf for',PP,'with basis []'
 
         return gf
-
-    ## OLD - Can Probably Be Deleted
-    # def alt_downset(self):
-
-    #   topset = PegPermSet(self)
-
-    #   bottom_edge = PegPermSet()
-    #   keyssofar = PegPermSet()
-    #   unclean = dict()
-
-    #   for PP in self:
-    #     if PP.is_compact() and not PP.is_compact_and_clean():
-    #       cleaned = PP.clean()
-    #       if cleaned in keyssofar:
-    #         unclean[cleaned].add(PP)
-    #       else:
-    #         unclean[cleaned] = PegPermSet([PP])
-    #         keyssofar.add(cleaned)
-
-    #   bottom_edge.update(self)
-    #   n = len(bottom_edge)
-    #   gf = self.sum_gfs_no_basis(bottom_edge, only_clean=True)
-    #   while len(bottom_edge) > 0:
-    #     oldsize = n
-    #     next_layer = bottom_edge.layer_down()
-    #     del bottom_edge
-    #     clear_cache()
-    #     n += len(next_layer)
-
-    #     print '\t\tScanning permutations for cleanliness!'
-    #     i = 0
-    #     num_unclean = 0
-    #     nll = len(next_layer)
-    #     for PP in next_layer:
-    #       i += 1
-    #       if i % 200000 == 0:
-    #         print '\t\t\tScanned',i,'of',nll,'.'
-    #       if PP.is_compact() and not PP.is_compact_and_clean():
-    #         cleaned = PP.clean()
-    #         num_unclean += 1
-    #         if cleaned in keyssofar:
-    #           unclean[cleaned].add(PP)
-    #         else:
-    #           unclean[cleaned] = PegPermSet([PP])
-    #           keyssofar.add(cleaned)
-
-    #     print '\t\tScanning permutations for unnecessary uncleans!'
-    #     i = 0
-    #     nll = len(next_layer)
-    #     for PP in next_layer:
-    #       i += 1
-    #       if i % 200000 == 0:
-    #         print '\t\t\tScanned',i,'of',nll,'.'
-    #       if unclean.get(PP):
-    #         del unclean[PP]
-
-    #     print '\tOut of',len(next_layer),'permutations in this layer,',num_unclean,'were unclean.'
-    #     gf += self.sum_gfs_no_basis(next_layer, only_clean=True)
-
-    #     bottom_edge = next_layer
-    #     del next_layer
-    #     clear_cache()
-    #     newsize = n
-    #     print '\t\tDownset currently has',newsize,'permutations, added',(newsize-oldsize),'in the last run.'
-
-    #   return (gf,unclean)
 
     def alt_downset(self):
 
