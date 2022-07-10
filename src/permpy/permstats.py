@@ -26,6 +26,12 @@ class PermutationStatsMixin:
     def num_rtl_max(self):
         return len(self.rtl_max())
 
+    def num_rtlmin_ltrmax_layers(self):
+        return len(self.rtlmin_ltrmax_decomposition())
+
+    def num_rtlmax_ltrmin_layers(self):
+        return len(self.rtlmax_ltrmin_decomposition())
+
     def trivial(self):
         return 0
 
@@ -88,6 +94,15 @@ class PermutationStatsMixin:
 
     def is_strongly_simple(self):
         return self.is_simple() and all([p.is_simple() for p in self.children()])
+
+    def num_bonds(self):
+        return len(self.bonds())
+
+    def num_inc_bonds(self):
+        return len(self.inc_bonds())
+
+    def num_dec_bonds(self):
+        return len(self.dec_bonds())
 
     def num_copies(self, other):
         """Return the number of copies of `other` in `self`."""
