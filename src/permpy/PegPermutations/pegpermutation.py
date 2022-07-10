@@ -1,11 +1,11 @@
 from math import fabs
-from sympy import *
+from sympy import Symbol
 from itertools import chain, combinations
 
 from ..permutation import Permutation
-from ..permset import *
-from ..permclass import *
-from .vectorset import *
+from ..permset import PermSet
+from .vector import Vector
+from .vectorset import VectorSet
 
 
 def powerset(iterable):
@@ -29,10 +29,7 @@ class PegPermutation(Permutation):
         self.signs = list(signs)
 
     def __repr__(self):
-        s = " "
-        for i in range(0, len(self)):
-            s += str(self[i] + 1) + self.signs[i] + " "
-        return s
+        return " ".join(f"{val+1}^{sign}" for val, sign in zip(self, self.signs))
 
     def __hash__(self):
         return hash((tuple(self[:]), tuple(self.signs)))
@@ -44,20 +41,14 @@ class PegPermutation(Permutation):
         return sum([1 for s in self.signs if s != "."])
 
     def sign_subset(self, P):
-        for i in range(0, len(self)):
-            t = (self.signs[i], P.signs[i])
-            if t in [("+", "."), ("+", "-"), ("-", "+"), ("-", ".")]:
-                return False
+        for self_sign, p_sign in zip(self.signs, P.signs):
+            if self_sign == "." or self_sign == p_sign:
+                continue
+            return False
         return True
 
     def filling_vector(self):
-        L = []
-        for s in self.signs:
-            if s == "+" or s == "-":
-                L.append(2)
-            else:
-                L.append(1)
-        return Vector(L)
+        return Vector([1 if sign == "." else 2 for sign in self.signs])
 
     def all_dotted_monotone_intervals(self):
         mi = []
@@ -68,7 +59,7 @@ class PegPermutation(Permutation):
             if (
                 self.signs[i] == "."
                 and self.signs[i + 1] == "."
-                and math.fabs(self[i] - self[i + 1]) == 1
+                and fabs(self[i] - self[i + 1]) == 1
                 and (c_length == 0 or self[i] - self[i + 1] == difference)
             ):
                 if c_length == 0:
@@ -177,7 +168,7 @@ class PegPermutation(Permutation):
         return PegPermutation(copy, copysigns)
 
     def downset(self):
-        return PermSet([self]).downset()
+        return PermSet(self).downset()
 
     def shrink_by_one(self):
         S = PermSet()
@@ -218,10 +209,10 @@ class PegPermutation(Permutation):
     def reverse(self):
         entries = self[::-1]
         signs = self.signs[::-1]
-        for i in range(0, len(signs)):
-            if signs[i] == "-":
+        for i, sign in enumerate(signs):
+            if sign == "-":
                 signs[i] = "+"
-            elif signs[i] == "+":
+            elif sign == "+":
                 signs[i] = "-"
         return PegPermutation(entries, signs)
 
