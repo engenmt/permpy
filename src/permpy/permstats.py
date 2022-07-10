@@ -89,6 +89,15 @@ class PermutationStatsMixin:
     def is_strongly_simple(self):
         return self.is_simple() and all([p.is_simple() for p in self.children()])
 
+    def num_bonds(self):
+        return len(self.bonds())
+
+    def num_inc_bonds(self):
+        return len(self.inc_bonds())
+
+    def num_dec_bonds(self):
+        return len(self.dec_bonds())
+
     def num_copies(self, other):
         """Return the number of copies of `other` in `self`."""
         return len(self.copies(other))

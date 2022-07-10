@@ -23,11 +23,6 @@ def bend_list(perm):
     # )
 
 
-def order(perm):
-    L = map(len, perm.cycle_decomp())
-    return reduce(lambda x, y: x * y // fractions.gcd(x, y), L)
-
-
 def bonds(perm):
     numbonds = 0
     p = list(perm)

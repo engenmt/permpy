@@ -57,7 +57,7 @@ class PermutationMiscMixin:
 
     def order(self):
         """Return the grou-theotric order of self."""
-        L = map(len, self.cycle_decomp())
+        L = [len(cycle) for cycle in self.cycle_decomp()]
         return lcm(L)
 
     def children(self):
@@ -85,16 +85,6 @@ class PermutationMiscMixin:
             for i in range(1, max([len(p) for p in S]) + 1)
         ]
 
-    # def sum_indec_bdd_by(self, n):
-    #     l = [1]
-    #     S = list(self.children())
-    #     while len(S) > 0 and len(S[0]) > 0:
-    #         l = [len([s for s in S if not s.sum_decomposable()])] + l
-    #         if l[0] > n:
-    #             return False
-    #         S = list(permset.PermSet(S).layer_down())
-    #     return True
-
     def contains_locations(self, Q):
         locs = []
         sublocs = itertools.combinations(range(len(self)), len(Q))
@@ -106,9 +96,6 @@ class PermutationMiscMixin:
 
     def rank_val(self, i):
         return len([j for j in range(i + 1, len(self)) if self[j] < self[i]])
-
-    def rank_encoding(self):
-        return [self.rank_val(i) for i in range(len(self))]
 
     def num_rtlmax_ltrmin_layers(self):
         return len(self.rtlmax_ltrmin_decomposition())
@@ -153,20 +140,14 @@ class PermutationMiscMixin:
             P = Permutation([P[i] for i in range(len(P)) if i not in positions])
         return layers
 
-    def num_inc_bonds(self):
-        return len([i for i in range(len(self) - 1) if self[i + 1] == self[i] + 1])
+    def dec_bonds(self):
+        return [i for i in range(len(self) - 1) if self[i + 1] == self[i] - 1]
+
+    def inc_bonds(self):
+        return [i for i in range(len(self) - 1) if self[i + 1] == self[i] + 1]
 
     def num_dec_bonds(self):
         return len([i for i in range(len(self) - 1) if self[i + 1] == self[i] - 1])
-
-    def num_bonds(self):
-        return len(
-            [
-                i
-                for i in range(len(self) - 1)
-                if self[i + 1] == self[i] + 1 or self[i + 1] == self[i] - 1
-            ]
-        )
 
     def contract_inc_bonds(self):
         P = Permutation(self)
