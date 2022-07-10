@@ -7,10 +7,7 @@ class VectorSet(list):
             return self
         if len(self) > 0 and self[0] == -1:
             return B
-        S = set()
-        for V in self:
-            for W in B:
-                S.add(V.meet(W))
+        S = set(V.meet(W) for V in self for W in B)
         return VectorSet(S).minimal_elements()
 
     def minimal_elements(self):
