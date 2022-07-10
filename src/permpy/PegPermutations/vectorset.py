@@ -24,9 +24,7 @@ class VectorSet(list):
     def meet_all(self):
         if len(self) == 0:
             return Vector([])
-
-        l = len(self[0])
-        V = Vector([1] * l)
-        for W in self:
-            V = V.meet(W)
-        return V
+        assert (
+            len(set(len(V) for V in self)) == 1
+        ), "Not all vector lengths are the same!"
+        return Vector([max(*vals) for vals in zip(*self)])

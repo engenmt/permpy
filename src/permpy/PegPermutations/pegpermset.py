@@ -5,8 +5,9 @@ from itertools import combinations_with_replacement
 from sympy import *
 from sympy.core.cache import clear_cache
 
-from .pegpermutation import *
-from .permset import *
+from .pegpermutation import PegPermutation
+from .vectorset import VectorSet
+from ..permset import PermSet
 
 
 class PegPermSet(PermSet):

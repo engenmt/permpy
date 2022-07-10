@@ -7,9 +7,7 @@ class Vector(tuple):
 
     def meet(self, other):
         assert len(self) == len(other), "Vectors must be same length to meet!"
-        return Vector(
-            [max(val_self, val_other) for val_self, val_other in zip(self, other)]
-        )
+        return Vector([max(*pair) for pair in zip(self, other)])
 
     def contained_in(self, other):
         assert len(self) == len(
