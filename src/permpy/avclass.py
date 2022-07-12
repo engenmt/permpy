@@ -50,7 +50,8 @@ class AvClass(PermClass):
         self.basis = basis
 
     def __repr__(self):
-        return f"Av({','.join(self.basis)})"
+        basis_str = ", ".join(f"{p}" for p in self.basis)
+        return f"Av({basis_str})"
 
     def extend_by_one(self, trust=True):
         """Extend `self` by right-extending its ultimate PermSet.
