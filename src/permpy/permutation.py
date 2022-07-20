@@ -12,7 +12,7 @@ __author__ = "Michael Engen, Cheyne Homberger, Jay Pantone"
 
 """
 Todo:
-	* Permutation.random_avoider
+    * Permutation.random_avoider
 """
 
 
@@ -36,24 +36,12 @@ class Permutation(
 
     @classmethod
     def monotone_increasing(cls, n):
-        """Return the monotone increasing permutation of length n.
-
-        Examples:
-            >>> Permutation.monotone_increasing(5)
-            1 2 3 4 5
-
-        """
+        """Return the monotone increasing permutation of length n."""
         return cls(range(n), clean=True)
 
     @classmethod
     def monotone_decreasing(cls, n):
-        """Return the monotone decreasing permutation of length n.
-
-        Examples:
-            >>> Permutation.monotone_decreasing(5)
-            5 4 3 2 1
-
-        """
+        """Return the monotone decreasing permutation of length n."""
         return cls(range(n - 1, -1, -1), clean=True)
 
     @classmethod
@@ -63,13 +51,7 @@ class Permutation(
 
     @classmethod
     def random(cls, n):
-        """Return a random permutation of length n.
-
-        Examples:
-            >>> len( Permutation.random(10) ) == 10
-            True
-
-        """
+        """Return a random permutation of length n."""
         L = list(range(n))
         random.shuffle(L)
         return cls(L, clean=True)
@@ -92,11 +74,6 @@ class Permutation(
 
         Returns:
             p (Permutation): A permutation avoiding all the patterns in `B`
-
-        Examples:
-            >>> p = Permutation.random_avoider(8, [123])
-            >>> p.involves(123)
-            False
 
         Todo:
             Ideally, we should use MCMC for this.
@@ -257,25 +234,11 @@ class Permutation(
         Notes:
             Recall that permutations are zero-based internally.
 
-        Examples:
-            >>> Permutation(4132)(2)
-            2
-
         """
         return self[i]
 
     def __contains__(self, other):
-        """Return True if `self` contains `other`.
-
-        Examples:
-            >>> Permutation(21).__contains__(Permutation(1))
-            True
-            >>> Permutation(132) in Permutation(4132)
-            True
-            >>> Permutation(231) in Permutation(1234)
-            False
-
-        """
+        """Return True if `self` contains `other`."""
         return other.involved_in(self)
 
     def oneline(self):
@@ -308,58 +271,25 @@ class Permutation(
         return Permutation(L, clean=True)
 
     def __add__(self, other):
-        """Return the direct sum of the two permutations.
-
-        Examples:
-            >>> p = Permutation.monotone_increasing(10)
-            >>> p + p == Permutation.monotone_increasing(20)
-            True
-
-        """
+        """Return the direct sum of the two permutations."""
         n = len(self)
         return Permutation(list(self) + [i + n for i in other], clean=True)
 
     def direct_sum(self, other):
-        """Return the direct sum of the two permutations.
-
-        Examples:
-            >>> Permutation(312).direct_sum(Permutation(1234))
-            3 1 2 4 5 6 7
-
-        """
+        """Return the direct sum of the two permutations."""
         return self + other
 
     def __sub__(self, other):
-        """Return the skew sum of the two permutations.
-
-        Examples:
-            >>> p = Permutation.monotone_decreasing(10)
-            >>> p - p == Permutation.monotone_decreasing(20)
-            True
-
-        """
+        """Return the skew sum of the two permutations."""
         m = len(other)
         return Permutation([i + m for i in self] + list(other), clean=True)
 
     def skew_sum(self, other):
-        """Return the skew sum of the two permutations.
-
-        Examples:
-            >>> Permutation(312).skew_sum(Permutation(1234))
-            7 5 6 1 2 3 4
-
-        """
+        """Return the skew sum of the two permutations."""
         return self - other
 
     def __pow__(self, power):
-        """Return the permutation raised to a power.
-
-        Examples:
-            >>> p = Permutation.random(10)
-            >>> p**p.order() == Permutation.monotone_increasing(10)
-            True
-
-        """
+        """Return the permutation raised to a power."""
         assert isinstance(power, int), "Power must be an integer!"
         if power < 0:
             p = self.inverse()
@@ -375,11 +305,6 @@ class Permutation(
     def perm_to_ind(self):
         """De-index the permutation, by mapping it to an integer between 0 and
         len(self)! - 1. See also `Permutation.ind_to_perm`.
-
-        Examples:
-            >>> p = Permutation(41523)
-            >>> Permutation.ind_to_perm(p.perm_to_ind(), len(p)) == p
-            True
 
         """
         q = list(self)
@@ -399,16 +324,6 @@ class Permutation(
 
         Notes:
             Recall that both indices and values are zero-indexed.
-
-        Examples:
-            >>> Permutation(35214).delete(indices=2)
-            2 4 1 3
-            >>> Permutation(35214).delete(indices=[2,4])
-            2 3 1
-            >>> Permutation(35214).delete(values=[4])
-            3 2 1 4
-            >>> Permutation(35214).delete(indices=[2]) == Permutation(35214).delete(values=1)
-            True
 
         """
         if indices is not None:
@@ -449,14 +364,6 @@ class Permutation(
 
         Notes:
             Recall that both indices and values are zero-indexed.
-
-        Examples:
-            >>> Permutation(2413).insert(2, 1)
-            3 5 2 1 4
-            >>> p = Permutation.random(10)
-            >>> p == p.insert(4, 7).delete(indices = 4)
-            True
-
         """
         p = [old_val if old_val < val else old_val + 1 for old_val in self]
         p.insert(idx, int(math.ceil(val)))
@@ -478,25 +385,12 @@ class Permutation(
         """Return the complement of the permutation. That is, the permutation
         obtained by subtracting each of the entries from `len(self)`.
 
-        Examples:
-            >>> Permutation(2314).complement() == Permutation(3241)
-            True
-            >>> p = Permutation.random(10)
-            >>> p == p.complement().complement()
-            True
-
         """
         n = len(self) - 1
         return Permutation([n - i for i in self], clean=True)
 
     def reverse(self):
-        """Return the reverse of the permutation.
-
-        Examples:
-            >>> Permutation(2314).reverse() == Permutation(4132)
-            True
-
-        """
+        """Return the reverse of the permutation."""
         return Permutation(self[::-1], clean=True)
 
     def inverse(self):
@@ -512,19 +406,6 @@ class Permutation(
         Notes:
             If `by_lines == True`, then will return the list of strings by line,
             in case you want to append some stuff to each line.
-
-        Examples:
-            >>> print(Permutation([1,9,3,7,5,6,4,8,2,10]).pretty_out())
-                              10
-               9
-                           8
-                   7
-                       6
-                     5
-                         4
-                 3
-                             2
-             1
 
         """
         lines = []
@@ -543,24 +424,11 @@ class Permutation(
         """Return the fixed points of the permutation as a list. Recall that
         both indices and values are zero-indexed.
 
-        Examples:
-            >>> Permutation(521436).fixed_points()
-            [1, 3, 5]
-
         """
         return [idx for idx, val in enumerate(self) if idx == val]
 
     def sum_decomposable(self):
-        """Determine whether the permutation is the direct sum of two shorter permutations.
-
-        Examples:
-            >>> p = Permutation.random(4).direct_sum(Permutation.random(15))
-            >>> p.sum_decomposable()
-            True
-            >>> p.reverse().sum_decomposable()
-            False
-
-        """
+        """Determine whether the permutation is the direct sum of two shorter permutations."""
         indices = set()
         vals = set()
         for idx, val in enumerate(self[:-1]):
@@ -572,16 +440,7 @@ class Permutation(
         return False
 
     def sum_decomposition(self):
-        """Decompose self as a list of sum-indecomposable permutations that sum to self.
-
-        Examples:
-            >>> p = Permutation(1) + Permutation(312) + Permutation(21)
-            >>> p.sum_decomposition()
-            [1, 3 1 2, 2 1]
-            >>> p == sum(p.sum_decomposition(), Permutation([]))
-            True
-
-        """
+        """Decompose self as a list of sum-indecomposable permutations that sum to self."""
         if len(self) == 0:
             return []
 
@@ -605,13 +464,6 @@ class Permutation(
         """Determine whether the permutation is expressible as the skew sum of
         two smaller permutations.
 
-        Examples:
-            >>> p = Permutation.random(8).direct_sum(Permutation.random(12))
-            >>> p.skew_decomposable()
-            False
-            >>> p.complement().skew_decomposable()
-            True
-
         """
         indices = set()
         vals = set()
@@ -624,16 +476,7 @@ class Permutation(
         return False
 
     def skew_decomposition(self):
-        """Return the list of skew-indecomposable permutations that skew sum to self.
-
-        Examples:
-            >>> p = Permutation.random(4) + Permutation.random(15)
-            >>> p.sum_decomposable()
-            True
-            >>> p.reverse().sum_decomposable()
-            False
-
-        """
+        """Return the list of skew-indecomposable permutations that skew sum to self."""
         if not self:
             return []
 
@@ -657,61 +500,27 @@ class Permutation(
         return [self]
 
     def descents(self):
-        """Return the list of (positions of) descents of the permutation.
-
-        Examples:
-            >>> Permutation(42561873).descents()
-            [0, 3, 5, 6]
-
-        """
-        return [
-            i for i in range(len(self) - 1) if self[i] >= self[i + 1]
-        ]  # >= is a bit faster than > for some reason.
+        """Return the list of (positions of) descents of the permutation."""
+        return [i for i in range(len(self) - 1) if self[i] > self[i + 1]]
 
     def ascents(self):
-        """Return the list of (positions of) ascents of the permutation.
-
-        Examples:
-            >>> Permutation(42561873).ascents()
-            [1, 2, 4]
-
-        """
-        return [
-            i for i in range(len(self) - 1) if self[i] <= self[i + 1]
-        ]  # <= is a bit faster than < for some reason.
+        """Return the list of (positions of) ascents of the permutation."""
+        return [i for i in range(len(self) - 1) if self[i] < self[i + 1]]
 
     def peaks(self):
-        """Return the list of (positions of) peaks of the permutation.
-
-        Examples:
-            >>> Permutation(2341765).peaks()
-            [2, 4]
-
-        """
+        """Return the list of (positions of) peaks of the permutation."""
         return [
             i for i in range(1, len(self) - 1) if self[i - 1] < self[i] > self[i + 1]
         ]
 
     def valleys(self):
-        """Return the list of (positions of) valleys of the permutation.
-
-        Examples:
-            >>> Permutation(3241756).valleys()
-            [1, 3, 5]
-
-        """
+        """Return the list of (positions of) valleys of the permutation."""
         return [
             i for i in range(1, len(self) - 1) if self[i - 1] > self[i] < self[i + 1]
         ]
 
     def ltr_min(self):
-        """Return the positions of the left-to-right minima.
-
-        Examples:
-            >>> Permutation(35412).ltr_min()
-            [0, 3]
-
-        """
+        """Return the positions of the left-to-right minima."""
         L = []
         minval = len(self)
         for idx, val in enumerate(self):
@@ -721,13 +530,7 @@ class Permutation(
         return L
 
     def rtl_min(self):
-        """Return the positions of the right-to-left minima.
-
-        Examples:
-            >>> Permutation(315264).rtl_min()
-            [5, 3, 1]
-
-        """
+        """Return the positions of the right-to-left minima."""
         L = []
         n = len(self)
         minval = n
@@ -738,13 +541,7 @@ class Permutation(
         return L
 
     def ltr_max(self):
-        """Return the positions of the left-to-right maxima.
-
-        Examples:
-            >>> Permutation(35412).ltr_max()
-            [0, 1]
-
-        """
+        """Return the positions of the left-to-right maxima."""
         L = []
         maxval = -1
         for idx, val in enumerate(self):
@@ -754,13 +551,7 @@ class Permutation(
         return L
 
     def rtl_max(self):
-        """Return the positions of the right-to-left maxima.
-
-        Examples:
-            >>> Permutation(35412).rtl_max()
-            [4, 2, 1]
-
-        """
+        """Return the positions of the right-to-left maxima."""
         L = []
         n = len(self)
         maxval = -1
@@ -774,31 +565,18 @@ class Permutation(
         """Return the list of inversions of the permutation, i.e., the pairs
         (i,j) such that i < j and self(i) > self(j).
 
-        Examples:
-            >>> Permutation(4132).inversions()
-            [(0, 1), (0, 2), (0, 3), (2, 3)]
-            >>> Permutation.monotone_increasing(7).inversions()
-            []
-
         """
         L = [
             (i, j)
             for i, val_i in enumerate(self)
             for j, val_j in enumerate(self[i + 1 :], start=i + 1)
-            if val_i >= val_j
+            if val_i > val_j
         ]
         return L
 
     def noninversions(self):
         """Return the list of noninversions of the permutation, i.e., the
         pairs (i,j) such that i < j and self(i) < self(j).
-
-        Examples:
-            >>> Permutation(4132).noninversions()
-            [(1, 2), (1, 3)]
-            >>> Permutation.monotone_decreasing(7).noninversions()
-            []
-
         """
         L = [
             (i, j)
@@ -809,16 +587,7 @@ class Permutation(
         return L
 
     def breadth(self):
-        """Return the minimum taxicab distance between any two entries in the permutation.
-
-        Examples:
-            >>> Permutation(3142).breadth()
-            3
-
-        Todo:
-            Currently uses the naive algorithm---can be improved, probably.
-
-        """
+        """Return the minimum taxicab distance among pairs of entries in the permutation."""
 
         min_dist = len(self)
         for i, j in itertools.combinations(range(len(self)), 2):
@@ -830,7 +599,7 @@ class Permutation(
         return min_dist
 
     def bonds(self):
-        """Return the list of (initial) indices of the bonds of `self`.
+        """Return the list of (initial) indices of the bonds of the permutation.
 
         Notes:
             A bond is an interval of size 2.
@@ -840,13 +609,7 @@ class Permutation(
         return L
 
     def pattern_counts(self, k):
-        """Return a Counter (dictionary) counting the occurrences of each perm of length `k` in `self`.
-
-        Examples:
-            >>> Permutation(1324).pattern_counts(3)
-            Counter({1 2 3: 2, 1 3 2: 1, 2 1 3: 1})
-
-        """
+        """Return a Counter counting the copies of each perm of length `k` in the permutation."""
         C = Counter(Permutation(vals) for vals in itertools.combinations(self, k))
         return C
 
@@ -971,12 +734,6 @@ class Permutation(
             lr (int): Require the last entry to be equal to this
             B (iterable of permutation-like objects:optional): A collection of permutations to be avoided.
 
-        Examples:
-            >>> Permutation(123456).avoids(231)
-            True
-            >>> Permutation(123456).avoids(123)
-            False
-
         Todo:
             Am I correct on the lr?
         """
@@ -996,11 +753,6 @@ class Permutation(
             P (Permutation-like object): Pattern to be contained.
             lr (int, optional): Require the last entry to be equal to this.
 
-        Examples:
-            >>> Permutation(123456).involves(231)
-            False
-            >>> Permutation(123456).involves(123)
-            True
         """
         return Permutation(P).involved_in(self, last_require=lr)
 
@@ -1011,11 +763,6 @@ class Permutation(
             P (Permutation-like object): Pattern to be contained.
             lr (int, optional): Require the last entry to be equal to this.
 
-        Examples:
-            >>> Permutation(123).involved_in(31542)
-            False
-            >>> Permutation(213).involved_in(54213)
-            True
         """
         P = Permutation(P)
 
