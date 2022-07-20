@@ -408,9 +408,10 @@ def test_pattern_counts():
     p = Perm(1324)
     expected = Counter({Perm(123): 2, Perm(132): 1, Perm(213): 1})
     result = p.pattern_counts(3)
-    assert (
-        result == expected
-    ), f"Perm({p}).pattern_counts(3) returned {result}, but it should return {expected}."
+    assert result == expected, (
+        f"Perm({p}).pattern_counts(3) returned {result},"
+        f" but it should return {expected}."
+    )
 
 
 def test_avoids():
