@@ -48,20 +48,6 @@ class PropertyClass(PermClass):
         self.property = lambda p: self.property(p) and property(p)
 
     def union(self, other):
-        """
-        Examples:
-            >>> inc = Permutation(12)
-            >>> D = PropertyClass(lambda p: inc not in p)
-            >>> dec = Permutation(21)
-            >>> I = PropertyClass(lambda p: dec not in p)
-            >>> U = D.union(I)
-            >>> len(U[8])
-            2
-            >>> U.extend(1)
-            >>> len(U[9])
-            2
-
-        """
         property_self = copy_func(self.property)
         property_other = copy_func(other.property)
 
@@ -81,14 +67,6 @@ class PropertyClass(PermClass):
         return C
 
     def skew_closure(self, max_len=8):
-        """
-        Examples:
-            >>> p = Permutation(21)
-            >>> C = PropertyClass(lambda q: p not in q) # Class of increasing permutations
-            >>> D = C.skew_closure(max_len=7) # Class of co-layered permutations
-            >>> len(D[7]) == 64
-            True
-        """
         property = copy_func(self.property)
 
         def is_skew(p):
@@ -97,17 +75,9 @@ class PropertyClass(PermClass):
         return PropertyClass(is_skew, max_len=max_len)
 
     def sum_closure(self, max_len=8):
-        """
-        Examples:
-            >>> p = Permutation(12)
-            >>> C = PropertyClass(lambda q: p not in q) # Class of decreasing permutations
-            >>> D = C.sum_closure(max_len=7) # Class of layered permutations
-            >>> len(D[7]) == 64
-            True
-        """
         property = copy_func(self.property)
 
-        def is_skew(p):
+        def is_sum(p):
             return all(property(q) for q in p.sum_decomposition())
 
-        return PropertyClass(is_skew, max_len=max_len)
+        return PropertyClass(is_sum, max_len=max_len)
