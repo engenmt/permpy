@@ -162,7 +162,20 @@ def test_pow():
 
 def test_perm_to_ind():
     p = Perm(24513)
-    assert p.perm_to_ind() == 42, f"Perm({p}).perm_to_ind() did not return 42!"
+    expected = 42
+    result = p.perm_to_ind()
+    assert (
+        result == expected
+    ), f"Perm({p}).perm_to_ind() returned {result} instead of {expected}!"
+
+
+def test_ind_to_perm():
+    k, n = 42, 5
+    expected = Perm(24513)
+    result = Perm(k, n)
+    assert (
+        result == expected
+    ), f"Perm({k}, {n}).ind_to_perm() returned {result} instead of {expected}!"
 
 
 def test_delete():

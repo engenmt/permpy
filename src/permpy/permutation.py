@@ -147,10 +147,6 @@ class Permutation(
         Returns:
             Permutation of index k of length n.
 
-        Examples:
-            >>> Permutation.ind_to_perm(12,8).perm_to_ind()
-            12
-
         """
         if not isinstance(k, int):
             raise ValueError(
@@ -181,7 +177,8 @@ class Permutation(
         Args:
             p (Permutation-like object): object to be coerced into a Permutation.
                 Accepts Permutation, tuple, str, int, or iterable.
-            n (int, optional): If this is provided, the method appeals to Permutation.ind_to_perm(p, n).
+            n (int, optional): If this is provided, the method appeals to
+                Permutation.ind_to_perm(p, n).
             clean (Boolean, optional): Whether the input is known to be an
                 iterable containing each element from range(len(p)) precisely once.
 
@@ -190,14 +187,6 @@ class Permutation(
 
         Returns:
             Permutation instance
-
-        Examples:
-            >>> Permutation('3 5 1 2 4') == Permutation([3, 5, 1, 2, 4])
-            True
-            >>> Permutation(5, 12) == Permutation.ind_to_perm(5, 12)
-            True
-            >>> Permutation([215, -99, 30, 12.1351, 0]) == Permutation(51432)
-            True
 
         """
         if clean:
