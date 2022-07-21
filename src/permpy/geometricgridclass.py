@@ -21,43 +21,43 @@ class BadWordException(Exception):
 class GeometricGridClass(PermClass):
     def __init__(self, M, col=None, row=None, max_length=8, generate=True):
         """
-		
-		Args:
-			M (list of lists of ints): A 2D matrix to build the GGC from.
-				Goes from left-to-right, bottom-to-top. That is, M[0] is the 
-				leftmost column, and M[0][0] is the lowest entry of this column.
-				Entries should be -1, 0, +1, or 2. A 0 represents an empty cell,
-				and a 2 represents a cell that has at most one point in it.
-				Otherwise, a +1 represents an increasing cell, and 
-				a -1 represents a decreasing cell.
-			col (list of ints, optional): A vector representing the orientation
-				of the columns. Entries should be +1 or -1. If col[i] is +1,
-				then the i'th column is oriented from left to right, and 
-				if col[i] is -1, then it is oriented from right to left.
-			row (list of ints, optional): A vector representing the orientation
-				of the rows. Entries should be +1 or -1. If row[j] is +1,
-				then the j'th row is oriented from bottom to top, and 
-				if row[j] is -1, then it is oriented from top to bottom.
 
-		Notes:
-			The following example represents the matrix
-			    +-+-+-+
-			    | | |/|
-			    +-+-+-+
-			M = | |/|/|
-			    +-+-+-+
-			    |/|/| |
-			    +-+-+-+
+        Args:
+            M (list of lists of ints): A 2D matrix to build the GGC from.
+                Goes from left-to-right, bottom-to-top. That is, M[0] is the
+                leftmost column, and M[0][0] is the lowest entry of this column.
+                Entries should be -1, 0, +1, or 2. A 0 represents an empty cell,
+                and a 2 represents a cell that has at most one point in it.
+                Otherwise, a +1 represents an increasing cell, and
+                a -1 represents a decreasing cell.
+            col (list of ints, optional): A vector representing the orientation
+                of the columns. Entries should be +1 or -1. If col[i] is +1,
+                then the i'th column is oriented from left to right, and
+                if col[i] is -1, then it is oriented from right to left.
+            row (list of ints, optional): A vector representing the orientation
+                of the rows. Entries should be +1 or -1. If row[j] is +1,
+                then the j'th row is oriented from bottom to top, and
+                if row[j] is -1, then it is oriented from top to bottom.
 
-		Examples:
-			>>> M = [[1, 0, 0], \
-			         [1, 1, 0], \
-			         [0, 1, 1]] # Partial increasing staircase.
-			>>> G = GeometricGridClass(M) # This will the same as Av(321) until length 9.
-			>>> print([len(S) for S in G])
-			[1, 1, 2, 5, 14, 42, 132, 429, 1430]
+        Notes:
+            The following example represents the matrix
+                +-+-+-+
+                | | |/|
+                +-+-+-+
+            M = | |/|/|
+                +-+-+-+
+                |/|/| |
+                +-+-+-+
 
-		"""
+        Examples:
+            >>> M = [[1, 0, 0], \
+                     [1, 1, 0], \
+                     [0, 1, 1]] # Partial increasing staircase.
+            >>> G = GeometricGridClass(M) # This will the same as Av(321) until length 9.
+            >>> print([len(S) for S in G])
+            [1, 1, 2, 5, 14, 42, 132, 429, 1430]
+
+        """
         self.M = M
 
         self.col, self.row = col, row
@@ -150,7 +150,7 @@ class GeometricGridClass(PermClass):
         while not (all(col_signs) and all(row_signs)):
             # This loop will continue until all col_signs and row_signs are non-zero
             # It will make at most one "arbitrary" column assignment per loop.
-            logging.debug(f"Starting loop again.")
+            logging.debug("Starting loop again.")
             logging.debug(f"\tself.M = {self.M}")
             logging.debug(f"\tcol_signs = {col_signs}")
             logging.debug(f"\trow_signs = {row_signs}")
