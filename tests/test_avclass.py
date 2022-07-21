@@ -1,4 +1,4 @@
-from permpy import AvClass, PermSet, Permutation
+from permpy import AvClass
 
 
 def test_all():
