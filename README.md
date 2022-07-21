@@ -48,3 +48,8 @@ For a summary of how PermPy is built, go [here](https://py-pkgs.org/03-how-to-pa
 $ python -m poetry build
 $ python -m poetry publish
 ```
+
+To run tests, run
+```bash
+$ python -m pytest tests/
+```
