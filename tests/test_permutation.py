@@ -77,34 +77,6 @@ def test_monotone_decreasing():
     assert p == Perm(54321), f"Perm.monotone_decreasing is not decreasing: {p}"
 
 
-def test_is_monotone_increasing():
-    cases_true = [Perm.monotone_increasing(n) for n in range(10)]
-    for p in cases_true:
-        assert (
-            p.is_increasing()
-        ), f"{p} is increasing but Perm.is_increasing returns False."
-
-    cases_true = [Perm(12345), Perm(43215), Perm(15432)]
-    for p in cases_true:
-        assert (
-            not p.is_decreasing()
-        ), f"{p} is not increasing but Perm.is_increasing returns True."
-
-
-def test_is_monotone_decreasing():
-    true_cases = [Perm.monotone_decreasing(n) for n in range(10)]
-    for p in true_cases:
-        assert (
-            p.is_decreasing()
-        ), f"{p} is decreasing but Perm.is_decreasing returns False."
-
-    false_cases = [Perm(12345), Perm(43215), Perm(15432)]
-    for p in false_cases:
-        assert (
-            not p.is_decreasing()
-        ), f"{p} is not decreasing but Perm.is_decreasing returns True."
-
-
 def test_random_length():
     for n in range(10):
         p = Perm.random(n)

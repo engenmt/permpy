@@ -57,25 +57,11 @@ class PermutationStatsMixin:
         return True
 
     def is_increasing(self):
-        """Determine if the permutation is increasing.
-
-        Examples:
-            >>> p = Permutation.random(10)
-            >>> (p * p.inverse()).is_increasing()
-            True
-
-        """
+        """Determine if the permutation is increasing."""
         return all(idx == val for idx, val in enumerate(self))
 
     def is_decreasing(self):
-        """Determine if the permutation is increasing.
-
-        Examples:
-            >>> p = Permutation(range(10,0,-1))
-            >>> p.is_decreasing()
-            True
-
-        """
+        """Determine if the permutation is increasing."""
         return all(idx == val for idx, val in enumerate(self[::-1]))
 
     def is_identity(self):
