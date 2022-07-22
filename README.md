@@ -4,6 +4,8 @@ PermPy is a user-friendly Python library for maniupulating permutation patterns 
 
 ## Installation
 
+Install `permpy` with `pip`:
+
 ```bash
 $ python -m pip install permpy
 ```
