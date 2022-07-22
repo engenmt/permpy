@@ -1,4 +1,3 @@
-from cmath import exp
 from permpy import PropertyClass, Permutation
 
 

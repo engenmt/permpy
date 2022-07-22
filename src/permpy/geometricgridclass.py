@@ -39,24 +39,6 @@ class GeometricGridClass(PermClass):
                 then the j'th row is oriented from bottom to top, and
                 if row[j] is -1, then it is oriented from top to bottom.
 
-        Notes:
-            The following example represents the matrix
-                +-+-+-+
-                | | |/|
-                +-+-+-+
-            M = | |/|/|
-                +-+-+-+
-                |/|/| |
-                +-+-+-+
-
-        Examples:
-            >>> M = [[1, 0, 0], \
-                     [1, 1, 0], \
-                     [0, 1, 1]] # Partial increasing staircase.
-            >>> G = GeometricGridClass(M) # This will the same as Av(321) until length 9.
-            >>> print([len(S) for S in G])
-            [1, 1, 2, 5, 14, 42, 132, 429, 1430]
-
         """
         self.M = M
 
@@ -101,34 +83,6 @@ class GeometricGridClass(PermClass):
                 return word
 
     def compute_signs(self):
-        r"""
-        The following matrix example represents
-            +-+-+-+
-            | |/|\|
-        M = +-+-+-+
-            |/| |/|
-            +-+-+-+
-
-        It should have signs:
-
-            +-+-+-+
-            | |/|\|↓
-        M = +-+-+-+
-            |/| |/|↑
-            +-+-+-+
-             → ← →
-
-        Meaning col = [1, -1, 1] and row = [1, -1].
-
-        Examples:
-            >>> M = [[ 1, 0], [ 0, 1], [ 1,-1]]
-            >>> G = GeometricGridClass(M, generate=False)
-            >>> G.col
-            [1, -1, 1]
-            >>> G.row
-            [1, -1]
-
-        """
         col_signs = self.col or [0 for _ in range(len(self.M))]
         row_signs = self.row or [0 for _ in range(len(self.M[0]))]
 
