@@ -1,25 +1,25 @@
-permpy
-=======
+# permpy
 
-## A Python Permutations Class
+PermPy is a user-friendly Python library for maniupulating permutation patterns and permutation classes. See [Wikipedia](https://en.wikipedia.org/wiki/Permutation_pattern) for an introduction to permutation patterns.
 
-Contains Various tools for working interactively with permutations. 
-Easily extensible.
+## Installation
 
-### Examples:
+```bash
+$ python -m pip install permpy
+```
+
+## Usage 
+
+`permpy` contains a number of useful Python classes including `permpy.Permutation`, which represents a permutation and can determine containment.
 ```python
->>> import permpy as pp
->>> 
->>> p = pp.Perm.random(8)
->>> p
- 5 4 7 1 6 2 3 8 
->>> p.cycles()
-'( 6 2 4 1 5 ) ( 7 3 ) ( 8 )'
->>> p.order()
-10 
->>> p ** p.order()
- 1 2 3 4 5 6 7 8
->>>
+>>> from permpy import Permutation
+>>> p = Permutation(1324)
+>>> q = Permutation(123)
+>>> q <= p
+True
+>>> r = Permutation(321)
+>>> r <= p
+False
 >>> S = pp.PermSet.all(6)
 >>> S
 Set of 720 permutations
@@ -27,19 +27,20 @@ Set of 720 permutations
 5400
 >>> S.total_statistic(pp.Perm.num_descents)
 1800
->>> 
->>> A = pp.AvClass([ 132 ])
->>> A
-[Set of 0 permutations, 
- Set of 1 permutations, 
- Set of 2 permutations, 
- Set of 5 permutations, 
- Set of 14 permutations, 
- Set of 42 permutations, 
- Set of 132 permutations, 
- Set of 429 permutations, 
- Set of 1430 permutations]
->>> 
+>>> from permpy import AvClass
+>>> A = AvClass([132])
+>>> for S in A:
+...     print(S)
+... 
+Set of 1 permutations
+Set of 1 permutations
+Set of 2 permutations
+Set of 5 permutations
+Set of 14 permutations
+Set of 42 permutations
+Set of 132 permutations
+Set of 429 permutations
+Set of 1430 permutations 
 ```
 
 ## Build Instructions
@@ -47,4 +48,13 @@ For a summary of how PermPy is built, go [here](https://py-pkgs.org/03-how-to-pa
 ```bash
 $ python -m poetry build
 $ python -m poetry publish
+```
+
+To build and install locally, run
+```bash
+$ python -m poetry install
+$ python -m poetry shell
+$ python
+>>> import permpy
+>>>
 ```
