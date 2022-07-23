@@ -3,7 +3,6 @@
 # You can set these variables from the command line.
 SPHINXOPTS    = -n
 SPHINXBUILD   = sphinx-build
-# SPHINXPROJ    = {{ cookiecutter.project_slug }}
 SOURCEDIR     = ../docs/
 OUTPUTDIR     = ../docs/_build/html
 
