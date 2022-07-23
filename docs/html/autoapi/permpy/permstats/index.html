@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>permpy.permstats &mdash; Python  documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/mystnb.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/togglebutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script>let toggleHintShow = 'Click to show';</script>
+        <script>let toggleHintHide = 'Click to hide';</script>
+        <script>let toggleOpenOnPrint = 'true';</script>
+        <script src="../../../_static/togglebutton.js"></script>
+        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="permpy.permutation" href="../permutation/index.html" />
+    <link rel="prev" title="permpy.permset" href="../permset/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy</span></code></a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../index.html#subpackages">Subpackages</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../index.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../avclass/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy.avclass</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../geometricgridclass/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy.geometricgridclass</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../permclass/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy.permclass</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../permmisc/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy.permmisc</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../permset/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy.permset</span></code></a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy.permstats</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../permutation/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy.permutation</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../propertyclass/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy.propertyclass</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../staircase/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy.staircase</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../utils/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy.utils</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../index.html#package-contents">Package Contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">API Reference</a> &raquo;</li>
+          <li><a href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy</span></code></a> &raquo;</li>
+      <li><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy.permstats</span></code></li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/autoapi/permpy/permstats/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-permpy.permstats">
+<span id="permpy-permstats"></span><h1><a class="reference internal" href="#module-permpy.permstats" title="permpy.permstats"><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy.permstats</span></code></a><a class="headerlink" href="#module-permpy.permstats" title="Permalink to this heading"></a></h1>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Permalink to this heading"></a></h2>
+<section id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#permpy.permstats.PermutationStatsMixin" title="permpy.permstats.PermutationStatsMixin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PermutationStatsMixin</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="permpy.permstats.PermutationStatsMixin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">permpy.permstats.</span></span><span class="sig-name descname"><span class="pre">PermutationStatsMixin</span></span><a class="reference internal" href="../../../_modules/permpy/permstats.html#PermutationStatsMixin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permstats.PermutationStatsMixin" title="Permalink to this definition"></a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="permpy.permstats.PermutationStatsMixin.num_fixed_points">
+<span class="sig-name descname"><span class="pre">num_fixed_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permstats.html#PermutationStatsMixin.num_fixed_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permstats.PermutationStatsMixin.num_fixed_points" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permstats.PermutationStatsMixin.num_descents">
+<span class="sig-name descname"><span class="pre">num_descents</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permstats.html#PermutationStatsMixin.num_descents"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permstats.PermutationStatsMixin.num_descents" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permstats.PermutationStatsMixin.num_ascents">
+<span class="sig-name descname"><span class="pre">num_ascents</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permstats.html#PermutationStatsMixin.num_ascents"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permstats.PermutationStatsMixin.num_ascents" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permstats.PermutationStatsMixin.num_peaks">
+<span class="sig-name descname"><span class="pre">num_peaks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permstats.html#PermutationStatsMixin.num_peaks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permstats.PermutationStatsMixin.num_peaks" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permstats.PermutationStatsMixin.num_valleys">
+<span class="sig-name descname"><span class="pre">num_valleys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permstats.html#PermutationStatsMixin.num_valleys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permstats.PermutationStatsMixin.num_valleys" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permstats.PermutationStatsMixin.num_ltr_min">
+<span class="sig-name descname"><span class="pre">num_ltr_min</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permstats.html#PermutationStatsMixin.num_ltr_min"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permstats.PermutationStatsMixin.num_ltr_min" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permstats.PermutationStatsMixin.num_rtl_min">
+<span class="sig-name descname"><span class="pre">num_rtl_min</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permstats.html#PermutationStatsMixin.num_rtl_min"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permstats.PermutationStatsMixin.num_rtl_min" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permstats.PermutationStatsMixin.num_ltr_max">
+<span class="sig-name descname"><span class="pre">num_ltr_max</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permstats.html#PermutationStatsMixin.num_ltr_max"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permstats.PermutationStatsMixin.num_ltr_max" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permstats.PermutationStatsMixin.num_rtl_max">
+<span class="sig-name descname"><span class="pre">num_rtl_max</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permstats.html#PermutationStatsMixin.num_rtl_max"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permstats.PermutationStatsMixin.num_rtl_max" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permstats.PermutationStatsMixin.num_rtlmin_ltrmax_layers">
+<span class="sig-name descname"><span class="pre">num_rtlmin_ltrmax_layers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permstats.html#PermutationStatsMixin.num_rtlmin_ltrmax_layers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permstats.PermutationStatsMixin.num_rtlmin_ltrmax_layers" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permstats.PermutationStatsMixin.num_rtlmax_ltrmin_layers">
+<span class="sig-name descname"><span class="pre">num_rtlmax_ltrmin_layers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permstats.html#PermutationStatsMixin.num_rtlmax_ltrmin_layers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permstats.PermutationStatsMixin.num_rtlmax_ltrmin_layers" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permstats.PermutationStatsMixin.trivial">
+<span class="sig-name descname"><span class="pre">trivial</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permstats.html#PermutationStatsMixin.trivial"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permstats.PermutationStatsMixin.trivial" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permstats.PermutationStatsMixin.num_inversions">
+<span class="sig-name descname"><span class="pre">num_inversions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permstats.html#PermutationStatsMixin.num_inversions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permstats.PermutationStatsMixin.num_inversions" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permstats.PermutationStatsMixin.num_noninversions">
+<span class="sig-name descname"><span class="pre">num_noninversions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permstats.html#PermutationStatsMixin.num_noninversions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permstats.PermutationStatsMixin.num_noninversions" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permstats.PermutationStatsMixin.major_index">
+<span class="sig-name descname"><span class="pre">major_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permstats.html#PermutationStatsMixin.major_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permstats.PermutationStatsMixin.major_index" title="Permalink to this definition"></a></dt>
+<dd><p>Return the major index of <cite>self</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permstats.PermutationStatsMixin.len_max_run">
+<span class="sig-name descname"><span class="pre">len_max_run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permstats.html#PermutationStatsMixin.len_max_run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permstats.PermutationStatsMixin.len_max_run" title="Permalink to this definition"></a></dt>
+<dd><p>Return the length of the longest monotone contiguous subsequence of entries.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permstats.PermutationStatsMixin.is_involution">
+<span class="sig-name descname"><span class="pre">is_involution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permstats.html#PermutationStatsMixin.is_involution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permstats.PermutationStatsMixin.is_involution" title="Permalink to this definition"></a></dt>
+<dd><p>Determine if the permutation is an involution, i.e., is equal to it’s own inverse.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permstats.PermutationStatsMixin.is_increasing">
+<span class="sig-name descname"><span class="pre">is_increasing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permstats.html#PermutationStatsMixin.is_increasing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permstats.PermutationStatsMixin.is_increasing" title="Permalink to this definition"></a></dt>
+<dd><p>Determine if the permutation is increasing.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">Permutation</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">p</span> <span class="o">*</span> <span class="n">p</span><span class="o">.</span><span class="n">inverse</span><span class="p">())</span><span class="o">.</span><span class="n">is_increasing</span><span class="p">()</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permstats.PermutationStatsMixin.is_decreasing">
+<span class="sig-name descname"><span class="pre">is_decreasing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permstats.html#PermutationStatsMixin.is_decreasing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permstats.PermutationStatsMixin.is_decreasing" title="Permalink to this definition"></a></dt>
+<dd><p>Determine if the permutation is increasing.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">Permutation</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">is_decreasing</span><span class="p">()</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permstats.PermutationStatsMixin.is_identity">
+<span class="sig-name descname"><span class="pre">is_identity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permstats.html#PermutationStatsMixin.is_identity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permstats.PermutationStatsMixin.is_identity" title="Permalink to this definition"></a></dt>
+<dd><p>Wrapper for is_increasing.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permstats.PermutationStatsMixin.is_simple">
+<span class="sig-name descname"><span class="pre">is_simple</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permstats.html#PermutationStatsMixin.is_simple"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permstats.PermutationStatsMixin.is_simple" title="Permalink to this definition"></a></dt>
+<dd><p>Determine if <cite>self</cite> is simple.</p>
+<div class="admonition-todo admonition" id="id1">
+<p class="admonition-title">Todo</p>
+<p>Implement this better, if possible.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permstats.PermutationStatsMixin.is_strongly_simple">
+<span class="sig-name descname"><span class="pre">is_strongly_simple</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permstats.html#PermutationStatsMixin.is_strongly_simple"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permstats.PermutationStatsMixin.is_strongly_simple" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permstats.PermutationStatsMixin.num_bonds">
+<span class="sig-name descname"><span class="pre">num_bonds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permstats.html#PermutationStatsMixin.num_bonds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permstats.PermutationStatsMixin.num_bonds" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permstats.PermutationStatsMixin.num_inc_bonds">
+<span class="sig-name descname"><span class="pre">num_inc_bonds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permstats.html#PermutationStatsMixin.num_inc_bonds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permstats.PermutationStatsMixin.num_inc_bonds" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permstats.PermutationStatsMixin.num_dec_bonds">
+<span class="sig-name descname"><span class="pre">num_dec_bonds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permstats.html#PermutationStatsMixin.num_dec_bonds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permstats.PermutationStatsMixin.num_dec_bonds" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permstats.PermutationStatsMixin.num_copies">
+<span class="sig-name descname"><span class="pre">num_copies</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permstats.html#PermutationStatsMixin.num_copies"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permstats.PermutationStatsMixin.num_copies" title="Permalink to this definition"></a></dt>
+<dd><p>Return the number of copies of <cite>other</cite> in <cite>self</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permstats.PermutationStatsMixin.num_contiguous_copies_of">
+<span class="sig-name descname"><span class="pre">num_contiguous_copies_of</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permstats.html#PermutationStatsMixin.num_contiguous_copies_of"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permstats.PermutationStatsMixin.num_contiguous_copies_of" title="Permalink to this definition"></a></dt>
+<dd><p>Return the number of contiguous copies of <cite>other</cite> in <cite>self</cite>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../permset/index.html" class="btn btn-neutral float-left" title="permpy.permset" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../permutation/index.html" class="btn btn-neutral float-right" title="permpy.permutation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

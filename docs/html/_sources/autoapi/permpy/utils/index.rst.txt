@@ -1,0 +1,25 @@
+:py:mod:`permpy.utils`
+======================
+
+.. py:module:: permpy.utils
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   permpy.utils.copy_func
+
+
+
+.. py:function:: copy_func(f, name=None)
+
+   Return a function with same code, globals, defaults, closure, and
+   name (or provide a new name)
+
+

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>permpy.propertyclass &mdash; Python  documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/mystnb.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/togglebutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script>let toggleHintShow = 'Click to show';</script>
+        <script>let toggleHintHide = 'Click to hide';</script>
+        <script>let toggleOpenOnPrint = 'true';</script>
+        <script src="../../../_static/togglebutton.js"></script>
+        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="permpy.staircase" href="../staircase/index.html" />
+    <link rel="prev" title="permpy.permutation" href="../permutation/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy</span></code></a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../index.html#subpackages">Subpackages</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../index.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../avclass/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy.avclass</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../geometricgridclass/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy.geometricgridclass</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../permclass/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy.permclass</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../permmisc/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy.permmisc</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../permset/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy.permset</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../permstats/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy.permstats</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../permutation/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy.permutation</span></code></a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy.propertyclass</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../staircase/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy.staircase</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../utils/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy.utils</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../index.html#package-contents">Package Contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">API Reference</a> &raquo;</li>
+          <li><a href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy</span></code></a> &raquo;</li>
+      <li><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy.propertyclass</span></code></li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/autoapi/permpy/propertyclass/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-permpy.propertyclass">
+<span id="permpy-propertyclass"></span><h1><a class="reference internal" href="#module-permpy.propertyclass" title="permpy.propertyclass"><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy.propertyclass</span></code></a><a class="headerlink" href="#module-permpy.propertyclass" title="Permalink to this heading"></a></h1>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Permalink to this heading"></a></h2>
+<section id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#permpy.propertyclass.PropertyClass" title="permpy.propertyclass.PropertyClass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PropertyClass</span></code></a></p></td>
+<td><p>A minimal Python class representing a Permutation class.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="permpy.propertyclass.PropertyClass">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">permpy.propertyclass.</span></span><span class="sig-name descname"><span class="pre">PropertyClass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">property</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_len</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/propertyclass.html#PropertyClass"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.propertyclass.PropertyClass" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../permclass/index.html#permpy.permclass.PermClass" title="permpy.permclass.PermClass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">permpy.permclass.PermClass</span></code></a></p>
+<p>A minimal Python class representing a Permutation class.</p>
+<p class="rubric">Notes</p>
+<p>Relies on the Permutation class being closed downwards, but does not assert this.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.propertyclass.PropertyClass.__contains__">
+<span class="sig-name descname"><span class="pre">__contains__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/propertyclass.html#PropertyClass.__contains__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.propertyclass.PropertyClass.__contains__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.propertyclass.PropertyClass.add_property">
+<span class="sig-name descname"><span class="pre">add_property</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">property</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/propertyclass.html#PropertyClass.add_property"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.propertyclass.PropertyClass.add_property" title="Permalink to this definition"></a></dt>
+<dd><p>Modify self by removing those permutations that fail the test.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.propertyclass.PropertyClass.union">
+<span class="sig-name descname"><span class="pre">union</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/propertyclass.html#PropertyClass.union"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.propertyclass.PropertyClass.union" title="Permalink to this definition"></a></dt>
+<dd><p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">inc</span> <span class="o">=</span> <span class="n">Permutation</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">D</span> <span class="o">=</span> <span class="n">PropertyClass</span><span class="p">(</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">inc</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">p</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dec</span> <span class="o">=</span> <span class="n">Permutation</span><span class="p">(</span><span class="mi">21</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">I</span> <span class="o">=</span> <span class="n">PropertyClass</span><span class="p">(</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">dec</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">p</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">U</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">I</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">U</span><span class="p">[</span><span class="mi">8</span><span class="p">])</span>
+<span class="go">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">U</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">U</span><span class="p">[</span><span class="mi">9</span><span class="p">])</span>
+<span class="go">2</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.propertyclass.PropertyClass.extend">
+<span class="sig-name descname"><span class="pre">extend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/propertyclass.html#PropertyClass.extend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.propertyclass.PropertyClass.extend" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.propertyclass.PropertyClass.extended">
+<span class="sig-name descname"><span class="pre">extended</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/propertyclass.html#PropertyClass.extended"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.propertyclass.PropertyClass.extended" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.propertyclass.PropertyClass.skew_closure">
+<span class="sig-name descname"><span class="pre">skew_closure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_len</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/propertyclass.html#PropertyClass.skew_closure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.propertyclass.PropertyClass.skew_closure" title="Permalink to this definition"></a></dt>
+<dd><p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">Permutation</span><span class="p">(</span><span class="mi">21</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">C</span> <span class="o">=</span> <span class="n">PropertyClass</span><span class="p">(</span><span class="k">lambda</span> <span class="n">q</span><span class="p">:</span> <span class="n">p</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">q</span><span class="p">)</span> <span class="c1"># Class of increasing permutations</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">D</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">skew_closure</span><span class="p">(</span><span class="n">max_len</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span> <span class="c1"># Class of co-layered permutations</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">D</span><span class="p">[</span><span class="mi">7</span><span class="p">])</span> <span class="o">==</span> <span class="mi">64</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.propertyclass.PropertyClass.sum_closure">
+<span class="sig-name descname"><span class="pre">sum_closure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_len</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/propertyclass.html#PropertyClass.sum_closure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.propertyclass.PropertyClass.sum_closure" title="Permalink to this definition"></a></dt>
+<dd><p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">Permutation</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">C</span> <span class="o">=</span> <span class="n">PropertyClass</span><span class="p">(</span><span class="k">lambda</span> <span class="n">q</span><span class="p">:</span> <span class="n">p</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">q</span><span class="p">)</span> <span class="c1"># Class of decreasing permutations</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">D</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">sum_closure</span><span class="p">(</span><span class="n">max_len</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span> <span class="c1"># Class of layered permutations</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">D</span><span class="p">[</span><span class="mi">7</span><span class="p">])</span> <span class="o">==</span> <span class="mi">64</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../permutation/index.html" class="btn btn-neutral float-left" title="permpy.permutation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../staircase/index.html" class="btn btn-neutral float-right" title="permpy.staircase" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

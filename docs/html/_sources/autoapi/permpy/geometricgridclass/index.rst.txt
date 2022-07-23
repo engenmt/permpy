@@ -1,0 +1,70 @@
+:py:mod:`permpy.geometricgridclass`
+===================================
+
+.. py:module:: permpy.geometricgridclass
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   permpy.geometricgridclass.GeometricGridClass
+
+
+
+
+.. py:exception:: BadMatrixException
+
+   Bases: :py:obj:`Exception`
+
+   Common base class for all non-exit exceptions.
+
+
+.. py:exception:: BadWordException
+
+   Bases: :py:obj:`Exception`
+
+   Common base class for all non-exit exceptions.
+
+
+.. py:class:: GeometricGridClass(M, col=None, row=None, max_length=8, generate=True)
+
+   Bases: :py:obj:`permpy.permclass.PermClass`
+
+   A minimal Python class representing a Permutation class.
+
+   .. rubric:: Notes
+
+   Relies on the Permutation class being closed downwards, but does not assert this.
+
+   .. py:method:: find_word_for_perm(self, p)
+
+
+   .. py:method:: compute_signs(self)
+
+      Meaning col = [1, -1, 1] and row = [1, -1].
+
+      .. rubric:: Examples
+
+      >>> M = [[ 1, 0], [ 0, 1], [ 1,-1]]
+      >>> G = GeometricGridClass(M, generate=False)
+      >>> G.col
+      [1, -1, 1]
+      >>> G.row
+      [1, -1]
+
+
+   .. py:method:: build_perms(self, max_length)
+
+
+   .. py:method:: dig_word_to_perm(self, word, ignore_bad=False)
+
+
+   .. py:method:: is_valid_word(self, word)
+
+
+

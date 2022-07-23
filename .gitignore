@@ -4,4 +4,4 @@
 .pytest_cache
 *.pynb
 dist/
-permpy.egg-info/
+docs/doctrees/

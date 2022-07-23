@@ -1,0 +1,56 @@
+:py:mod:`permpy.RestrictedContainer`
+====================================
+
+.. py:module:: permpy.RestrictedContainer
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   restricted_container/index.rst
+
+
+Package Contents
+----------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   permpy.RestrictedContainer.RestrictedContainer
+
+
+
+
+.. py:class:: RestrictedContainer(basis_list, input_list, container=[], output_list=[])
+
+   Bases: :py:obj:`object`
+
+   .. py:method:: push(self, position)
+
+
+   .. py:method:: pop(self)
+
+
+   .. py:method:: __repr__(self)
+
+      Return repr(self).
+
+
+   .. py:method:: container_size(self)
+
+
+   .. py:method:: output_size(self)
+
+
+   .. py:method:: input_size(self)
+
+
+   .. py:method:: output(self)
+
+
+

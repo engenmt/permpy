@@ -1,0 +1,148 @@
+:py:mod:`permpy.permmisc`
+=========================
+
+.. py:module:: permpy.permmisc
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   permpy.permmisc.PermutationMiscMixin
+
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   permpy.permmisc.lcm
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   permpy.permmisc.mpl_imported
+
+
+.. py:data:: mpl_imported
+   :annotation: = True
+
+   
+
+.. py:function:: lcm(L)
+
+
+.. py:class:: PermutationMiscMixin
+
+   Contains various functions for Permutation to inherit.
+
+   .. py:method:: one_cycles(cls, n)
+      :classmethod:
+
+      Generate those permutations of length n that consist of one cycle.
+
+
+   .. py:method:: cycle_decomp(self)
+
+      Return the cycle decomposition of the permutation.
+      Return as a list of cycles, each of which is represented as a list.
+
+      .. rubric:: Examples
+
+      >>> Permutation(53814276).cycle_decomp()
+      [[4, 3, 0], [6], [7, 5, 1, 2]]
+
+
+   .. py:method:: cycles(self)
+
+      Return the cycle notation representation of the permutation.
+
+
+   .. py:method:: order(self)
+
+      Return the group-theotric order of self.
+
+
+   .. py:method:: children(self)
+
+      Return all patterns contained in self of length one less than the permutation.
+
+
+   .. py:method:: shrink_by_one(self)
+
+      Return all patterns contained in self of length one less than the permutation.
+
+
+   .. py:method:: all_right_extensions(self, max_length, l, S)
+
+
+   .. py:method:: sum_indecomposable_sequence(self)
+
+
+   .. py:method:: contains_locations(self, Q)
+
+
+   .. py:method:: rank_val(self, i)
+
+
+   .. py:method:: rtlmax_ltrmin_decomposition(self)
+
+
+   .. py:method:: contains_locations(self, Q)
+
+
+   .. py:method:: rank_val(self, i)
+
+
+   .. py:method:: rank_encoding(self)
+
+
+   .. py:method:: rtlmax_ltrmin_decomposition(self)
+
+
+   .. py:method:: rtlmin_ltrmax_decomposition(self)
+
+
+   .. py:method:: dec_bonds(self)
+
+
+   .. py:method:: inc_bonds(self)
+
+
+   .. py:method:: contract_inc_bonds(self)
+
+
+   .. py:method:: contract_dec_bonds(self)
+
+
+   .. py:method:: contract_bonds(self)
+
+
+   .. py:method:: plot(self, show=True, ax=None, use_mpl=True, fname=None, **kwargs)
+
+      Draw a matplotlib plot of the permutation. Can be used for both
+      quick visualization, or to build a larger figure. Unrecognized
+      arguments are passed as options to the axes object to allow for
+      customization (i.e., setting a figure title, or setting labels on the
+      axes). Falls back to an ascii_plot if matplotlib isn't found, or if
+      use_mpl is set to False.
+
+
+   .. py:method:: _show(self)
+
+
+   .. py:method:: to_tikz(self)
+
+      Return a pure-tikz simple plot of `self`.
+
+
+

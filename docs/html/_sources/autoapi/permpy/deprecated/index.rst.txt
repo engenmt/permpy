@@ -1,0 +1,17 @@
+:py:mod:`permpy.deprecated`
+===========================
+
+.. py:module:: permpy.deprecated
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   permclassdeprecated/index.rst
+   permdeprecated/index.rst
+   permsetdeprecated/index.rst
+
+

@@ -1,0 +1,39 @@
+:py:mod:`permpy.deprecated.permsetdeprecated`
+=============================================
+
+.. py:module:: permpy.deprecated.permsetdeprecated
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   permpy.deprecated.permsetdeprecated.PermSetDeprecatedMixin
+
+
+
+
+.. py:class:: PermSetDeprecatedMixin
+
+   .. py:method:: layer_down(self, verbose=0)
+
+      Return the PermSet of those permutations that are covered by an element of `self`.
+
+
+   .. py:method:: all_syms(self)
+
+
+   .. py:method:: extensions(self, test)
+
+
+   .. py:method:: threepats(self)
+
+
+   .. py:method:: fourpats(self)
+
+
+

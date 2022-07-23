@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>permpy.permutation &mdash; Python  documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/mystnb.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/togglebutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script>let toggleHintShow = 'Click to show';</script>
+        <script>let toggleHintHide = 'Click to hide';</script>
+        <script>let toggleOpenOnPrint = 'true';</script>
+        <script src="../../../_static/togglebutton.js"></script>
+        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="permpy.propertyclass" href="../propertyclass/index.html" />
+    <link rel="prev" title="permpy.permstats" href="../permstats/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy</span></code></a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../index.html#subpackages">Subpackages</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../index.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../avclass/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy.avclass</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../geometricgridclass/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy.geometricgridclass</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../permclass/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy.permclass</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../permmisc/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy.permmisc</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../permset/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy.permset</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../permstats/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy.permstats</span></code></a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy.permutation</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../propertyclass/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy.propertyclass</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../staircase/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy.staircase</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../utils/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy.utils</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../index.html#package-contents">Package Contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">API Reference</a> &raquo;</li>
+          <li><a href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy</span></code></a> &raquo;</li>
+      <li><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy.permutation</span></code></li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/autoapi/permpy/permutation/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-permpy.permutation">
+<span id="permpy-permutation"></span><h1><a class="reference internal" href="#module-permpy.permutation" title="permpy.permutation"><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy.permutation</span></code></a><a class="headerlink" href="#module-permpy.permutation" title="Permalink to this heading"></a></h1>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Permalink to this heading"></a></h2>
+<section id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#permpy.permutation.Permutation" title="permpy.permutation.Permutation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Permutation</span></code></a></p></td>
+<td><p>Class for representing permutations as immutable 0-indexed tuples.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="attributes">
+<h3>Attributes<a class="headerlink" href="#attributes" title="Permalink to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#permpy.permutation.__author__" title="permpy.permutation.__author__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__author__</span></code></a></p></td>
+<td><p>Todo:</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py data">
+<dt class="sig sig-object py" id="permpy.permutation.__author__">
+<span class="sig-prename descclassname"><span class="pre">permpy.permutation.</span></span><span class="sig-name descname"><span class="pre">__author__</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">Michael</span> <span class="pre">Engen,</span> <span class="pre">Cheyne</span> <span class="pre">Homberger,</span> <span class="pre">Jay</span> <span class="pre">Pantone</span></em><a class="headerlink" href="#permpy.permutation.__author__" title="Permalink to this definition"></a></dt>
+<dd><p>Todo:
+* Permutation.random_avoider</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">permpy.permutation.</span></span><span class="sig-name descname"><span class="pre">Permutation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code>, <a class="reference internal" href="../permstats/index.html#permpy.permstats.PermutationStatsMixin" title="permpy.permstats.PermutationStatsMixin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">permpy.permstats.PermutationStatsMixin</span></code></a>, <a class="reference internal" href="../permmisc/index.html#permpy.permmisc.PermutationMiscMixin" title="permpy.permmisc.PermutationMiscMixin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">permpy.permmisc.PermutationMiscMixin</span></code></a>, <a class="reference internal" href="../deprecated/permdeprecated/index.html#permpy.deprecated.permdeprecated.PermutationDeprecatedMixin" title="permpy.deprecated.permdeprecated.PermutationDeprecatedMixin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">permpy.deprecated.permdeprecated.PermutationDeprecatedMixin</span></code></a></p>
+<p>Class for representing permutations as immutable 0-indexed tuples.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation._REPR">
+<span class="sig-name descname"><span class="pre">_REPR</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">oneline</span></em><a class="headerlink" href="#permpy.permutation.Permutation._REPR" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation._BASE">
+<span class="sig-name descname"><span class="pre">_BASE</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#permpy.permutation.Permutation._BASE" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.lower_bound">
+<span class="sig-name descname"><span class="pre">lower_bound</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">[]</span></em><a class="headerlink" href="#permpy.permutation.Permutation.lower_bound" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.upper_bound">
+<span class="sig-name descname"><span class="pre">upper_bound</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">[]</span></em><a class="headerlink" href="#permpy.permutation.Permutation.upper_bound" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.bounds_set">
+<span class="sig-name descname"><span class="pre">bounds_set</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">False</span></em><a class="headerlink" href="#permpy.permutation.Permutation.bounds_set" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.insertion_values">
+<span class="sig-name descname"><span class="pre">insertion_values</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">[]</span></em><a class="headerlink" href="#permpy.permutation.Permutation.insertion_values" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.monotone_increasing">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">monotone_increasing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.monotone_increasing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.monotone_increasing" title="Permalink to this definition"></a></dt>
+<dd><p>Return the monotone increasing permutation of length n.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Permutation</span><span class="o">.</span><span class="n">monotone_increasing</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="go">1 2 3 4 5</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.monotone_decreasing">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">monotone_decreasing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.monotone_decreasing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.monotone_decreasing" title="Permalink to this definition"></a></dt>
+<dd><p>Return the monotone decreasing permutation of length n.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Permutation</span><span class="o">.</span><span class="n">monotone_decreasing</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="go">5 4 3 2 1</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.identity">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">identity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.identity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.identity" title="Permalink to this definition"></a></dt>
+<dd><p>Wrapper for Permutation.monotone_increasing.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.random">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">random</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.random"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.random" title="Permalink to this definition"></a></dt>
+<dd><p>Return a random permutation of length n.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span> <span class="n">Permutation</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="p">)</span> <span class="o">==</span> <span class="mi">10</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.random_avoider">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">random_avoider</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simple</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">involution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.random_avoider"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.random_avoider" title="Permalink to this definition"></a></dt>
+<dd><p>Generate a (uniformly) random permutation that avoids the patterns
+contained in <cite>B</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n</strong> (<em>int</em>) – length of permutation to generate</p></li>
+<li><p><strong>B</strong> (<em>iterable</em>) – Iterable of permutation-like objects to avoid.</p></li>
+<li><p><strong>simple</strong> (<em>Boolean</em><em>, </em><em>optional</em>) – Whether the returned Permutation should be simple.
+Defaults to False.</p></li>
+<li><p><strong>involution</strong> (<em>Boolean</em><em>, </em><em>optional</em>) – Whether the returned Permutation should be an involution.
+Defaults to False.</p></li>
+<li><p><strong>verbose</strong> (<em>int</em><em>, </em><em>optional</em>) – Level of verbosity (-1 for no verbosity)
+Doubling the integer doubles the number of messages printed.
+Defaults to -1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A permutation avoiding all the patterns in <cite>B</cite></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>p (<a class="reference internal" href="#permpy.permutation.Permutation" title="permpy.permutation.Permutation">Permutation</a>)</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">Permutation</span><span class="o">.</span><span class="n">random_avoider</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="p">[</span><span class="mi">123</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">involves</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<div class="admonition-todo admonition" id="id1">
+<p class="admonition-title">Todo</p>
+<p>Ideally, we should use MCMC for this.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.gen_all">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">gen_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.gen_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.gen_all" title="Permalink to this definition"></a></dt>
+<dd><p>Generate all permutations of length n.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.list_all">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">list_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.list_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.list_all" title="Permalink to this definition"></a></dt>
+<dd><p>Return a list of all permutations of length <cite>n</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.all_perms">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">all_perms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.all_perms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.all_perms" title="Permalink to this definition"></a></dt>
+<dd><p>Wrapper for Permutation.list_all.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.standardize">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">standardize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">L</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.standardize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.standardize" title="Permalink to this definition"></a></dt>
+<dd><p>Standardize the list <cite>L</cite> of distinct elements by mapping them to the
+set {0, 1, …, len(L)} by an order-preserving bijection.</p>
+<p>See the following for some interesting discussion on this:
+<a class="reference external" href="https://stackoverflow.com/questions/17767646/relative-order-of-elements-in-list">https://stackoverflow.com/questions/17767646/relative-order-of-elements-in-list</a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.change_repr">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">change_repr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">representation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.change_repr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.change_repr" title="Permalink to this definition"></a></dt>
+<dd><p>Toggle globally between cycle notation or one-line notation.
+Note that internal representation is still one-line.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.ind_to_perm">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ind_to_perm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.ind_to_perm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.ind_to_perm" title="Permalink to this definition"></a></dt>
+<dd><p>De-index the permutation by a bijection from the set S_n to [n!].
+See also the <cite>Permutation.perm_to_ind</cite> method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>k</strong> (<em>int</em>) – An integer between 0 and n! - 1, to be mapped to S_n.</p></li>
+<li><p><strong>n</strong> (<em>int</em>) – Length of the permutation.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Permutation of index k of length n.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Permutation</span><span class="o">.</span><span class="n">ind_to_perm</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span><span class="o">.</span><span class="n">perm_to_ind</span><span class="p">()</span>
+<span class="go">12</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.__call__">
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.__call__" title="Permalink to this definition"></a></dt>
+<dd><p>Allow the permutation to be called as a function.</p>
+<p class="rubric">Notes</p>
+<p>Recall that permutations are zero-based internally.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Permutation</span><span class="p">(</span><span class="mi">4132</span><span class="p">)(</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">2</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.__contains__">
+<span class="sig-name descname"><span class="pre">__contains__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.__contains__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.__contains__" title="Permalink to this definition"></a></dt>
+<dd><p>Return True if <cite>self</cite> contains <cite>other</cite>.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Permutation</span><span class="p">(</span><span class="mi">21</span><span class="p">)</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="n">Permutation</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Permutation</span><span class="p">(</span><span class="mi">132</span><span class="p">)</span> <span class="ow">in</span> <span class="n">Permutation</span><span class="p">(</span><span class="mi">4132</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Permutation</span><span class="p">(</span><span class="mi">231</span><span class="p">)</span> <span class="ow">in</span> <span class="n">Permutation</span><span class="p">(</span><span class="mi">1234</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.oneline">
+<span class="sig-name descname"><span class="pre">oneline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.oneline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.oneline" title="Permalink to this definition"></a></dt>
+<dd><p>Return the one-line notation representation of the permutation (as a
+sequence of integers 1 through n).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.__repr__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.__repr__" title="Permalink to this definition"></a></dt>
+<dd><p>Return a string representation of the permutation depending on the
+chosen representation (<cite>Permutation._REPR</cite>).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.__mul__">
+<span class="sig-name descname"><span class="pre">__mul__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.__mul__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.__mul__" title="Permalink to this definition"></a></dt>
+<dd><p>Return the functional composition of the two permutations.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.__add__">
+<span class="sig-name descname"><span class="pre">__add__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.__add__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.__add__" title="Permalink to this definition"></a></dt>
+<dd><p>Return the direct sum of the two permutations.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">Permutation</span><span class="o">.</span><span class="n">monotone_increasing</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">+</span> <span class="n">p</span> <span class="o">==</span> <span class="n">Permutation</span><span class="o">.</span><span class="n">monotone_increasing</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.direct_sum">
+<span class="sig-name descname"><span class="pre">direct_sum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.direct_sum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.direct_sum" title="Permalink to this definition"></a></dt>
+<dd><p>Return the direct sum of the two permutations.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Permutation</span><span class="p">(</span><span class="mi">312</span><span class="p">)</span><span class="o">.</span><span class="n">direct_sum</span><span class="p">(</span><span class="n">Permutation</span><span class="p">(</span><span class="mi">1234</span><span class="p">))</span>
+<span class="go">3 1 2 4 5 6 7</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.__sub__">
+<span class="sig-name descname"><span class="pre">__sub__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.__sub__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.__sub__" title="Permalink to this definition"></a></dt>
+<dd><p>Return the skew sum of the two permutations.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">Permutation</span><span class="o">.</span><span class="n">monotone_decreasing</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">-</span> <span class="n">p</span> <span class="o">==</span> <span class="n">Permutation</span><span class="o">.</span><span class="n">monotone_decreasing</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.skew_sum">
+<span class="sig-name descname"><span class="pre">skew_sum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.skew_sum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.skew_sum" title="Permalink to this definition"></a></dt>
+<dd><p>Return the skew sum of the two permutations.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Permutation</span><span class="p">(</span><span class="mi">312</span><span class="p">)</span><span class="o">.</span><span class="n">skew_sum</span><span class="p">(</span><span class="n">Permutation</span><span class="p">(</span><span class="mi">1234</span><span class="p">))</span>
+<span class="go">7 5 6 1 2 3 4</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.__pow__">
+<span class="sig-name descname"><span class="pre">__pow__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">power</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.__pow__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.__pow__" title="Permalink to this definition"></a></dt>
+<dd><p>Return the permutation raised to a power.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">Permutation</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">**</span><span class="n">p</span><span class="o">.</span><span class="n">order</span><span class="p">()</span> <span class="o">==</span> <span class="n">Permutation</span><span class="o">.</span><span class="n">monotone_increasing</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.perm_to_ind">
+<span class="sig-name descname"><span class="pre">perm_to_ind</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.perm_to_ind"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.perm_to_ind" title="Permalink to this definition"></a></dt>
+<dd><p>De-index the permutation, by mapping it to an integer between 0 and
+len(self)! - 1. See also <cite>Permutation.ind_to_perm</cite>.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">Permutation</span><span class="p">(</span><span class="mi">41523</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Permutation</span><span class="o">.</span><span class="n">ind_to_perm</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">perm_to_ind</span><span class="p">(),</span> <span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">))</span> <span class="o">==</span> <span class="n">p</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.delete">
+<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.delete" title="Permalink to this definition"></a></dt>
+<dd><p>Return the permutation that results from deleting the indices or
+values given.</p>
+<p class="rubric">Notes</p>
+<p>Recall that both indices and values are zero-indexed.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Permutation</span><span class="p">(</span><span class="mi">35214</span><span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">indices</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">2 4 1 3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Permutation</span><span class="p">(</span><span class="mi">35214</span><span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">indices</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span>
+<span class="go">2 3 1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Permutation</span><span class="p">(</span><span class="mi">35214</span><span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+<span class="go">3 2 1 4</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Permutation</span><span class="p">(</span><span class="mi">35214</span><span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">indices</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">==</span> <span class="n">Permutation</span><span class="p">(</span><span class="mi">35214</span><span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.insert">
+<span class="sig-name descname"><span class="pre">insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.insert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.insert" title="Permalink to this definition"></a></dt>
+<dd><p>Return the permutation resulting from inserting an entry with value
+just below <cite>val</cite> into the position just before the entry at position
+<cite>idx</cite>.</p>
+<p class="rubric">Notes</p>
+<p>Recall that both indices and values are zero-indexed.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Permutation</span><span class="p">(</span><span class="mi">2413</span><span class="p">)</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="go">3 5 2 1 4</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">Permutation</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">==</span> <span class="n">p</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">indices</span> <span class="o">=</span> <span class="mi">4</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.restrict">
+<span class="sig-name descname"><span class="pre">restrict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.restrict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.restrict" title="Permalink to this definition"></a></dt>
+<dd><p>Return the permutation obtained by restricting self to the given indices or values.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.complement">
+<span class="sig-name descname"><span class="pre">complement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.complement"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.complement" title="Permalink to this definition"></a></dt>
+<dd><p>Return the complement of the permutation. That is, the permutation
+obtained by subtracting each of the entries from <cite>len(self)</cite>.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Permutation</span><span class="p">(</span><span class="mi">2314</span><span class="p">)</span><span class="o">.</span><span class="n">complement</span><span class="p">()</span> <span class="o">==</span> <span class="n">Permutation</span><span class="p">(</span><span class="mi">3241</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">Permutation</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">==</span> <span class="n">p</span><span class="o">.</span><span class="n">complement</span><span class="p">()</span><span class="o">.</span><span class="n">complement</span><span class="p">()</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.reverse">
+<span class="sig-name descname"><span class="pre">reverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.reverse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.reverse" title="Permalink to this definition"></a></dt>
+<dd><p>Return the reverse of the permutation.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Permutation</span><span class="p">(</span><span class="mi">2314</span><span class="p">)</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span> <span class="o">==</span> <span class="n">Permutation</span><span class="p">(</span><span class="mi">4132</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.inverse">
+<span class="sig-name descname"><span class="pre">inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.inverse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.inverse" title="Permalink to this definition"></a></dt>
+<dd><p>Return the group-theoretic or functional inverse of self.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.pretty_out">
+<span class="sig-name descname"><span class="pre">pretty_out</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.pretty_out"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.pretty_out" title="Permalink to this definition"></a></dt>
+<dd><p>Return a nice string to visualize <cite>self</cite>.</p>
+<p class="rubric">Notes</p>
+<p>If <cite>by_lines == True</cite>, then will return the list of strings by line,
+in case you want to append some stuff to each line.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Permutation</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">10</span><span class="p">])</span><span class="o">.</span><span class="n">pretty_out</span><span class="p">())</span>
+<span class="go">                  10</span>
+<span class="go">   9</span>
+<span class="go">               8</span>
+<span class="go">       7</span>
+<span class="go">           6</span>
+<span class="go">         5</span>
+<span class="go">             4</span>
+<span class="go">     3</span>
+<span class="go">                 2</span>
+<span class="go"> 1</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.fixed_points">
+<span class="sig-name descname"><span class="pre">fixed_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.fixed_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.fixed_points" title="Permalink to this definition"></a></dt>
+<dd><p>Return the fixed points of the permutation as a list. Recall that
+both indices and values are zero-indexed.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Permutation</span><span class="p">(</span><span class="mi">521436</span><span class="p">)</span><span class="o">.</span><span class="n">fixed_points</span><span class="p">()</span>
+<span class="go">[1, 3, 5]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.sum_decomposable">
+<span class="sig-name descname"><span class="pre">sum_decomposable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.sum_decomposable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.sum_decomposable" title="Permalink to this definition"></a></dt>
+<dd><p>Determine whether the permutation is the direct sum of two shorter permutations.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">Permutation</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">direct_sum</span><span class="p">(</span><span class="n">Permutation</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">15</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">sum_decomposable</span><span class="p">()</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span><span class="o">.</span><span class="n">sum_decomposable</span><span class="p">()</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.sum_decomposition">
+<span class="sig-name descname"><span class="pre">sum_decomposition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.sum_decomposition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.sum_decomposition" title="Permalink to this definition"></a></dt>
+<dd><p>Decompose self as a list of sum-indecomposable permutations that sum to self.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">Permutation</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">Permutation</span><span class="p">(</span><span class="mi">312</span><span class="p">)</span> <span class="o">+</span> <span class="n">Permutation</span><span class="p">(</span><span class="mi">21</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">sum_decomposition</span><span class="p">()</span>
+<span class="go">[1, 3 1 2, 2 1]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">==</span> <span class="nb">sum</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">sum_decomposition</span><span class="p">(),</span> <span class="n">Permutation</span><span class="p">([]))</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.skew_decomposable">
+<span class="sig-name descname"><span class="pre">skew_decomposable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.skew_decomposable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.skew_decomposable" title="Permalink to this definition"></a></dt>
+<dd><p>Determine whether the permutation is expressible as the skew sum of
+two smaller permutations.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">Permutation</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span><span class="o">.</span><span class="n">direct_sum</span><span class="p">(</span><span class="n">Permutation</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">12</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">skew_decomposable</span><span class="p">()</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">complement</span><span class="p">()</span><span class="o">.</span><span class="n">skew_decomposable</span><span class="p">()</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.skew_decomposition">
+<span class="sig-name descname"><span class="pre">skew_decomposition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.skew_decomposition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.skew_decomposition" title="Permalink to this definition"></a></dt>
+<dd><p>Return the list of skew-indecomposable permutations that skew sum to self.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">Permutation</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="o">+</span> <span class="n">Permutation</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">sum_decomposable</span><span class="p">()</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span><span class="o">.</span><span class="n">sum_decomposable</span><span class="p">()</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.descents">
+<span class="sig-name descname"><span class="pre">descents</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.descents"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.descents" title="Permalink to this definition"></a></dt>
+<dd><p>Return the list of (positions of) descents of the permutation.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Permutation</span><span class="p">(</span><span class="mi">42561873</span><span class="p">)</span><span class="o">.</span><span class="n">descents</span><span class="p">()</span>
+<span class="go">[0, 3, 5, 6]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.ascents">
+<span class="sig-name descname"><span class="pre">ascents</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.ascents"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.ascents" title="Permalink to this definition"></a></dt>
+<dd><p>Return the list of (positions of) ascents of the permutation.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Permutation</span><span class="p">(</span><span class="mi">42561873</span><span class="p">)</span><span class="o">.</span><span class="n">ascents</span><span class="p">()</span>
+<span class="go">[1, 2, 4]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.peaks">
+<span class="sig-name descname"><span class="pre">peaks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.peaks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.peaks" title="Permalink to this definition"></a></dt>
+<dd><p>Return the list of (positions of) peaks of the permutation.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Permutation</span><span class="p">(</span><span class="mi">2341765</span><span class="p">)</span><span class="o">.</span><span class="n">peaks</span><span class="p">()</span>
+<span class="go">[2, 4]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.valleys">
+<span class="sig-name descname"><span class="pre">valleys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.valleys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.valleys" title="Permalink to this definition"></a></dt>
+<dd><p>Return the list of (positions of) valleys of the permutation.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Permutation</span><span class="p">(</span><span class="mi">3241756</span><span class="p">)</span><span class="o">.</span><span class="n">valleys</span><span class="p">()</span>
+<span class="go">[1, 3, 5]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.ltr_min">
+<span class="sig-name descname"><span class="pre">ltr_min</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.ltr_min"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.ltr_min" title="Permalink to this definition"></a></dt>
+<dd><p>Return the positions of the left-to-right minima.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Permutation</span><span class="p">(</span><span class="mi">35412</span><span class="p">)</span><span class="o">.</span><span class="n">ltr_min</span><span class="p">()</span>
+<span class="go">[0, 3]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.rtl_min">
+<span class="sig-name descname"><span class="pre">rtl_min</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.rtl_min"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.rtl_min" title="Permalink to this definition"></a></dt>
+<dd><p>Return the positions of the right-to-left minima.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Permutation</span><span class="p">(</span><span class="mi">315264</span><span class="p">)</span><span class="o">.</span><span class="n">rtl_min</span><span class="p">()</span>
+<span class="go">[5, 3, 1]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.ltr_max">
+<span class="sig-name descname"><span class="pre">ltr_max</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.ltr_max"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.ltr_max" title="Permalink to this definition"></a></dt>
+<dd><p>Return the positions of the left-to-right maxima.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Permutation</span><span class="p">(</span><span class="mi">35412</span><span class="p">)</span><span class="o">.</span><span class="n">ltr_max</span><span class="p">()</span>
+<span class="go">[0, 1]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.rtl_max">
+<span class="sig-name descname"><span class="pre">rtl_max</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.rtl_max"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.rtl_max" title="Permalink to this definition"></a></dt>
+<dd><p>Return the positions of the right-to-left maxima.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Permutation</span><span class="p">(</span><span class="mi">35412</span><span class="p">)</span><span class="o">.</span><span class="n">rtl_max</span><span class="p">()</span>
+<span class="go">[4, 2, 1]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.inversions">
+<span class="sig-name descname"><span class="pre">inversions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.inversions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.inversions" title="Permalink to this definition"></a></dt>
+<dd><p>Return the list of inversions of the permutation, i.e., the pairs
+(i,j) such that i &lt; j and self(i) &gt; self(j).</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Permutation</span><span class="p">(</span><span class="mi">4132</span><span class="p">)</span><span class="o">.</span><span class="n">inversions</span><span class="p">()</span>
+<span class="go">[(0, 1), (0, 2), (0, 3), (2, 3)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Permutation</span><span class="o">.</span><span class="n">monotone_increasing</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span><span class="o">.</span><span class="n">inversions</span><span class="p">()</span>
+<span class="go">[]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.noninversions">
+<span class="sig-name descname"><span class="pre">noninversions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.noninversions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.noninversions" title="Permalink to this definition"></a></dt>
+<dd><p>Return the list of noninversions of the permutation, i.e., the
+pairs (i,j) such that i &lt; j and self(i) &lt; self(j).</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Permutation</span><span class="p">(</span><span class="mi">4132</span><span class="p">)</span><span class="o">.</span><span class="n">noninversions</span><span class="p">()</span>
+<span class="go">[(1, 2), (1, 3)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Permutation</span><span class="o">.</span><span class="n">monotone_decreasing</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span><span class="o">.</span><span class="n">noninversions</span><span class="p">()</span>
+<span class="go">[]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.breadth">
+<span class="sig-name descname"><span class="pre">breadth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.breadth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.breadth" title="Permalink to this definition"></a></dt>
+<dd><p>Return the minimum taxicab distance between any two entries in the permutation.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Permutation</span><span class="p">(</span><span class="mi">3142</span><span class="p">)</span><span class="o">.</span><span class="n">breadth</span><span class="p">()</span>
+<span class="go">3</span>
+</pre></div>
+</div>
+<div class="admonition-todo admonition" id="id2">
+<p class="admonition-title">Todo</p>
+<p>Currently uses the naive algorithm—can be improved, probably.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.bonds">
+<span class="sig-name descname"><span class="pre">bonds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.bonds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.bonds" title="Permalink to this definition"></a></dt>
+<dd><p>Return the list of (initial) indices of the bonds of <cite>self</cite>.</p>
+<p class="rubric">Notes</p>
+<p>A bond is an interval of size 2.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.pattern_counts">
+<span class="sig-name descname"><span class="pre">pattern_counts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.pattern_counts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.pattern_counts" title="Permalink to this definition"></a></dt>
+<dd><p>Return a Counter (dictionary) counting the occurrences of each perm of length <cite>k</cite> in <cite>self</cite>.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Permutation</span><span class="p">(</span><span class="mi">1324</span><span class="p">)</span><span class="o">.</span><span class="n">pattern_counts</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="go">Counter({1 2 3: 2, 1 3 2: 1, 2 1 3: 1})</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.max_ascending_run">
+<span class="sig-name descname"><span class="pre">max_ascending_run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.max_ascending_run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.max_ascending_run" title="Permalink to this definition"></a></dt>
+<dd><p>Return the (inital) index and length of a longest ascending run of <cite>self</cite>.</p>
+<p class="rubric">Notes</p>
+<p>An ascending run is a contiguous increasing sequence of entries.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.max_descending_run">
+<span class="sig-name descname"><span class="pre">max_descending_run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.max_descending_run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.max_descending_run" title="Permalink to this definition"></a></dt>
+<dd><p>Return the (inital) index and length of a longest descending run of <cite>self</cite>.</p>
+<p class="rubric">Notes</p>
+<p>A descending run is a contiguous decreasing sequence of entries.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.covered_by">
+<span class="sig-name descname"><span class="pre">covered_by</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.covered_by"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.covered_by" title="Permalink to this definition"></a></dt>
+<dd><p>Return the set of permutations that <cite>self</cite> is covered by.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.covers">
+<span class="sig-name descname"><span class="pre">covers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.covers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.covers" title="Permalink to this definition"></a></dt>
+<dd><p>Return the set of permutations that <cite>self</cite> covers.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.upset">
+<span class="sig-name descname"><span class="pre">upset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stratified</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.upset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.upset" title="Permalink to this definition"></a></dt>
+<dd><p>Return the upset of <cite>self</cite> using repeated applications of <cite>covered_by</cite>.</p>
+<p class="rubric">Notes</p>
+<p>If <cite>stratified</cite> == True, return the upset as a list <cite>L</cite> such that
+<cite>L[i]</cite> is the set of permutations of length <cite>i</cite> that contain <cite>self</cite>.</p>
+<div class="admonition-todo admonition" id="id3">
+<p class="admonition-title">Todo</p>
+<p>Try to compute this using a more clever method. Probably very difficult.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.set_up_bounds">
+<span class="sig-name descname"><span class="pre">set_up_bounds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.set_up_bounds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.set_up_bounds" title="Permalink to this definition"></a></dt>
+<dd><p>Set up the bounds of the permutation for use with checking involvement.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.avoids">
+<span class="sig-name descname"><span class="pre">avoids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.avoids"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.avoids" title="Permalink to this definition"></a></dt>
+<dd><p>Check if the permutation avoids the pattern <cite>p</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> (<em>Permutation-like object</em>) – permutation to be avoided</p></li>
+<li><p><strong>lr</strong> (<em>int</em>) – Require the last entry to be equal to this</p></li>
+<li><p><strong>objects</strong> (<em>B</em><em> (</em><em>iterable of permutation-like</em>) – optional): A collection of permutations to be avoided.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Permutation</span><span class="p">(</span><span class="mi">123456</span><span class="p">)</span><span class="o">.</span><span class="n">avoids</span><span class="p">(</span><span class="mi">231</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Permutation</span><span class="p">(</span><span class="mi">123456</span><span class="p">)</span><span class="o">.</span><span class="n">avoids</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<div class="admonition-todo admonition" id="id4">
+<p class="admonition-title">Todo</p>
+<p>Am I correct on the lr?</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.involves">
+<span class="sig-name descname"><span class="pre">involves</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">P</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.involves"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.involves" title="Permalink to this definition"></a></dt>
+<dd><p>Check if the permutation contains the pattern <cite>P</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>P</strong> (<em>Permutation-like object</em>) – Pattern to be contained.</p></li>
+<li><p><strong>lr</strong> (<em>int</em><em>, </em><em>optional</em>) – Require the last entry to be equal to this.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Permutation</span><span class="p">(</span><span class="mi">123456</span><span class="p">)</span><span class="o">.</span><span class="n">involves</span><span class="p">(</span><span class="mi">231</span><span class="p">)</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Permutation</span><span class="p">(</span><span class="mi">123456</span><span class="p">)</span><span class="o">.</span><span class="n">involves</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.involved_in">
+<span class="sig-name descname"><span class="pre">involved_in</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">P</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last_require</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.involved_in"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.involved_in" title="Permalink to this definition"></a></dt>
+<dd><p>Check if <cite>self</cite> is contained as a pattern in <cite>P</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>P</strong> (<em>Permutation-like object</em>) – Pattern to be contained.</p></li>
+<li><p><strong>lr</strong> (<em>int</em><em>, </em><em>optional</em>) – Require the last entry to be equal to this.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Permutation</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span><span class="o">.</span><span class="n">involved_in</span><span class="p">(</span><span class="mi">31542</span><span class="p">)</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Permutation</span><span class="p">(</span><span class="mi">213</span><span class="p">)</span><span class="o">.</span><span class="n">involved_in</span><span class="p">(</span><span class="mi">54213</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.involvement_check_final">
+<span class="sig-name descname"><span class="pre">involvement_check_final</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upper_bound</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lower_bound</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last_require</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.involvement_check_final"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.involvement_check_final" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.involvement_check">
+<span class="sig-name descname"><span class="pre">involvement_check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upper_bound</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lower_bound</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">next</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.involvement_check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.involvement_check" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.involvement_fits">
+<span class="sig-name descname"><span class="pre">involvement_fits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upper_bound</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lower_bound</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">next</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.involvement_fits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.involvement_fits" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.all_intervals">
+<span class="sig-name descname"><span class="pre">all_intervals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_patterns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.all_intervals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.all_intervals" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.all_monotone_intervals">
+<span class="sig-name descname"><span class="pre">all_monotone_intervals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_ones</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.all_monotone_intervals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.all_monotone_intervals" title="Permalink to this definition"></a></dt>
+<dd><p>Return all monotone intervals of size at least 2.</p>
+<p>If <cite>with_ones == True</cite>, then return all monotone intervals of size at least 1.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.monotone_quotient">
+<span class="sig-name descname"><span class="pre">monotone_quotient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.monotone_quotient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.monotone_quotient" title="Permalink to this definition"></a></dt>
+<dd><p>Quotient <cite>self</cite> by its monotone intervals.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.maximal_interval">
+<span class="sig-name descname"><span class="pre">maximal_interval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.maximal_interval"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.maximal_interval" title="Permalink to this definition"></a></dt>
+<dd><p>Find the biggest interval, and return (i,j) is one is found, where
+i is the size of the interval, and j is the index of the first entry
+in the interval.</p>
+<p>Return (0,0) if no interval is found, i.e., if the permutation is simple.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.simple_location">
+<span class="sig-name descname"><span class="pre">simple_location</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.simple_location"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.simple_location" title="Permalink to this definition"></a></dt>
+<dd><p>Search for an interval, and return (i,j) if one is found, where i is
+the size of the interval, and j is the first index of the interval.</p>
+<p>Return (0,0) if no interval is found, i.e., if the permutation is simple.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.decomposition">
+<span class="sig-name descname"><span class="pre">decomposition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.decomposition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.decomposition" title="Permalink to this definition"></a></dt>
+<dd><p class="rubric">Notes</p>
+<p>ME: I don’t know what this is.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.inflate">
+<span class="sig-name descname"><span class="pre">inflate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">components</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.inflate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.inflate" title="Permalink to this definition"></a></dt>
+<dd><p>Inflate the entries of self by the given components.</p>
+<p class="rubric">Notes</p>
+<p>Inflates from the bottom up, keeping track of the vertical shift for
+subsequent points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>ValueError if the wrong number of components is given.</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.right_extensions">
+<span class="sig-name descname"><span class="pre">right_extensions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.right_extensions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.right_extensions" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the list of right extensions of <cite>self</cite>, only including those
+in which the new value comes from <cite>self.insertion_values</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.downset">
+<span class="sig-name descname"><span class="pre">downset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.downset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.downset" title="Permalink to this definition"></a></dt>
+<dd><p>Return the downset D of <cite>self</cite> stratified by length.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.downset_profile">
+<span class="sig-name descname"><span class="pre">downset_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.downset_profile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.downset_profile" title="Permalink to this definition"></a></dt>
+<dd><p>Return the downset profile of self.</p>
+<dl class="simple">
+<dt>Notes</dt><dd><p>The downset profile is the list of the number of permutations of each
+size contained in self.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.symmetries">
+<span class="sig-name descname"><span class="pre">symmetries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.symmetries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.symmetries" title="Permalink to this definition"></a></dt>
+<dd><p>Return the set of all symmetries of <cite>self</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.is_representative">
+<span class="sig-name descname"><span class="pre">is_representative</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.is_representative"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.is_representative" title="Permalink to this definition"></a></dt>
+<dd><p>Check if <cite>self</cite> is the (lexicographically) least element of its symmetry class.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.copies">
+<span class="sig-name descname"><span class="pre">copies</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.copies"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.copies" title="Permalink to this definition"></a></dt>
+<dd><p>Return the list of (values corresponding to) copies of <cite>other</cite> in <cite>self</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.contiguous_copies">
+<span class="sig-name descname"><span class="pre">contiguous_copies</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.contiguous_copies"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.contiguous_copies" title="Permalink to this definition"></a></dt>
+<dd><p>Return the list of (indices corresponding to) immediate copies of <cite>other</cite> in <cite>self</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.density_of">
+<span class="sig-name descname"><span class="pre">density_of</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pi</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.density_of"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.density_of" title="Permalink to this definition"></a></dt>
+<dd><p>Return the density of copies of <cite>pi</cite> in <cite>self</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.permutation.Permutation.optimizers">
+<span class="sig-name descname"><span class="pre">optimizers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/permpy/permutation.html#Permutation.optimizers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#permpy.permutation.Permutation.optimizers" title="Permalink to this definition"></a></dt>
+<dd><p>Return the list of permutations of length <cite>n</cite> that contain the most possible copies of <cite>self</cite>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../permstats/index.html" class="btn btn-neutral float-left" title="permpy.permstats" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../propertyclass/index.html" class="btn btn-neutral float-right" title="permpy.propertyclass" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
