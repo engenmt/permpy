@@ -1,0 +1,82 @@
+:py:mod:`permpy.propertyclass`
+==============================
+
+.. py:module:: permpy.propertyclass
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   permpy.propertyclass.PropertyClass
+
+
+
+
+.. py:class:: PropertyClass(property, max_len=8)
+
+   Bases: :py:obj:`permpy.permclass.PermClass`
+
+   A minimal Python class representing a Permutation class.
+
+   .. rubric:: Notes
+
+   Relies on the Permutation class being closed downwards, but does not assert this.
+
+   .. py:method:: __contains__(self, p)
+
+
+   .. py:method:: add_property(self, property)
+
+      Modify self by removing those permutations that fail the test.
+
+
+   .. py:method:: union(self, other)
+
+      .. rubric:: Examples
+
+      >>> inc = Permutation(12)
+      >>> D = PropertyClass(lambda p: inc not in p)
+      >>> dec = Permutation(21)
+      >>> I = PropertyClass(lambda p: dec not in p)
+      >>> U = D.union(I)
+      >>> len(U[8])
+      2
+      >>> U.extend(1)
+      >>> len(U[9])
+      2
+
+
+   .. py:method:: extend(self, t)
+
+
+   .. py:method:: extended(self, t)
+
+
+   .. py:method:: skew_closure(self, max_len=8)
+
+      .. rubric:: Examples
+
+      >>> p = Permutation(21)
+      >>> C = PropertyClass(lambda q: p not in q) # Class of increasing permutations
+      >>> D = C.skew_closure(max_len=7) # Class of co-layered permutations
+      >>> len(D[7]) == 64
+      True
+
+
+   .. py:method:: sum_closure(self, max_len=8)
+
+      .. rubric:: Examples
+
+      >>> p = Permutation(12)
+      >>> C = PropertyClass(lambda q: p not in q) # Class of decreasing permutations
+      >>> D = C.sum_closure(max_len=7) # Class of layered permutations
+      >>> len(D[7]) == 64
+      True
+
+
+

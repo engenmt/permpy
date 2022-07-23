@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>permpy.propertyclass &mdash; Python  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/mystnb.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/togglebutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script>let toggleHintShow = 'Click to show';</script>
+        <script>let toggleHintHide = 'Click to hide';</script>
+        <script>let toggleOpenOnPrint = 'true';</script>
+        <script src="../../_static/togglebutton.js"></script>
+        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autoapi/index.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>permpy.propertyclass</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for permpy.propertyclass</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="kn">from</span> <span class="nn">.permutation</span> <span class="kn">import</span> <span class="n">Permutation</span>
+<span class="kn">from</span> <span class="nn">.permset</span> <span class="kn">import</span> <span class="n">PermSet</span>
+<span class="kn">from</span> <span class="nn">.permclass</span> <span class="kn">import</span> <span class="n">PermClass</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">copy_func</span>
+
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="PropertyClass"><a class="viewcode-back" href="../../autoapi/permpy/propertyclass/index.html#permpy.PropertyClass">[docs]</a><span class="k">class</span> <span class="nc">PropertyClass</span><span class="p">(</span><span class="n">PermClass</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">property</span><span class="p">,</span> <span class="n">max_len</span><span class="o">=</span><span class="mi">8</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the smallest PermClass of all permutations that satisfy the test.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            property (func): function that accepts a permutation and returns a</span>
+<span class="sd">                Boolean. Should be a hereditary property.</span>
+<span class="sd">            max_len (int): maximum length to be included in class</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            PropertyClass: class of permutations that satisfy the property.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">C</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">PermSet</span><span class="p">(</span><span class="n">Permutation</span><span class="p">())</span>
+        <span class="p">]</span>  <span class="c1"># List consisting of just the PermSet containing the empty Permutation</span>
+
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_len</span><span class="p">):</span>
+            <span class="n">C</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">C</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">right_extensions</span><span class="p">(</span><span class="n">test</span><span class="o">=</span><span class="nb">property</span><span class="p">,</span> <span class="n">trust</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">C</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">property</span> <span class="o">=</span> <span class="nb">property</span>
+
+<div class="viewcode-block" id="PropertyClass.__contains__"><a class="viewcode-back" href="../../autoapi/permpy/propertyclass/index.html#permpy.PropertyClass.__contains__">[docs]</a>    <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+        <span class="n">p_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">p_length</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_len</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">property</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">[</span><span class="n">p_length</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="PropertyClass.add_property"><a class="viewcode-back" href="../../autoapi/permpy/propertyclass/index.html#permpy.PropertyClass.add_property">[docs]</a>    <span class="k">def</span> <span class="nf">add_property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">property</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Modify self by removing those permutations that fail the test.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">length</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">length</span><span class="p">]):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">property</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="p">[</span><span class="n">length</span><span class="p">]</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">property</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">property</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">property</span><span class="p">(</span><span class="n">p</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PropertyClass.union"><a class="viewcode-back" href="../../autoapi/permpy/propertyclass/index.html#permpy.PropertyClass.union">[docs]</a>    <span class="k">def</span> <span class="nf">union</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; inc = Permutation(12)</span>
+<span class="sd">            &gt;&gt;&gt; D = PropertyClass(lambda p: inc not in p)</span>
+<span class="sd">            &gt;&gt;&gt; dec = Permutation(21)</span>
+<span class="sd">            &gt;&gt;&gt; I = PropertyClass(lambda p: dec not in p)</span>
+<span class="sd">            &gt;&gt;&gt; U = D.union(I)</span>
+<span class="sd">            &gt;&gt;&gt; len(U[8])</span>
+<span class="sd">            2</span>
+<span class="sd">            &gt;&gt;&gt; U.extend(1)</span>
+<span class="sd">            &gt;&gt;&gt; len(U[9])</span>
+<span class="sd">            2</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">property_self</span> <span class="o">=</span> <span class="n">copy_func</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">property</span><span class="p">)</span>
+        <span class="n">property_other</span> <span class="o">=</span> <span class="n">copy_func</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">property</span><span class="p">)</span>
+
+        <span class="n">C</span> <span class="o">=</span> <span class="n">PermClass</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+        <span class="n">C</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">=</span> <span class="n">PropertyClass</span>
+        <span class="n">C</span><span class="o">.</span><span class="n">property</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">property_self</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="ow">or</span> <span class="n">property_other</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">C</span></div>
+
+<div class="viewcode-block" id="PropertyClass.extend"><a class="viewcode-back" href="../../autoapi/permpy/propertyclass/index.html#permpy.PropertyClass.extend">[docs]</a>    <span class="k">def</span> <span class="nf">extend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">right_extensions</span><span class="p">(</span><span class="n">test</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">property</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="PropertyClass.extended"><a class="viewcode-back" href="../../autoapi/permpy/propertyclass/index.html#permpy.PropertyClass.extended">[docs]</a>    <span class="k">def</span> <span class="nf">extended</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">C</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">C</span></div>
+
+<div class="viewcode-block" id="PropertyClass.skew_closure"><a class="viewcode-back" href="../../autoapi/permpy/propertyclass/index.html#permpy.PropertyClass.skew_closure">[docs]</a>    <span class="k">def</span> <span class="nf">skew_closure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_len</span><span class="o">=</span><span class="mi">8</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; p = Permutation(21)</span>
+<span class="sd">            &gt;&gt;&gt; C = PropertyClass(lambda q: p not in q) # Class of increasing permutations</span>
+<span class="sd">            &gt;&gt;&gt; D = C.skew_closure(max_len=7) # Class of co-layered permutations</span>
+<span class="sd">            &gt;&gt;&gt; len(D[7]) == 64</span>
+<span class="sd">            True</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">property</span> <span class="o">=</span> <span class="n">copy_func</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">property</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">is_skew</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="nb">property</span><span class="p">(</span><span class="n">q</span><span class="p">)</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">skew_decomposition</span><span class="p">())</span>
+
+        <span class="k">return</span> <span class="n">PropertyClass</span><span class="p">(</span><span class="n">is_skew</span><span class="p">,</span> <span class="n">max_len</span><span class="o">=</span><span class="n">max_len</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PropertyClass.sum_closure"><a class="viewcode-back" href="../../autoapi/permpy/propertyclass/index.html#permpy.PropertyClass.sum_closure">[docs]</a>    <span class="k">def</span> <span class="nf">sum_closure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_len</span><span class="o">=</span><span class="mi">8</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; p = Permutation(12)</span>
+<span class="sd">            &gt;&gt;&gt; C = PropertyClass(lambda q: p not in q) # Class of decreasing permutations</span>
+<span class="sd">            &gt;&gt;&gt; D = C.sum_closure(max_len=7) # Class of layered permutations</span>
+<span class="sd">            &gt;&gt;&gt; len(D[7]) == 64</span>
+<span class="sd">            True</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">property</span> <span class="o">=</span> <span class="n">copy_func</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">property</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">is_skew</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="nb">property</span><span class="p">(</span><span class="n">q</span><span class="p">)</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">sum_decomposition</span><span class="p">())</span>
+
+        <span class="k">return</span> <span class="n">PropertyClass</span><span class="p">(</span><span class="n">is_skew</span><span class="p">,</span> <span class="n">max_len</span><span class="o">=</span><span class="n">max_len</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

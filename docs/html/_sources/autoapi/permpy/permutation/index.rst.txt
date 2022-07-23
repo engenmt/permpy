@@ -1,0 +1,823 @@
+:py:mod:`permpy.permutation`
+============================
+
+.. py:module:: permpy.permutation
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   permpy.permutation.Permutation
+
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   permpy.permutation.__author__
+
+
+.. py:data:: __author__
+   :annotation: = Michael Engen, Cheyne Homberger, Jay Pantone
+
+   Todo:
+   * Permutation.random_avoider
+
+.. py:class:: Permutation(*args, **kwargs)
+
+   Bases: :py:obj:`tuple`, :py:obj:`permpy.permstats.PermutationStatsMixin`, :py:obj:`permpy.permmisc.PermutationMiscMixin`, :py:obj:`permpy.deprecated.permdeprecated.PermutationDeprecatedMixin`
+
+   Class for representing permutations as immutable 0-indexed tuples.
+
+   .. py:attribute:: _REPR
+      :annotation: = oneline
+
+      
+
+   .. py:attribute:: _BASE
+      :annotation: = 1
+
+      
+
+   .. py:attribute:: lower_bound
+      :annotation: = []
+
+      
+
+   .. py:attribute:: upper_bound
+      :annotation: = []
+
+      
+
+   .. py:attribute:: bounds_set
+      :annotation: = False
+
+      
+
+   .. py:attribute:: insertion_values
+      :annotation: = []
+
+      
+
+   .. py:method:: monotone_increasing(cls, n)
+      :classmethod:
+
+      Return the monotone increasing permutation of length n.
+
+      .. rubric:: Examples
+
+      >>> Permutation.monotone_increasing(5)
+      1 2 3 4 5
+
+
+   .. py:method:: monotone_decreasing(cls, n)
+      :classmethod:
+
+      Return the monotone decreasing permutation of length n.
+
+      .. rubric:: Examples
+
+      >>> Permutation.monotone_decreasing(5)
+      5 4 3 2 1
+
+
+   .. py:method:: identity(cls, n)
+      :classmethod:
+
+      Wrapper for Permutation.monotone_increasing.
+
+
+   .. py:method:: random(cls, n)
+      :classmethod:
+
+      Return a random permutation of length n.
+
+      .. rubric:: Examples
+
+      >>> len( Permutation.random(10) ) == 10
+      True
+
+
+   .. py:method:: random_avoider(cls, n, B, simple=False, involution=False, verbose=-1)
+      :classmethod:
+
+      Generate a (uniformly) random permutation that avoids the patterns
+      contained in `B`.
+
+      :param n: length of permutation to generate
+      :type n: int
+      :param B: Iterable of permutation-like objects to avoid.
+      :type B: iterable
+      :param simple: Whether the returned Permutation should be simple.
+                     Defaults to False.
+      :type simple: Boolean, optional
+      :param involution: Whether the returned Permutation should be an involution.
+                         Defaults to False.
+      :type involution: Boolean, optional
+      :param verbose: Level of verbosity (-1 for no verbosity)
+                      Doubling the integer doubles the number of messages printed.
+                      Defaults to -1.
+      :type verbose: int, optional
+
+      :returns: A permutation avoiding all the patterns in `B`
+      :rtype: p (Permutation)
+
+      .. rubric:: Examples
+
+      >>> p = Permutation.random_avoider(8, [123])
+      >>> p.involves(123)
+      False
+
+      .. todo:: Ideally, we should use MCMC for this.
+
+
+   .. py:method:: gen_all(cls, n)
+      :classmethod:
+
+      Generate all permutations of length n.
+
+
+   .. py:method:: list_all(cls, n)
+      :classmethod:
+
+      Return a list of all permutations of length `n`.
+
+
+   .. py:method:: all_perms(cls, n)
+      :classmethod:
+
+      Wrapper for Permutation.list_all.
+
+
+   .. py:method:: standardize(cls, L)
+      :classmethod:
+
+      Standardize the list `L` of distinct elements by mapping them to the
+      set {0, 1, ..., len(L)} by an order-preserving bijection.
+
+      See the following for some interesting discussion on this:
+      https://stackoverflow.com/questions/17767646/relative-order-of-elements-in-list
+
+
+
+   .. py:method:: change_repr(cls, representation=None)
+      :classmethod:
+
+      Toggle globally between cycle notation or one-line notation.
+      Note that internal representation is still one-line.
+
+
+
+   .. py:method:: ind_to_perm(cls, k, n)
+      :classmethod:
+
+      De-index the permutation by a bijection from the set S_n to [n!].
+      See also the `Permutation.perm_to_ind` method.
+
+      :param k: An integer between 0 and n! - 1, to be mapped to S_n.
+      :type k: int
+      :param n: Length of the permutation.
+      :type n: int
+
+      :returns: Permutation of index k of length n.
+
+      .. rubric:: Examples
+
+      >>> Permutation.ind_to_perm(12,8).perm_to_ind()
+      12
+
+
+   .. py:method:: __call__(self, i)
+
+      Allow the permutation to be called as a function.
+
+      .. rubric:: Notes
+
+      Recall that permutations are zero-based internally.
+
+      .. rubric:: Examples
+
+      >>> Permutation(4132)(2)
+      2
+
+
+   .. py:method:: __contains__(self, other)
+
+      Return True if `self` contains `other`.
+
+      .. rubric:: Examples
+
+      >>> Permutation(21).__contains__(Permutation(1))
+      True
+      >>> Permutation(132) in Permutation(4132)
+      True
+      >>> Permutation(231) in Permutation(1234)
+      False
+
+
+   .. py:method:: oneline(self)
+
+      Return the one-line notation representation of the permutation (as a
+      sequence of integers 1 through n).
+
+
+
+   .. py:method:: __repr__(self)
+
+      Return a string representation of the permutation depending on the
+      chosen representation (`Permutation._REPR`).
+
+
+
+   .. py:method:: __mul__(self, other)
+
+      Return the functional composition of the two permutations.
+
+
+   .. py:method:: __add__(self, other)
+
+      Return the direct sum of the two permutations.
+
+      .. rubric:: Examples
+
+      >>> p = Permutation.monotone_increasing(10)
+      >>> p + p == Permutation.monotone_increasing(20)
+      True
+
+
+   .. py:method:: direct_sum(self, other)
+
+      Return the direct sum of the two permutations.
+
+      .. rubric:: Examples
+
+      >>> Permutation(312).direct_sum(Permutation(1234))
+      3 1 2 4 5 6 7
+
+
+   .. py:method:: __sub__(self, other)
+
+      Return the skew sum of the two permutations.
+
+      .. rubric:: Examples
+
+      >>> p = Permutation.monotone_decreasing(10)
+      >>> p - p == Permutation.monotone_decreasing(20)
+      True
+
+
+   .. py:method:: skew_sum(self, other)
+
+      Return the skew sum of the two permutations.
+
+      .. rubric:: Examples
+
+      >>> Permutation(312).skew_sum(Permutation(1234))
+      7 5 6 1 2 3 4
+
+
+   .. py:method:: __pow__(self, power)
+
+      Return the permutation raised to a power.
+
+      .. rubric:: Examples
+
+      >>> p = Permutation.random(10)
+      >>> p**p.order() == Permutation.monotone_increasing(10)
+      True
+
+
+   .. py:method:: perm_to_ind(self)
+
+      De-index the permutation, by mapping it to an integer between 0 and
+      len(self)! - 1. See also `Permutation.ind_to_perm`.
+
+      .. rubric:: Examples
+
+      >>> p = Permutation(41523)
+      >>> Permutation.ind_to_perm(p.perm_to_ind(), len(p)) == p
+      True
+
+
+   .. py:method:: delete(self, indices=None, values=None)
+
+      Return the permutation that results from deleting the indices or
+      values given.
+
+      .. rubric:: Notes
+
+      Recall that both indices and values are zero-indexed.
+
+      .. rubric:: Examples
+
+      >>> Permutation(35214).delete(indices=2)
+      2 4 1 3
+      >>> Permutation(35214).delete(indices=[2,4])
+      2 3 1
+      >>> Permutation(35214).delete(values=[4])
+      3 2 1 4
+      >>> Permutation(35214).delete(indices=[2]) == Permutation(35214).delete(values=1)
+      True
+
+
+   .. py:method:: insert(self, idx, val)
+
+      Return the permutation resulting from inserting an entry with value
+      just below `val` into the position just before the entry at position
+      `idx`.
+
+      .. rubric:: Notes
+
+      Recall that both indices and values are zero-indexed.
+
+      .. rubric:: Examples
+
+      >>> Permutation(2413).insert(2, 1)
+      3 5 2 1 4
+      >>> p = Permutation.random(10)
+      >>> p == p.insert(4, 7).delete(indices = 4)
+      True
+
+
+   .. py:method:: restrict(self, indices=None, values=None)
+
+      Return the permutation obtained by restricting self to the given indices or values.
+
+
+   .. py:method:: complement(self)
+
+      Return the complement of the permutation. That is, the permutation
+      obtained by subtracting each of the entries from `len(self)`.
+
+      .. rubric:: Examples
+
+      >>> Permutation(2314).complement() == Permutation(3241)
+      True
+      >>> p = Permutation.random(10)
+      >>> p == p.complement().complement()
+      True
+
+
+   .. py:method:: reverse(self)
+
+      Return the reverse of the permutation.
+
+      .. rubric:: Examples
+
+      >>> Permutation(2314).reverse() == Permutation(4132)
+      True
+
+
+   .. py:method:: inverse(self)
+
+      Return the group-theoretic or functional inverse of self.
+
+
+   .. py:method:: pretty_out(self, width=2)
+
+      Return a nice string to visualize `self`.
+
+      .. rubric:: Notes
+
+      If `by_lines == True`, then will return the list of strings by line,
+      in case you want to append some stuff to each line.
+
+      .. rubric:: Examples
+
+      >>> print(Permutation([1,9,3,7,5,6,4,8,2,10]).pretty_out())
+                        10
+         9
+                     8
+             7
+                 6
+               5
+                   4
+           3
+                       2
+       1
+
+
+   .. py:method:: fixed_points(self)
+
+      Return the fixed points of the permutation as a list. Recall that
+      both indices and values are zero-indexed.
+
+      .. rubric:: Examples
+
+      >>> Permutation(521436).fixed_points()
+      [1, 3, 5]
+
+
+   .. py:method:: sum_decomposable(self)
+
+      Determine whether the permutation is the direct sum of two shorter permutations.
+
+      .. rubric:: Examples
+
+      >>> p = Permutation.random(4).direct_sum(Permutation.random(15))
+      >>> p.sum_decomposable()
+      True
+      >>> p.reverse().sum_decomposable()
+      False
+
+
+   .. py:method:: sum_decomposition(self)
+
+      Decompose self as a list of sum-indecomposable permutations that sum to self.
+
+      .. rubric:: Examples
+
+      >>> p = Permutation(1) + Permutation(312) + Permutation(21)
+      >>> p.sum_decomposition()
+      [1, 3 1 2, 2 1]
+      >>> p == sum(p.sum_decomposition(), Permutation([]))
+      True
+
+
+   .. py:method:: skew_decomposable(self)
+
+      Determine whether the permutation is expressible as the skew sum of
+      two smaller permutations.
+
+      .. rubric:: Examples
+
+      >>> p = Permutation.random(8).direct_sum(Permutation.random(12))
+      >>> p.skew_decomposable()
+      False
+      >>> p.complement().skew_decomposable()
+      True
+
+
+   .. py:method:: skew_decomposition(self)
+
+      Return the list of skew-indecomposable permutations that skew sum to self.
+
+      .. rubric:: Examples
+
+      >>> p = Permutation.random(4) + Permutation.random(15)
+      >>> p.sum_decomposable()
+      True
+      >>> p.reverse().sum_decomposable()
+      False
+
+
+   .. py:method:: descents(self)
+
+      Return the list of (positions of) descents of the permutation.
+
+      .. rubric:: Examples
+
+      >>> Permutation(42561873).descents()
+      [0, 3, 5, 6]
+
+
+   .. py:method:: ascents(self)
+
+      Return the list of (positions of) ascents of the permutation.
+
+      .. rubric:: Examples
+
+      >>> Permutation(42561873).ascents()
+      [1, 2, 4]
+
+
+   .. py:method:: peaks(self)
+
+      Return the list of (positions of) peaks of the permutation.
+
+      .. rubric:: Examples
+
+      >>> Permutation(2341765).peaks()
+      [2, 4]
+
+
+   .. py:method:: valleys(self)
+
+      Return the list of (positions of) valleys of the permutation.
+
+      .. rubric:: Examples
+
+      >>> Permutation(3241756).valleys()
+      [1, 3, 5]
+
+
+   .. py:method:: ltr_min(self)
+
+      Return the positions of the left-to-right minima.
+
+      .. rubric:: Examples
+
+      >>> Permutation(35412).ltr_min()
+      [0, 3]
+
+
+   .. py:method:: rtl_min(self)
+
+      Return the positions of the right-to-left minima.
+
+      .. rubric:: Examples
+
+      >>> Permutation(315264).rtl_min()
+      [5, 3, 1]
+
+
+   .. py:method:: ltr_max(self)
+
+      Return the positions of the left-to-right maxima.
+
+      .. rubric:: Examples
+
+      >>> Permutation(35412).ltr_max()
+      [0, 1]
+
+
+   .. py:method:: rtl_max(self)
+
+      Return the positions of the right-to-left maxima.
+
+      .. rubric:: Examples
+
+      >>> Permutation(35412).rtl_max()
+      [4, 2, 1]
+
+
+   .. py:method:: inversions(self)
+
+      Return the list of inversions of the permutation, i.e., the pairs
+      (i,j) such that i < j and self(i) > self(j).
+
+      .. rubric:: Examples
+
+      >>> Permutation(4132).inversions()
+      [(0, 1), (0, 2), (0, 3), (2, 3)]
+      >>> Permutation.monotone_increasing(7).inversions()
+      []
+
+
+   .. py:method:: noninversions(self)
+
+      Return the list of noninversions of the permutation, i.e., the
+      pairs (i,j) such that i < j and self(i) < self(j).
+
+      .. rubric:: Examples
+
+      >>> Permutation(4132).noninversions()
+      [(1, 2), (1, 3)]
+      >>> Permutation.monotone_decreasing(7).noninversions()
+      []
+
+
+   .. py:method:: breadth(self)
+
+      Return the minimum taxicab distance between any two entries in the permutation.
+
+      .. rubric:: Examples
+
+      >>> Permutation(3142).breadth()
+      3
+
+      .. todo:: Currently uses the naive algorithm---can be improved, probably.
+
+
+   .. py:method:: bonds(self)
+
+      Return the list of (initial) indices of the bonds of `self`.
+
+      .. rubric:: Notes
+
+      A bond is an interval of size 2.
+
+
+   .. py:method:: pattern_counts(self, k)
+
+      Return a Counter (dictionary) counting the occurrences of each perm of length `k` in `self`.
+
+      .. rubric:: Examples
+
+      >>> Permutation(1324).pattern_counts(3)
+      Counter({1 2 3: 2, 1 3 2: 1, 2 1 3: 1})
+
+
+   .. py:method:: max_ascending_run(self)
+
+      Return the (inital) index and length of a longest ascending run of `self`.
+
+      .. rubric:: Notes
+
+      An ascending run is a contiguous increasing sequence of entries.
+
+
+   .. py:method:: max_descending_run(self)
+
+      Return the (inital) index and length of a longest descending run of `self`.
+
+      .. rubric:: Notes
+
+      A descending run is a contiguous decreasing sequence of entries.
+
+
+   .. py:method:: covered_by(self)
+
+      Return the set of permutations that `self` is covered by.
+
+
+   .. py:method:: covers(self)
+
+      Return the set of permutations that `self` covers.
+
+
+   .. py:method:: upset(self, height, stratified=False)
+
+      Return the upset of `self` using repeated applications of `covered_by`.
+
+      .. rubric:: Notes
+
+      If `stratified` == True, return the upset as a list `L` such that
+      `L[i]` is the set of permutations of length `i` that contain `self`.
+
+      .. todo:: Try to compute this using a more clever method. Probably very difficult.
+
+
+   .. py:method:: set_up_bounds(self)
+
+      Set up the bounds of the permutation for use with checking involvement.
+
+
+   .. py:method:: avoids(self, p=None, lr=0, B=None)
+
+      Check if the permutation avoids the pattern `p`.
+
+      :param p: permutation to be avoided
+      :type p: Permutation-like object
+      :param lr: Require the last entry to be equal to this
+      :type lr: int
+      :param B (iterable of permutation-like objects: optional): A collection of permutations to be avoided.
+
+      .. rubric:: Examples
+
+      >>> Permutation(123456).avoids(231)
+      True
+      >>> Permutation(123456).avoids(123)
+      False
+
+      .. todo:: Am I correct on the lr?
+
+
+   .. py:method:: involves(self, P, lr=0)
+
+      Check if the permutation contains the pattern `P`.
+
+      :param P: Pattern to be contained.
+      :type P: Permutation-like object
+      :param lr: Require the last entry to be equal to this.
+      :type lr: int, optional
+
+      .. rubric:: Examples
+
+      >>> Permutation(123456).involves(231)
+      False
+      >>> Permutation(123456).involves(123)
+      True
+
+
+   .. py:method:: involved_in(self, P, last_require=0)
+
+      Check if `self` is contained as a pattern in `P`.
+
+      :param P: Pattern to be contained.
+      :type P: Permutation-like object
+      :param lr: Require the last entry to be equal to this.
+      :type lr: int, optional
+
+      .. rubric:: Examples
+
+      >>> Permutation(123).involved_in(31542)
+      False
+      >>> Permutation(213).involved_in(54213)
+      True
+
+
+   .. py:method:: involvement_check_final(self, upper_bound, lower_bound, indices, q, last_require)
+
+
+   .. py:method:: involvement_check(self, upper_bound, lower_bound, indices, q, next)
+
+
+   .. py:method:: involvement_fits(self, upper_bound, lower_bound, indices, q, next)
+
+
+   .. py:method:: all_intervals(self, return_patterns=False)
+
+
+   .. py:method:: all_monotone_intervals(self, with_ones=False)
+
+      Return all monotone intervals of size at least 2.
+
+      If `with_ones == True`, then return all monotone intervals of size at least 1.
+
+
+
+   .. py:method:: monotone_quotient(self)
+
+      Quotient `self` by its monotone intervals.
+
+
+   .. py:method:: maximal_interval(self)
+
+      Find the biggest interval, and return (i,j) is one is found, where
+      i is the size of the interval, and j is the index of the first entry
+      in the interval.
+
+      Return (0,0) if no interval is found, i.e., if the permutation is simple.
+
+
+
+   .. py:method:: simple_location(self)
+
+      Search for an interval, and return (i,j) if one is found, where i is
+      the size of the interval, and j is the first index of the interval.
+
+      Return (0,0) if no interval is found, i.e., if the permutation is simple.
+
+
+
+   .. py:method:: decomposition(self)
+
+      .. rubric:: Notes
+
+      ME: I don't know what this is.
+
+
+   .. py:method:: inflate(self, components)
+
+      Inflate the entries of self by the given components.
+
+      .. rubric:: Notes
+
+      Inflates from the bottom up, keeping track of the vertical shift for
+      subsequent points.
+
+      :raises ValueError if the wrong number of components is given.:
+
+
+   .. py:method:: right_extensions(self, test=None, basis=None)
+
+      Returns the list of right extensions of `self`, only including those
+      in which the new value comes from `self.insertion_values`.
+
+
+
+   .. py:method:: downset(self)
+
+      Return the downset D of `self` stratified by length.
+
+
+   .. py:method:: downset_profile(self)
+
+      Return the downset profile of self.
+
+      Notes
+          The downset profile is the list of the number of permutations of each
+          size contained in self.
+
+
+
+   .. py:method:: symmetries(self)
+
+      Return the set of all symmetries of `self`.
+
+
+   .. py:method:: is_representative(self)
+
+      Check if `self` is the (lexicographically) least element of its symmetry class.
+
+
+   .. py:method:: copies(self, other)
+
+      Return the list of (values corresponding to) copies of `other` in `self`.
+
+
+   .. py:method:: contiguous_copies(self, other)
+
+      Return the list of (indices corresponding to) immediate copies of `other` in `self`.
+
+
+   .. py:method:: density_of(self, pi)
+
+      Return the density of copies of `pi` in `self`.
+
+
+   .. py:method:: optimizers(self, n)
+
+      Return the list of permutations of length `n` that contain the most possible copies of `self`.
+
+
+

@@ -1,0 +1,154 @@
+:py:mod:`permpy.InsertionEncoding`
+==================================
+
+.. py:module:: permpy.InsertionEncoding
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   configuration/index.rst
+   insertionscheme/index.rst
+
+
+Package Contents
+----------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   permpy.InsertionEncoding.Configuration
+   permpy.InsertionEncoding.InsertionScheme
+
+
+
+
+.. py:class:: Configuration(t, basis=set(), childtype='?')
+
+   Bases: :py:obj:`tuple`
+
+   Built-in immutable sequence.
+
+   If no argument is given, the constructor returns an empty tuple.
+   If iterable is specified the tuple is initialized from iterable's items.
+
+   If the argument is a tuple, the return value is the same object.
+
+   .. py:attribute:: _basis
+      
+
+      
+
+   .. py:attribute:: _type
+      :annotation: = 
+
+      
+
+   .. py:attribute:: _children_computed
+      :annotation: = False
+
+      
+
+   .. py:attribute:: _children
+      
+
+      
+
+   .. py:method:: num_slots(self)
+
+
+   .. py:method:: slot_locs(self)
+
+
+   .. py:method:: children(self)
+
+
+   .. py:method:: is_permutation(self)
+
+
+   .. py:method:: to_perm(self)
+
+
+   .. py:method:: has_valid_filling(self, C=[])
+
+
+   .. py:method:: valid_children(self, C=[])
+
+
+
+.. py:class:: InsertionScheme(basis, quiet=False)
+
+   .. py:attribute:: _tree
+      
+
+      
+
+   .. py:attribute:: _basis
+      :annotation: = []
+
+      
+
+   .. py:attribute:: _max_basis_length
+      :annotation: = 0
+
+      
+
+   .. py:attribute:: _automaton
+      
+
+      
+
+   .. py:attribute:: _root
+      
+
+      
+
+   .. py:attribute:: _configs_checked
+      
+
+      
+
+   .. py:attribute:: _automaton_ready
+      :annotation: = False
+
+      
+
+   .. py:attribute:: _has_inssch
+      :annotation: = False
+
+      
+
+   .. py:attribute:: _reductions
+      
+
+      
+
+   .. py:attribute:: _class
+      :annotation: = []
+
+      
+
+   .. py:method:: has_inssch(self)
+
+
+   .. py:method:: follow_reduce(self, config)
+
+
+   .. py:method:: build_rules(self, verbose=True, make_class=False, class_bound=100)
+
+
+   .. py:method:: standardize_perms(self)
+
+
+   .. py:method:: check_isomorphism(self, c1, c2, depth, make_class=False, class_bound=100)
+
+
+   .. py:method:: gf(self, verbose=False, show_series=False)
+
+
+

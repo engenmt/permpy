@@ -1,0 +1,238 @@
+:py:mod:`permpy.PegPermutations`
+================================
+
+.. py:module:: permpy.PegPermutations
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   pegpermset/index.rst
+   pegpermutation/index.rst
+   vector/index.rst
+   vectorset/index.rst
+
+
+Package Contents
+----------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   permpy.PegPermutations.PegPermutation
+   permpy.PegPermutations.PegPermSet
+   permpy.PegPermutations.Vector
+   permpy.PegPermutations.VectorSet
+
+
+
+
+.. py:class:: PegPermutation(p, signs)
+
+   Bases: :py:obj:`permpy.permutation.Permutation`
+
+   Class for representing permutations as immutable 0-indexed tuples.
+
+   .. py:attribute:: allowable_signs
+      
+
+      
+
+   .. py:method:: __repr__(self)
+
+      Return a string representation of the permutation depending on the
+      chosen representation (`Permutation._REPR`).
+
+
+
+   .. py:method:: __hash__(self)
+
+      Return hash(self).
+
+
+   .. py:method:: __eq__(self, other)
+
+      Return self==value.
+
+
+   .. py:method:: num_signs(self)
+
+
+   .. py:method:: sign_subset(self, P)
+
+
+   .. py:method:: filling_vector(self)
+
+
+   .. py:method:: all_dotted_monotone_intervals(self)
+
+
+   .. py:method:: is_compact(self)
+
+
+   .. py:method:: is_compact_and_clean(self)
+
+
+   .. py:method:: clean_basis(self)
+
+
+   .. py:method:: split(self, indices)
+
+
+   .. py:method:: clean(self)
+
+
+   .. py:method:: downset(self)
+
+      Return the downset D of `self` stratified by length.
+
+
+   .. py:method:: shrink_by_one(self)
+
+      Return all patterns contained in self of length one less than the permutation.
+
+
+   .. py:method:: csgf(self, basis)
+
+
+   .. py:method:: reverse(self)
+
+      Return the reverse of the permutation.
+
+      .. rubric:: Examples
+
+      >>> Permutation(2314).reverse() == Permutation(4132)
+      True
+
+
+   .. py:method:: involved_in(self, P)
+
+      Check if `self` is contained as a pattern in `P`.
+
+      :param P: Pattern to be contained.
+      :type P: Permutation-like object
+      :param lr: Require the last entry to be equal to this.
+      :type lr: int, optional
+
+      .. rubric:: Examples
+
+      >>> Permutation(123).involved_in(31542)
+      False
+      >>> Permutation(213).involved_in(54213)
+      True
+
+
+   .. py:method:: involvement_check(self, upper_bound, lower_bound, indices, q, next)
+
+
+   .. py:method:: involvement_fits(self, upper_bound, lower_bound, indices, q, next)
+
+
+
+.. py:class:: PegPermSet(cls, s=[])
+
+   Bases: :py:obj:`permpy.permset.PermSet`
+
+   Represents a set of permutations, and allows statistics to be computed
+   across the set.
+
+   .. py:method:: sortable_by_block_transposition(d)
+      :staticmethod:
+
+
+   .. py:method:: sortable_by_prefix_block_transposition(d)
+      :staticmethod:
+
+
+   .. py:method:: flip_signs(s)
+      :staticmethod:
+
+
+   .. py:method:: sortable_by_reversal(d)
+      :staticmethod:
+
+
+   .. py:method:: sortable_by_prefix_reversal(d)
+      :staticmethod:
+
+
+   .. py:method:: sortable_by_block_interchange(d)
+      :staticmethod:
+
+
+   .. py:method:: sortable_by_cut_and_paste(d)
+      :staticmethod:
+
+
+   .. py:method:: involves_set(self, P)
+
+
+   .. py:method:: sum_gfs_no_basis(self, S, only_clean=False)
+
+
+   .. py:method:: alt_downset(self)
+
+
+   .. py:method:: compactify(self)
+
+
+   .. py:method:: cross_sections(self)
+
+
+   .. py:method:: enumerate(self, cross_sections=None)
+
+
+   .. py:method:: alt_cross_sections(self)
+
+
+   .. py:method:: alt_enumerate(self, cross_sections=None)
+
+      only works when the set is a generating set for sortables and the top layer has all the same length!!!
+
+
+
+.. py:class:: Vector
+
+   Bases: :py:obj:`tuple`
+
+   Built-in immutable sequence.
+
+   If no argument is given, the constructor returns an empty tuple.
+   If iterable is specified the tuple is initialized from iterable's items.
+
+   If the argument is a tuple, the return value is the same object.
+
+   .. py:method:: meet(self, other)
+
+
+   .. py:method:: contained_in(self, other)
+
+
+   .. py:method:: norm(self)
+
+
+
+.. py:class:: VectorSet
+
+   Bases: :py:obj:`list`
+
+   Built-in mutable sequence.
+
+   If no argument is given, the constructor creates a new empty list.
+   The argument must be an iterable if specified.
+
+   .. py:method:: basis_union(self, B)
+
+
+   .. py:method:: minimal_elements(self)
+
+
+   .. py:method:: meet_all(self)
+
+
+

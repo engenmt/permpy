@@ -1,0 +1,171 @@
+:py:mod:`permpy.deprecated.permdeprecated`
+==========================================
+
+.. py:module:: permpy.deprecated.permdeprecated
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   permpy.deprecated.permdeprecated.PermutationDeprecatedMixin
+
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   permpy.deprecated.permdeprecated.deprecated
+
+
+
+.. py:function:: deprecated(func)
+
+   This is a decorator that can be used to mark functions
+   as deprecated. It will result in a warning being emitted
+   when the function is used.
+
+
+.. py:class:: PermutationDeprecatedMixin
+
+   A mixin for deprecated methods kept for backward compatability.
+
+   .. py:method:: all_syms(self)
+
+
+   .. py:method:: ascent_set(self)
+
+
+   .. py:method:: descent_set(self)
+
+
+   .. py:method:: avoids_set(self, B)
+
+
+   .. py:method:: buildupset(self, height)
+
+
+   .. py:method:: _ascii_plot(self)
+
+      Prints a simple plot of the given Permutation.
+
+
+   .. py:method:: greedy_sum(self)
+
+      This provides a sum-decomposition of `self` in which consecutive increasing sum-components are merged.
+
+
+   .. py:method:: chom_sum(p)
+
+
+   .. py:method:: chom_skew(p)
+
+
+   .. py:method:: christiecycles(self)
+
+
+   .. py:method:: coveredby(self)
+
+
+   .. py:method:: children(self)
+
+
+   .. py:method:: fixedptsplusbonds(self)
+
+
+   .. py:method:: num_immediate_copies_of(self, other)
+
+
+   .. py:method:: threepats(self)
+
+
+   .. py:method:: fourpats(self)
+
+
+   .. py:method:: ind2perm(cls, k, n)
+      :classmethod:
+
+
+   .. py:method:: perm2ind(self)
+
+
+   .. py:method:: ind_to_perm(self)
+
+
+   .. py:method:: listall(cls, n)
+      :classmethod:
+
+
+   .. py:method:: longestrun(self)
+
+
+   .. py:method:: longestrunA(self)
+
+
+   .. py:method:: longestrunD(self)
+
+
+   .. py:method:: ltrmax(self)
+
+
+   .. py:method:: ltrmin(self)
+
+
+   .. py:method:: rtlmax(self)
+
+
+   .. py:method:: rtlmin(self)
+
+
+   .. py:method:: num_ltrmin(self)
+
+
+   .. py:method:: majorindex(self)
+
+
+   .. py:method:: min_gapsize(self)
+
+
+   .. py:method:: occurrences(self, other)
+
+
+   .. py:method:: num_cycles(self)
+
+
+   .. py:method:: othercycles(self)
+
+      Builds a permutation induced by the black and gray edges separately,
+      and counts the number of cycles in their product.
+
+
+   .. py:method:: sumcycles(self)
+
+
+   .. py:method:: maxcycles(self)
+
+
+   .. py:method:: peak_list(self)
+
+
+   .. py:method:: valley_list(self)
+
+
+   .. py:method:: plentiful(cls, gap)
+      :classmethod:
+
+      Return the gap-plentiful permutation of minimal(?) length.
+
+
+   .. py:method:: all_extensions(self)
+
+
+   .. py:method:: all_extensions_track_index(self, track_index)
+
+
+

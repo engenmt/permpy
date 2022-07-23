@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>permpy.permset &mdash; Python  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/mystnb.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/togglebutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script>let toggleHintShow = 'Click to show';</script>
+        <script>let toggleHintHide = 'Click to hide';</script>
+        <script>let toggleOpenOnPrint = 'true';</script>
+        <script src="../../_static/togglebutton.js"></script>
+        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autoapi/index.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>permpy.permset</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for permpy.permset</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">random</span>
+
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span><span class="p">,</span> <span class="n">defaultdict</span>
+
+<span class="kn">from</span> <span class="nn">.permutation</span> <span class="kn">import</span> <span class="n">Permutation</span>
+<span class="kn">from</span> <span class="nn">.permmisc</span> <span class="kn">import</span> <span class="n">lcm</span>
+
+<span class="kn">from</span> <span class="nn">.deprecated.permsetdeprecated</span> <span class="kn">import</span> <span class="n">PermSetDeprecatedMixin</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">mpl</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+    <span class="n">mpl_imported</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">mpl_imported</span> <span class="o">=</span> <span class="kc">False</span>
+
+
+<div class="viewcode-block" id="PermSet"><a class="viewcode-back" href="../../autoapi/permpy/permset/index.html#permpy.PermSet">[docs]</a><span class="k">class</span> <span class="nc">PermSet</span><span class="p">(</span><span class="nb">set</span><span class="p">,</span> <span class="n">PermSetDeprecatedMixin</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Represents a set of permutations, and allows statistics to be computed</span>
+<span class="sd">    across the set.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="PermSet.__repr__"><a class="viewcode-back" href="../../autoapi/permpy/permset/index.html#permpy.PermSet.__repr__">[docs]</a>    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Set of </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2"> permutations&quot;</span></div>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="p">[]):</span>
+        <span class="sd">&quot;&quot;&quot;Return the PermSet from the iterable provided, or just with a single permutation.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">Permutation</span><span class="p">):</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">([</span><span class="n">s</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PermSet.__add__"><a class="viewcode-back" href="../../autoapi/permpy/permset/index.html#permpy.PermSet.__add__">[docs]</a>    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the union of the two permutation sets.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; S = PermSet.all(3) + PermSet.all(4)</span>
+<span class="sd">            &gt;&gt;&gt; S</span>
+<span class="sd">            Set of 30 permutations</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">PermSet</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__or__</span><span class="p">(</span><span class="n">other</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="PermSet.__or__"><a class="viewcode-back" href="../../autoapi/permpy/permset/index.html#permpy.PermSet.__or__">[docs]</a>    <span class="k">def</span> <span class="fm">__or__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Wrapper for _add__.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span> <span class="o">+</span> <span class="n">other</span></div>
+
+<div class="viewcode-block" id="PermSet.__sub__"><a class="viewcode-back" href="../../autoapi/permpy/permset/index.html#permpy.PermSet.__sub__">[docs]</a>    <span class="k">def</span> <span class="fm">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the union of the two permutation sets.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; S = PermSet.all(3) - PermSet(Permutation(123))</span>
+<span class="sd">            &gt;&gt;&gt; len(S)</span>
+<span class="sd">            5</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">PermSet</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__sub__</span><span class="p">(</span><span class="n">other</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="PermSet.all"><a class="viewcode-back" href="../../autoapi/permpy/permset/index.html#permpy.PermSet.all">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">all</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the set of all permutations of a given length.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            length (int): the length of the permutations</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; p = Permutation(12); q = Permutation(21)</span>
+<span class="sd">            &gt;&gt;&gt; PermSet.all(2) == PermSet([p, q])</span>
+<span class="sd">            True</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">PermSet</span><span class="p">(</span><span class="n">Permutation</span><span class="o">.</span><span class="n">gen_all</span><span class="p">(</span><span class="n">length</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="PermSet.union"><a class="viewcode-back" href="../../autoapi/permpy/permset/index.html#permpy.PermSet.union">[docs]</a>    <span class="k">def</span> <span class="nf">union</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Wrapper for __add__&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span> <span class="o">+</span> <span class="n">other</span></div>
+
+<div class="viewcode-block" id="PermSet.get_random"><a class="viewcode-back" href="../../autoapi/permpy/permset/index.html#permpy.PermSet.get_random">[docs]</a>    <span class="k">def</span> <span class="nf">get_random</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a random element from the set.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; p = PermSet.all(4).get_random()</span>
+<span class="sd">            &gt;&gt;&gt; p in PermSet.all(4) and len(p) == 4</span>
+<span class="sd">            True</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="PermSet.by_length"><a class="viewcode-back" href="../../autoapi/permpy/permset/index.html#permpy.PermSet.by_length">[docs]</a>    <span class="k">def</span> <span class="nf">by_length</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a dictionary stratifying the permutations in `self`.&quot;&quot;&quot;</span>
+        <span class="n">D</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="n">PermSet</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="n">D</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">D</span></div>
+
+<div class="viewcode-block" id="PermSet.get_length"><a class="viewcode-back" href="../../autoapi/permpy/permset/index.html#permpy.PermSet.get_length">[docs]</a>    <span class="k">def</span> <span class="nf">get_length</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the subset of permutations that have the specified length.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            length (int): length of permutations to be returned</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; S = PermSet.all(4) + PermSet.all(3)</span>
+<span class="sd">            &gt;&gt;&gt; S.get_length(3) == PermSet.all(3)</span>
+<span class="sd">            True</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">PermSet</span><span class="p">(</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">==</span> <span class="n">length</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PermSet.show_all"><a class="viewcode-back" href="../../autoapi/permpy/permset/index.html#permpy.PermSet.show_all">[docs]</a>    <span class="k">def</span> <span class="nf">show_all</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The default representation doesn&#39;t print the entire set, this function does.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">set</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PermSet.minimal_elements"><a class="viewcode-back" href="../../autoapi/permpy/permset/index.html#permpy.PermSet.minimal_elements">[docs]</a>    <span class="k">def</span> <span class="nf">minimal_elements</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the elements of `self` that are minimal with respect to the</span>
+<span class="sd">        permutation pattern order.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">shortest_len</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="n">shortest_perms</span> <span class="o">=</span> <span class="n">PermSet</span><span class="p">(</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">==</span> <span class="n">shortest_len</span><span class="p">)</span>
+        <span class="n">S</span> <span class="o">=</span> <span class="n">PermSet</span><span class="p">(</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">avoids</span><span class="p">(</span><span class="n">B</span><span class="o">=</span><span class="n">shortest_perms</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">shortest_perms</span> <span class="o">+</span> <span class="n">S</span><span class="o">.</span><span class="n">minimal_elements</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="PermSet.symmetries"><a class="viewcode-back" href="../../autoapi/permpy/permset/index.html#permpy.PermSet.symmetries">[docs]</a>    <span class="k">def</span> <span class="nf">symmetries</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the PermSet of all symmetries of all permutations in `self`.&quot;&quot;&quot;</span>
+        <span class="n">S</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">S</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="n">p</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">S</span><span class="p">])</span>
+        <span class="n">S</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="n">p</span><span class="o">.</span><span class="n">complement</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">S</span><span class="p">])</span>
+        <span class="n">S</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="n">p</span><span class="o">.</span><span class="n">inverse</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">S</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">PermSet</span><span class="p">(</span><span class="n">S</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PermSet.covers"><a class="viewcode-back" href="../../autoapi/permpy/permset/index.html#permpy.PermSet.covers">[docs]</a>    <span class="k">def</span> <span class="nf">covers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return those permutations that `self` covers.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">PermSet</span><span class="p">(</span><span class="nb">set</span><span class="p">()</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">covers</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">]))</span></div>
+
+<div class="viewcode-block" id="PermSet.covered_by"><a class="viewcode-back" href="../../autoapi/permpy/permset/index.html#permpy.PermSet.covered_by">[docs]</a>    <span class="k">def</span> <span class="nf">covered_by</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return those permutations that `self` is covered by.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">PermSet</span><span class="p">(</span><span class="nb">set</span><span class="p">()</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">covered_by</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">]))</span></div>
+
+<div class="viewcode-block" id="PermSet.right_extensions"><a class="viewcode-back" href="../../autoapi/permpy/permset/index.html#permpy.PermSet.right_extensions">[docs]</a>    <span class="k">def</span> <span class="nf">right_extensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">basis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">test</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">trust</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the &#39;one layer&#39; upset of `self`.</span>
+
+<span class="sd">        Notes:</span>
+<span class="sd">            Requires each permutation in `self` to be the same size.</span>
+<span class="sd">            Requires either basis or test.</span>
+<span class="sd">            Implicit assumption is that the test is hereditary.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            basis (iter:optional): permutations to avoid. Useful for building classes.</span>
+<span class="sd">            test (optional): Function that accepts a permutation and returns a boolean.</span>
+<span class="sd">                Only returns those permutations that pass the test.</span>
+<span class="sd">            trust (boolean:optional): Whether or not to trust the `insertion_values`</span>
+<span class="sd">                existing in the Permutations in `self`.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">PermSet</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">test</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">basis</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">trust</span><span class="p">:</span>
+                <span class="n">lr</span> <span class="o">=</span> <span class="mi">2</span>
+                <span class="c1"># If we trust the previous insertion_values, then right-extending</span>
+                <span class="c1"># a permutation with an insertion value only makes us fail the test</span>
+                <span class="c1"># when the rightmost two entries are used.</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">lr</span> <span class="o">=</span> <span class="mi">1</span>
+
+            <span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">p</span><span class="o">.</span><span class="n">avoids</span><span class="p">(</span><span class="n">B</span><span class="o">=</span><span class="n">basis</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="n">lr</span><span class="p">)</span>
+
+        <span class="n">S</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="nb">set</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">right_extensions</span><span class="p">(</span><span class="n">test</span><span class="o">=</span><span class="n">test</span><span class="p">))</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">PermSet</span><span class="p">(</span><span class="n">S</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PermSet.upset"><a class="viewcode-back" href="../../autoapi/permpy/permset/index.html#permpy.PermSet.upset">[docs]</a>    <span class="k">def</span> <span class="nf">upset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">up_to_length</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the upset of `self`, stratified by length.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            basis (iter:optional): permutations to avoid. Useful for building classes.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="n">by_length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">by_length</span>
+        <span class="n">min_length</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">by_length</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">max_length</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">by_length</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">upset</span> <span class="o">=</span> <span class="p">[</span><span class="n">PermSet</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">min_length</span><span class="p">)]</span>
+        <span class="n">upset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">PermSet</span><span class="p">(</span><span class="n">by_length</span><span class="p">[</span><span class="n">min_length</span><span class="p">]))</span>
+
+        <span class="k">if</span> <span class="n">max_length</span> <span class="o">&gt;</span> <span class="n">up_to_length</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;PermSet.upset called with up_to_length = </span><span class="si">{</span><span class="n">up_to_length</span><span class="si">}</span><span class="s2"> on a PermSet with a longer permutation.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">length</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">min_length</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">max_length</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">prev_length</span> <span class="o">=</span> <span class="n">upset</span><span class="p">[</span><span class="n">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">by_length</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">upset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">PermSet</span><span class="p">(</span><span class="nb">set</span><span class="p">()</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">covered_by</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">prev_length</span><span class="p">)))</span>
+
+        <span class="k">return</span> <span class="n">upset</span></div>
+
+<div class="viewcode-block" id="PermSet.downset"><a class="viewcode-back" href="../../autoapi/permpy/permset/index.html#permpy.PermSet.downset">[docs]</a>    <span class="k">def</span> <span class="nf">downset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the downset of `self` as a list.&quot;&quot;&quot;</span>
+        <span class="n">bottom_edge</span> <span class="o">=</span> <span class="n">PermSet</span><span class="p">()</span>
+        <span class="n">bottom_edge</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="n">max_len</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="n">levels</span> <span class="o">=</span> <span class="p">[</span><span class="n">PermSet</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_len</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="n">levels</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+        <span class="n">downset</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_len</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_len</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">upper</span> <span class="o">=</span> <span class="n">downset</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">+</span> <span class="n">levels</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+            <span class="n">lower</span> <span class="o">=</span> <span class="n">upper</span><span class="o">.</span><span class="n">covers</span><span class="p">()</span>
+            <span class="n">downset</span><span class="p">[</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">lower</span>
+
+        <span class="k">return</span> <span class="n">downset</span></div>
+
+<div class="viewcode-block" id="PermSet.pattern_counts"><a class="viewcode-back" href="../../autoapi/permpy/permset/index.html#permpy.PermSet.pattern_counts">[docs]</a>    <span class="k">def</span> <span class="nf">pattern_counts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a dictionary counting the copies of all `k`-perms in each permutation in `self`.&quot;&quot;&quot;</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">pi</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="n">C</span> <span class="o">+=</span> <span class="n">pi</span><span class="o">.</span><span class="n">pattern_counts</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">C</span></div>
+
+<div class="viewcode-block" id="PermSet.total_statistic"><a class="viewcode-back" href="../../autoapi/permpy/permset/index.html#permpy.PermSet.total_statistic">[docs]</a>    <span class="k">def</span> <span class="nf">total_statistic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">statistic</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the sum of the given statistic over all perms in `self`.</span>
+
+<span class="sd">        Notes:</span>
+<span class="sd">            Works as long as the statistic is a number. If the statistic is a</span>
+<span class="sd">                Counter or something, this will fail as written.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">((</span><span class="n">statistic</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">),</span> <span class="n">default</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PermSet.heatmap"><a class="viewcode-back" href="../../autoapi/permpy/permset/index.html#permpy.PermSet.heatmap">[docs]</a>    <span class="k">def</span> <span class="nf">heatmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">only_length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">blur</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">gray</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Visalization of a set of permutations, which, for each length, shows</span>
+<span class="sd">        the relative frequency of each value in each position.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            only_length (int:optional):  If given, restrict to the permutations of this length.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">mpl_imported</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                <span class="s2">&quot;PermSet.heatmap requires matplotlib to be imported.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+        <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">exc</span><span class="p">(</span><span class="s2">&quot;PermSet.heatmap requires numpy to be imported!&quot;</span><span class="p">)</span>
+        <span class="c1"># first group permutations by length</span>
+        <span class="n">perms_by_length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">by_length</span><span class="p">()</span>
+
+        <span class="c1"># if given a length, ignore all other lengths</span>
+        <span class="k">if</span> <span class="n">only_length</span><span class="p">:</span>
+            <span class="n">perms_by_length</span> <span class="o">=</span> <span class="p">{</span><span class="n">only_length</span><span class="p">:</span> <span class="n">perms_by_length</span><span class="p">[</span><span class="n">only_length</span><span class="p">]}</span>
+        <span class="n">lengths</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">perms_by_length</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">grid_size</span> <span class="o">=</span> <span class="n">lcm</span><span class="p">(</span><span class="n">lengths</span><span class="p">)</span>
+        <span class="n">grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">grid_size</span><span class="p">,</span> <span class="n">grid_size</span><span class="p">))</span>
+
+        <span class="k">def</span> <span class="nf">inflate</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;Inflates a k x k array A by into a nk x nk array by inflating</span>
+<span class="sd">            each entry from A into a n x n matrix.&quot;&quot;&quot;</span>
+            <span class="n">ones</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">ones</span><span class="p">)</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">c</span>
+
+        <span class="k">for</span> <span class="n">length</span><span class="p">,</span> <span class="n">permset</span> <span class="ow">in</span> <span class="n">perms_by_length</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">small_grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">length</span><span class="p">,</span> <span class="n">length</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">permset</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+                    <span class="n">small_grid</span><span class="p">[</span><span class="n">length</span> <span class="o">-</span> <span class="n">val</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">idx</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">mul</span> <span class="o">=</span> <span class="n">grid_size</span> <span class="o">//</span> <span class="n">length</span>
+            <span class="n">inflated</span> <span class="o">=</span> <span class="n">inflate</span><span class="p">(</span><span class="n">small_grid</span><span class="p">,</span> <span class="n">mul</span><span class="p">)</span>
+            <span class="n">inflated</span> <span class="o">/=</span> <span class="n">inflated</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+            <span class="n">grid</span> <span class="o">+=</span> <span class="n">inflated</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ax</span><span class="p">:</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">blur</span><span class="p">:</span>
+            <span class="n">interpolation</span> <span class="o">=</span> <span class="s2">&quot;bicubic&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">interpolation</span> <span class="o">=</span> <span class="s2">&quot;nearest&quot;</span>
+
+        <span class="k">def</span> <span class="nf">get_cubehelix</span><span class="p">(</span><span class="n">gamma</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">rot</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">light</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dark</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;Get a cubehelix palette.&quot;&quot;&quot;</span>
+            <span class="n">cdict</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">_cm</span><span class="o">.</span><span class="n">cubehelix</span><span class="p">(</span><span class="n">gamma</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">rot</span><span class="p">,</span> <span class="n">hue</span><span class="p">)</span>
+            <span class="n">cmap</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">LinearSegmentedColormap</span><span class="p">(</span><span class="s2">&quot;cubehelix&quot;</span><span class="p">,</span> <span class="n">cdict</span><span class="p">)</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">light</span><span class="p">,</span> <span class="n">dark</span><span class="p">,</span> <span class="mi">256</span><span class="p">)</span>
+            <span class="n">pal</span> <span class="o">=</span> <span class="n">cmap</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">cmap</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">ListedColormap</span><span class="p">(</span><span class="n">pal</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">cmap</span>
+
+        <span class="k">if</span> <span class="n">gray</span><span class="p">:</span>
+            <span class="n">cmap</span> <span class="o">=</span> <span class="n">get_cubehelix</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">rot</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">light</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dark</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cmap</span> <span class="o">=</span> <span class="n">get_cubehelix</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">rot</span><span class="o">=-</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">light</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dark</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="n">interpolation</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s2">&quot;equal&quot;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">&quot;off&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ax</span></div>
+
+<div class="viewcode-block" id="PermSet.stack_inverse"><a class="viewcode-back" href="../../autoapi/permpy/permset/index.html#permpy.PermSet.stack_inverse">[docs]</a>    <span class="k">def</span> <span class="nf">stack_inverse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the PermSet of stack-inverses of elements of self.</span>
+
+<span class="sd">        Notes:</span>
+<span class="sd">            Uses dynamic programming!</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="p">[</span><span class="nb">tuple</span><span class="p">([</span><span class="n">val</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">pi</span><span class="p">])</span> <span class="k">for</span> <span class="n">pi</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">]</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span>
+            <span class="nb">len</span><span class="p">(</span><span class="n">pi</span><span class="p">)</span> <span class="o">==</span> <span class="n">n</span> <span class="k">for</span> <span class="n">pi</span> <span class="ow">in</span> <span class="bp">self</span>
+        <span class="p">),</span> <span class="s2">&quot;Not designed to handle this, unfortunately!&quot;</span>
+        <span class="n">L</span> <span class="o">=</span> <span class="p">[</span><span class="nb">set</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+        <span class="n">L</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">((</span><span class="n">pi</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(),</span> <span class="nb">tuple</span><span class="p">())</span> <span class="k">for</span> <span class="n">pi</span> <span class="ow">in</span> <span class="n">A</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">unpop_temp</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">unpop</span><span class="p">(</span><span class="n">state</span><span class="p">)</span> <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">L</span><span class="p">[</span><span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+            <span class="n">L</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">state</span> <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">unpop_temp</span> <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">old</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+
+            <span class="n">unpush_temp</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">unpush</span><span class="p">(</span><span class="n">state</span><span class="p">)</span> <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">old</span><span class="p">)</span>
+            <span class="n">new</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">state</span> <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">unpush_temp</span> <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">while</span> <span class="n">new</span><span class="p">:</span>
+                <span class="n">L</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
+                <span class="n">old</span> <span class="o">=</span> <span class="n">new</span>
+                <span class="n">unpush_temp</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">unpush</span><span class="p">(</span><span class="n">state</span><span class="p">)</span> <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">old</span><span class="p">)</span>
+                <span class="n">new</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">state</span> <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">unpush_temp</span> <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">PermSet</span><span class="p">(</span>
+            <span class="n">Permutation</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">L</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">state</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="unpop"><a class="viewcode-back" href="../../autoapi/permpy/permset/index.html#permpy.unpop">[docs]</a><span class="k">def</span> <span class="nf">unpop</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Given the before, stack, and after tuples, returns the (one-step) preimage.&quot;&quot;&quot;</span>
+    <span class="n">after</span><span class="p">,</span> <span class="n">stack</span><span class="p">,</span> <span class="n">before</span> <span class="o">=</span> <span class="n">state</span>
+    <span class="k">if</span> <span class="n">after</span> <span class="ow">and</span> <span class="n">after</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">stack</span> <span class="ow">or</span> <span class="n">after</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">after</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">stack</span> <span class="o">+</span> <span class="p">(</span><span class="n">after</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],),</span> <span class="n">before</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="unpush"><a class="viewcode-back" href="../../autoapi/permpy/permset/index.html#permpy.unpush">[docs]</a><span class="k">def</span> <span class="nf">unpush</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Given the before, stack, and after tuples, returns the (one-step) preimage.&quot;&quot;&quot;</span>
+    <span class="n">after</span><span class="p">,</span> <span class="n">stack</span><span class="p">,</span> <span class="n">before</span> <span class="o">=</span> <span class="n">state</span>
+    <span class="k">if</span> <span class="n">stack</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">after</span><span class="p">,</span> <span class="n">stack</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="p">(</span><span class="n">stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],)</span> <span class="o">+</span> <span class="n">before</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,74 @@
+:py:mod:`permpy.avclass`
+========================
+
+.. py:module:: permpy.avclass
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   permpy.avclass.AvClass
+
+
+
+
+.. py:class:: AvClass(basis, max_len=8)
+
+   Bases: :py:obj:`permpy.permclass.PermClass`
+
+   An object representing an avoidance class.
+
+   .. rubric:: Notes
+
+   Does not contain the empty permutation.
+
+   .. rubric:: Examples
+
+   >>> B = [123]
+   >>> A = AvClass(B, max_len=4)
+   >>> for S in A:
+   ...    print(S)
+   ...
+   Set of 1 permutations
+   Set of 1 permutations
+   Set of 2 permutations
+   Set of 5 permutations
+   Set of 14 permutations
+
+   .. py:method:: __repr__(self)
+
+      Return repr(self).
+
+
+   .. py:method:: extend_by_one(self, trust=True)
+
+      Extend `self` by right-extending its ultimate PermSet.
+
+      :param trust: Whether of not we can trust the insertion values of
+                    the ultimate PermSet. In this context, we generally can.
+      :type trust: bool
+
+
+   .. py:method:: extend_to_length(self, length, trust=True)
+
+
+   .. py:method:: extend_by_length(self, length, trust=True)
+
+
+   .. py:method:: right_juxtaposition(self, C, generate_perms=True)
+
+
+   .. py:method:: above_juxtaposition(self, C, generate_perms=True)
+
+
+   .. py:method:: contains(self, other)
+
+      Check if `self` contains `other` as a permutation class using their bases.
+
+
+

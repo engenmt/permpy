@@ -1,0 +1,135 @@
+:py:mod:`permpy.permstats`
+==========================
+
+.. py:module:: permpy.permstats
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   permpy.permstats.PermutationStatsMixin
+
+
+
+
+.. py:class:: PermutationStatsMixin
+
+   .. py:method:: num_fixed_points(self)
+
+
+   .. py:method:: num_descents(self)
+
+
+   .. py:method:: num_ascents(self)
+
+
+   .. py:method:: num_peaks(self)
+
+
+   .. py:method:: num_valleys(self)
+
+
+   .. py:method:: num_ltr_min(self)
+
+
+   .. py:method:: num_rtl_min(self)
+
+
+   .. py:method:: num_ltr_max(self)
+
+
+   .. py:method:: num_rtl_max(self)
+
+
+   .. py:method:: num_rtlmin_ltrmax_layers(self)
+
+
+   .. py:method:: num_rtlmax_ltrmin_layers(self)
+
+
+   .. py:method:: trivial(self)
+
+
+   .. py:method:: num_inversions(self)
+
+
+   .. py:method:: num_noninversions(self)
+
+
+   .. py:method:: major_index(self)
+
+      Return the major index of `self`.
+
+
+   .. py:method:: len_max_run(self)
+
+      Return the length of the longest monotone contiguous subsequence of entries.
+
+
+   .. py:method:: is_involution(self)
+
+      Determine if the permutation is an involution, i.e., is equal to it's own inverse.
+
+
+   .. py:method:: is_increasing(self)
+
+      Determine if the permutation is increasing.
+
+      .. rubric:: Examples
+
+      >>> p = Permutation.random(10)
+      >>> (p * p.inverse()).is_increasing()
+      True
+
+
+   .. py:method:: is_decreasing(self)
+
+      Determine if the permutation is increasing.
+
+      .. rubric:: Examples
+
+      >>> p = Permutation(range(10,0,-1))
+      >>> p.is_decreasing()
+      True
+
+
+   .. py:method:: is_identity(self)
+
+      Wrapper for is_increasing.
+
+
+   .. py:method:: is_simple(self)
+
+      Determine if `self` is simple.
+
+      .. todo:: Implement this better, if possible.
+
+
+   .. py:method:: is_strongly_simple(self)
+
+
+   .. py:method:: num_bonds(self)
+
+
+   .. py:method:: num_inc_bonds(self)
+
+
+   .. py:method:: num_dec_bonds(self)
+
+
+   .. py:method:: num_copies(self, other)
+
+      Return the number of copies of `other` in `self`.
+
+
+   .. py:method:: num_contiguous_copies_of(self, other)
+
+      Return the number of contiguous copies of `other` in `self`.
+
+
+

@@ -1,0 +1,28 @@
+:py:mod:`permpy.deprecated.permclassdeprecated`
+===============================================
+
+.. py:module:: permpy.deprecated.permclassdeprecated
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   permpy.deprecated.permclassdeprecated.PermClassDeprecatedMixin
+
+
+
+
+.. py:class:: PermClassDeprecatedMixin
+
+   .. py:method:: plus_class(self, t)
+
+
+   .. py:method:: plus_one_class(self)
+
+
+

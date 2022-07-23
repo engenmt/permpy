@@ -12,7 +12,7 @@ __author__ = "Michael Engen, Cheyne Homberger, Jay Pantone"
 
 """
 Todo:
-	* Permutation.random_avoider
+    * Permutation.random_avoider
 """
 
 

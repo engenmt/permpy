@@ -1,0 +1,1480 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>permpy.permutation &mdash; Python  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/mystnb.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/togglebutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script>let toggleHintShow = 'Click to show';</script>
+        <script>let toggleHintHide = 'Click to hide';</script>
+        <script>let toggleOpenOnPrint = 'true';</script>
+        <script src="../../_static/togglebutton.js"></script>
+        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autoapi/index.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>permpy.permutation</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for permpy.permutation</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
+
+<span class="kn">from</span> <span class="nn">.permstats</span> <span class="kn">import</span> <span class="n">PermutationStatsMixin</span>
+<span class="kn">from</span> <span class="nn">.permmisc</span> <span class="kn">import</span> <span class="n">PermutationMiscMixin</span>
+<span class="kn">from</span> <span class="nn">.deprecated.permdeprecated</span> <span class="kn">import</span> <span class="n">PermutationDeprecatedMixin</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Michael Engen, Cheyne Homberger, Jay Pantone&quot;</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Todo:</span>
+<span class="sd">    * Permutation.random_avoider</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="Permutation"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation">[docs]</a><span class="k">class</span> <span class="nc">Permutation</span><span class="p">(</span>
+    <span class="nb">tuple</span><span class="p">,</span> <span class="n">PermutationStatsMixin</span><span class="p">,</span> <span class="n">PermutationMiscMixin</span><span class="p">,</span> <span class="n">PermutationDeprecatedMixin</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Class for representing permutations as immutable 0-indexed tuples.&quot;&quot;&quot;</span>
+
+    <span class="c1"># static class variable, controls permutation representation</span>
+    <span class="n">_REPR</span> <span class="o">=</span> <span class="s2">&quot;oneline&quot;</span>
+
+    <span class="c1"># default to displaying permutations as 1-based</span>
+    <span class="n">_BASE</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="n">lower_bound</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">upper_bound</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">bounds_set</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">insertion_values</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="p">[]</span>
+    <span class="p">)</span>  <span class="c1"># When creating a class, this keeps track of what new values are allowed.</span>
+
+<div class="viewcode-block" id="Permutation.monotone_increasing"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.monotone_increasing">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">monotone_increasing</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the monotone increasing permutation of length n.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; Permutation.monotone_increasing(5)</span>
+<span class="sd">            1 2 3 4 5</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="n">clean</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Permutation.monotone_decreasing"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.monotone_decreasing">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">monotone_decreasing</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the monotone decreasing permutation of length n.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; Permutation.monotone_decreasing(5)</span>
+<span class="sd">            5 4 3 2 1</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">clean</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Permutation.identity"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.identity">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">identity</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Wrapper for Permutation.monotone_increasing.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">monotone_increasing</span><span class="p">(</span><span class="n">n</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Permutation.random"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.random">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">random</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a random permutation of length n.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; len( Permutation.random(10) ) == 10</span>
+<span class="sd">            True</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">L</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+        <span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="n">clean</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Permutation.random_avoider"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.random_avoider">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">random_avoider</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">simple</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">involution</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generate a (uniformly) random permutation that avoids the patterns</span>
+<span class="sd">        contained in `B`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            n (int): length of permutation to generate</span>
+<span class="sd">            B (iterable): Iterable of permutation-like objects to avoid.</span>
+<span class="sd">            simple (Boolean, optional): Whether the returned Permutation should be simple.</span>
+<span class="sd">                Defaults to False.</span>
+<span class="sd">            involution (Boolean, optional): Whether the returned Permutation should be an involution.</span>
+<span class="sd">                Defaults to False.</span>
+<span class="sd">            verbose (int, optional): Level of verbosity (-1 for no verbosity)</span>
+<span class="sd">                Doubling the integer doubles the number of messages printed.</span>
+<span class="sd">                Defaults to -1.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            p (Permutation): A permutation avoiding all the patterns in `B`</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; p = Permutation.random_avoider(8, [123])</span>
+<span class="sd">            &gt;&gt;&gt; p.involves(123)</span>
+<span class="sd">            False</span>
+
+<span class="sd">        Todo:</span>
+<span class="sd">            Ideally, we should use MCMC for this.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="k">while</span> <span class="p">(</span>
+            <span class="p">(</span><span class="n">involution</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">p</span><span class="o">.</span><span class="n">is_involution</span><span class="p">())</span>
+            <span class="ow">or</span> <span class="p">(</span><span class="n">simple</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">p</span><span class="o">.</span><span class="n">is_simple</span><span class="p">())</span>
+            <span class="ow">or</span> <span class="ow">not</span> <span class="n">p</span><span class="o">.</span><span class="n">avoids</span><span class="p">(</span><span class="n">B</span><span class="o">=</span><span class="n">B</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">verbose</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">%</span> <span class="n">verbose</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Tested: </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> permutations.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">p</span></div>
+
+<div class="viewcode-block" id="Permutation.gen_all"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.gen_all">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">gen_all</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generate all permutations of length n.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">pi</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">permutations</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)):</span>
+            <span class="k">yield</span> <span class="n">Permutation</span><span class="p">(</span><span class="n">pi</span><span class="p">,</span> <span class="n">clean</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Permutation.list_all"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.list_all">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">list_all</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a list of all permutations of length `n`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">gen_all</span><span class="p">(</span><span class="n">n</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Permutation.all_perms"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.all_perms">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">all_perms</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Wrapper for Permutation.list_all.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">list_all</span><span class="p">(</span><span class="n">n</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Permutation.standardize"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.standardize">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">standardize</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">L</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Standardize the list `L` of distinct elements by mapping them to the</span>
+<span class="sd">        set {0, 1, ..., len(L)} by an order-preserving bijection.</span>
+
+<span class="sd">        See the following for some interesting discussion on this:</span>
+<span class="sd">        https://stackoverflow.com/questions/17767646/relative-order-of-elements-in-list</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">L</span><span class="p">))</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">L</span><span class="p">),</span> <span class="s2">&quot;Ensure elements are distinct!&quot;</span>
+        <span class="n">ordered</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">ordered</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">L</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Permutation.change_repr"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.change_repr">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">change_repr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">representation</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Toggle globally between cycle notation or one-line notation.</span>
+<span class="sd">        Note that internal representation is still one-line.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">L</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;oneline&quot;</span><span class="p">,</span> <span class="s2">&quot;cycle&quot;</span><span class="p">,</span> <span class="s2">&quot;both&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">representation</span> <span class="ow">in</span> <span class="n">L</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_REPR</span> <span class="o">=</span> <span class="n">representation</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;1 for oneline, 2 for cycle, 3 for both</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">))</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_REPR</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Permutation.ind_to_perm"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.ind_to_perm">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">ind_to_perm</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;De-index the permutation by a bijection from the set S_n to [n!].</span>
+<span class="sd">        See also the `Permutation.perm_to_ind` method.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            k (int): An integer between 0 and n! - 1, to be mapped to S_n.</span>
+<span class="sd">            n (int): Length of the permutation.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Permutation of index k of length n.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; Permutation.ind_to_perm(12,8).perm_to_ind()</span>
+<span class="sd">            12</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Got confused: Permutation.ind_to_perm(k=</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">, n=</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">) was called.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">j</span> <span class="o">=</span> <span class="n">k</span> <span class="o">%</span> <span class="n">i</span>
+            <span class="n">result</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">k</span> <span class="o">//=</span> <span class="n">i</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">clean</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">p</span></div>
+
+    <span class="c1"># overloaded built in functions:</span>
+    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">clean</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a new permutation object. Supports a variety of creation</span>
+<span class="sd">        methods.</span>
+
+<span class="sd">        Notes:</span>
+<span class="sd">            If `p` is an iterable containing distinct elements, they will be</span>
+<span class="sd">                standardized to produce a permutation of length `len(p)`.</span>
+<span class="sd">            If `n` is given, and `p` is an integer, use `ind_to_perm` to create a</span>
+<span class="sd">                permutation.</span>
+<span class="sd">            If `p` is an integer with fewer than 10 digits, try to create a</span>
+<span class="sd">                permutation from the digits.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            p (Permutation-like object): object to be coerced into a Permutation.</span>
+<span class="sd">                Accepts Permutation, tuple, str, int, or iterable.</span>
+<span class="sd">            n (int, optional): If this is provided, the method appeals to Permutation.ind_to_perm(p, n).</span>
+<span class="sd">            clean (Boolean, optional): Whether the input is known to be an</span>
+<span class="sd">                iterable containing each element from range(len(p)) precisely once.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError if the passed arguments fail to properly create a permutation.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Permutation instance</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; Permutation(&#39;3 5 1 2 4&#39;) == Permutation([3, 5, 1, 2, 4])</span>
+<span class="sd">            True</span>
+<span class="sd">            &gt;&gt;&gt; Permutation(5, 12) == Permutation.ind_to_perm(5, 12)</span>
+<span class="sd">            True</span>
+<span class="sd">            &gt;&gt;&gt; Permutation([215, -99, 30, 12.1351, 0]) == Permutation(51432)</span>
+<span class="sd">            True</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">clean</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">tuple</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">tuple</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="p">[])</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">Permutation</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">p</span>
+
+        <span class="k">if</span> <span class="n">n</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Permutation</span><span class="o">.</span><span class="n">ind_to_perm</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;Integer given has too many digits. &quot;</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="s2">&quot; &quot;</span> <span class="ow">in</span> <span class="n">p</span><span class="p">:</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">p</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">tuple</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">Permutation</span><span class="o">.</span><span class="n">standardize</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize the Permutation.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insertion_values</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+
+<div class="viewcode-block" id="Permutation.__call__"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.__call__">[docs]</a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Allow the permutation to be called as a function.</span>
+
+<span class="sd">        Notes:</span>
+<span class="sd">            Recall that permutations are zero-based internally.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; Permutation(4132)(2)</span>
+<span class="sd">            2</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">i</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Permutation.__contains__"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.__contains__">[docs]</a>    <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return True if `self` contains `other`.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; Permutation(21).__contains__(Permutation(1))</span>
+<span class="sd">            True</span>
+<span class="sd">            &gt;&gt;&gt; Permutation(132) in Permutation(4132)</span>
+<span class="sd">            True</span>
+<span class="sd">            &gt;&gt;&gt; Permutation(231) in Permutation(1234)</span>
+<span class="sd">            False</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="n">involved_in</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Permutation.oneline"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.oneline">[docs]</a>    <span class="k">def</span> <span class="nf">oneline</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the one-line notation representation of the permutation (as a</span>
+<span class="sd">        sequence of integers 1 through n).</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">base</span> <span class="o">=</span> <span class="n">Permutation</span><span class="o">.</span><span class="n">_BASE</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">entry</span> <span class="o">+</span> <span class="n">base</span><span class="p">)</span> <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">s</span></div>
+
+<div class="viewcode-block" id="Permutation.__repr__"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.__repr__">[docs]</a>    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a string representation of the permutation depending on the</span>
+<span class="sd">        chosen representation (`Permutation._REPR`).</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">Permutation</span><span class="o">.</span><span class="n">_REPR</span> <span class="o">==</span> <span class="s2">&quot;oneline&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">oneline</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">Permutation</span><span class="o">.</span><span class="n">_REPR</span> <span class="o">==</span> <span class="s2">&quot;cycle&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cycles</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">oneline</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">cycles</span><span class="p">()])</span></div>
+
+    <span class="c1"># __hash__, __eq__, __ne__ inherited from tuple class</span>
+
+<div class="viewcode-block" id="Permutation.__mul__"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.__mul__">[docs]</a>    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the functional composition of the two permutations.&quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">other</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">L</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">val</span><span class="p">]</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">other</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Permutation</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="n">clean</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Permutation.__add__"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.__add__">[docs]</a>    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the direct sum of the two permutations.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; p = Permutation.monotone_increasing(10)</span>
+<span class="sd">            &gt;&gt;&gt; p + p == Permutation.monotone_increasing(20)</span>
+<span class="sd">            True</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Permutation</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="n">n</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">other</span><span class="p">],</span> <span class="n">clean</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Permutation.direct_sum"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.direct_sum">[docs]</a>    <span class="k">def</span> <span class="nf">direct_sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the direct sum of the two permutations.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; Permutation(312).direct_sum(Permutation(1234))</span>
+<span class="sd">            3 1 2 4 5 6 7</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span> <span class="o">+</span> <span class="n">other</span></div>
+
+<div class="viewcode-block" id="Permutation.__sub__"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.__sub__">[docs]</a>    <span class="k">def</span> <span class="fm">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the skew sum of the two permutations.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; p = Permutation.monotone_decreasing(10)</span>
+<span class="sd">            &gt;&gt;&gt; p - p == Permutation.monotone_decreasing(20)</span>
+<span class="sd">            True</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Permutation</span><span class="p">([</span><span class="n">i</span> <span class="o">+</span> <span class="n">m</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">other</span><span class="p">),</span> <span class="n">clean</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Permutation.skew_sum"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.skew_sum">[docs]</a>    <span class="k">def</span> <span class="nf">skew_sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the skew sum of the two permutations.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; Permutation(312).skew_sum(Permutation(1234))</span>
+<span class="sd">            7 5 6 1 2 3 4</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span> <span class="o">-</span> <span class="n">other</span></div>
+
+<div class="viewcode-block" id="Permutation.__pow__"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.__pow__">[docs]</a>    <span class="k">def</span> <span class="fm">__pow__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">power</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the permutation raised to a power.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; p = Permutation.random(10)</span>
+<span class="sd">            &gt;&gt;&gt; p**p.order() == Permutation.monotone_increasing(10)</span>
+<span class="sd">            True</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">power</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> <span class="s2">&quot;Power must be an integer!&quot;</span>
+        <span class="k">if</span> <span class="n">power</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inverse</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">p</span><span class="o">.</span><span class="fm">__pow__</span><span class="p">(</span><span class="o">-</span><span class="n">power</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">power</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Permutation</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ans</span> <span class="o">=</span> <span class="bp">self</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">power</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">ans</span> <span class="o">*=</span> <span class="bp">self</span>
+            <span class="k">return</span> <span class="n">ans</span></div>
+
+<div class="viewcode-block" id="Permutation.perm_to_ind"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.perm_to_ind">[docs]</a>    <span class="k">def</span> <span class="nf">perm_to_ind</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;De-index the permutation, by mapping it to an integer between 0 and</span>
+<span class="sd">        len(self)! - 1. See also `Permutation.ind_to_perm`.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; p = Permutation(41523)</span>
+<span class="sd">            &gt;&gt;&gt; Permutation.ind_to_perm(p.perm_to_ind(), len(p)) == p</span>
+<span class="sd">            True</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">multiplier</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="n">q</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">multiplier</span>
+            <span class="n">multiplier</span> <span class="o">*=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="n">j</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">q</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">q</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">q</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">q</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="Permutation.delete"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the permutation that results from deleting the indices or</span>
+<span class="sd">        values given.</span>
+
+<span class="sd">        Notes:</span>
+<span class="sd">            Recall that both indices and values are zero-indexed.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; Permutation(35214).delete(indices=2)</span>
+<span class="sd">            2 4 1 3</span>
+<span class="sd">            &gt;&gt;&gt; Permutation(35214).delete(indices=[2,4])</span>
+<span class="sd">            2 3 1</span>
+<span class="sd">            &gt;&gt;&gt; Permutation(35214).delete(values=[4])</span>
+<span class="sd">            3 2 1 4</span>
+<span class="sd">            &gt;&gt;&gt; Permutation(35214).delete(indices=[2]) == Permutation(35214).delete(values=1)</span>
+<span class="sd">            True</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">indices</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">indices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">Permutation</span><span class="p">(</span>
+                    <span class="p">[</span><span class="n">val</span> <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="k">if</span> <span class="n">idx</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">]</span>
+                <span class="p">)</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="n">old_val</span> <span class="k">if</span> <span class="n">old_val</span> <span class="o">&lt;</span> <span class="n">val</span> <span class="k">else</span> <span class="n">old_val</span> <span class="o">-</span> <span class="mi">1</span>
+                    <span class="k">for</span> <span class="n">old_val</span> <span class="ow">in</span> <span class="bp">self</span>
+                    <span class="k">if</span> <span class="n">old_val</span> <span class="o">!=</span> <span class="n">val</span>
+                <span class="p">]</span>
+                <span class="k">return</span> <span class="n">Permutation</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">clean</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">values</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">values</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>  <span class="c1"># Throws TypeError if values is not an iterable.</span>
+                <span class="k">return</span> <span class="n">Permutation</span><span class="p">([</span><span class="n">val</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span> <span class="k">if</span> <span class="n">val</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">values</span><span class="p">])</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="n">values</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="n">old_val</span> <span class="k">if</span> <span class="n">old_val</span> <span class="o">&lt;</span> <span class="n">val</span> <span class="k">else</span> <span class="n">old_val</span> <span class="o">-</span> <span class="mi">1</span>
+                    <span class="k">for</span> <span class="n">old_val</span> <span class="ow">in</span> <span class="bp">self</span>
+                    <span class="k">if</span> <span class="n">old_val</span> <span class="o">!=</span> <span class="n">val</span>
+                <span class="p">]</span>
+                <span class="k">return</span> <span class="n">Permutation</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">clean</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Permutation(</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">).delete() was called, which doesn&#39;t make sense.&quot;</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Permutation.insert"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.insert">[docs]</a>    <span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the permutation resulting from inserting an entry with value</span>
+<span class="sd">        just below `val` into the position just before the entry at position</span>
+<span class="sd">        `idx`.</span>
+
+<span class="sd">        Notes:</span>
+<span class="sd">            Recall that both indices and values are zero-indexed.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; Permutation(2413).insert(2, 1)</span>
+<span class="sd">            3 5 2 1 4</span>
+<span class="sd">            &gt;&gt;&gt; p = Permutation.random(10)</span>
+<span class="sd">            &gt;&gt;&gt; p == p.insert(4, 7).delete(indices = 4)</span>
+<span class="sd">            True</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="p">[</span><span class="n">old_val</span> <span class="k">if</span> <span class="n">old_val</span> <span class="o">&lt;</span> <span class="n">val</span> <span class="k">else</span> <span class="n">old_val</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">old_val</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">]</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">val</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="n">Permutation</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">clean</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Permutation.restrict"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.restrict">[docs]</a>    <span class="k">def</span> <span class="nf">restrict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the permutation obtained by restricting self to the given indices or values.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">indices</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">values</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Permutation(</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">).restrict(None, None) called, but either indices or values must be provided!&quot;</span>
+                <span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">Permutation</span><span class="p">(</span><span class="n">val</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span> <span class="k">if</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">values</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">Permutation</span><span class="p">(</span><span class="n">val</span> <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="k">if</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Permutation.complement"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.complement">[docs]</a>    <span class="k">def</span> <span class="nf">complement</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the complement of the permutation. That is, the permutation</span>
+<span class="sd">        obtained by subtracting each of the entries from `len(self)`.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; Permutation(2314).complement() == Permutation(3241)</span>
+<span class="sd">            True</span>
+<span class="sd">            &gt;&gt;&gt; p = Permutation.random(10)</span>
+<span class="sd">            &gt;&gt;&gt; p == p.complement().complement()</span>
+<span class="sd">            True</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">Permutation</span><span class="p">([</span><span class="n">n</span> <span class="o">-</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">],</span> <span class="n">clean</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Permutation.reverse"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.reverse">[docs]</a>    <span class="k">def</span> <span class="nf">reverse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the reverse of the permutation.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; Permutation(2314).reverse() == Permutation(4132)</span>
+<span class="sd">            True</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Permutation</span><span class="p">(</span><span class="bp">self</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">clean</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Permutation.inverse"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.inverse">[docs]</a>    <span class="k">def</span> <span class="nf">inverse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the group-theoretic or functional inverse of self.&quot;&quot;&quot;</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">q</span><span class="p">[</span><span class="n">val</span><span class="p">]</span> <span class="o">=</span> <span class="n">idx</span>
+        <span class="k">return</span> <span class="n">Permutation</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">clean</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Permutation.pretty_out"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.pretty_out">[docs]</a>    <span class="k">def</span> <span class="nf">pretty_out</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a nice string to visualize `self`.</span>
+
+<span class="sd">        Notes:</span>
+<span class="sd">            If `by_lines == True`, then will return the list of strings by line,</span>
+<span class="sd">            in case you want to append some stuff to each line.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; print(Permutation([1,9,3,7,5,6,4,8,2,10]).pretty_out())</span>
+<span class="sd">                              10</span>
+<span class="sd">               9</span>
+<span class="sd">                           8</span>
+<span class="sd">                   7</span>
+<span class="sd">                       6</span>
+<span class="sd">                     5</span>
+<span class="sd">                         4</span>
+<span class="sd">                 3</span>
+<span class="sd">                             2</span>
+<span class="sd">             1</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="n">width</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)))</span>  <span class="c1"># This is the width of each value.</span>
+
+        <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">val</span><span class="o">+</span><span class="mi">1</span><span class="si">:</span><span class="s2">&gt;</span><span class="si">{</span><span class="n">width</span><span class="o">*</span><span class="p">(</span><span class="n">idx</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="si">}}</span><span class="s2">&quot;</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Permutation.fixed_points"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.fixed_points">[docs]</a>    <span class="k">def</span> <span class="nf">fixed_points</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the fixed points of the permutation as a list. Recall that</span>
+<span class="sd">        both indices and values are zero-indexed.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; Permutation(521436).fixed_points()</span>
+<span class="sd">            [1, 3, 5]</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">idx</span> <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="k">if</span> <span class="n">idx</span> <span class="o">==</span> <span class="n">val</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Permutation.sum_decomposable"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.sum_decomposable">[docs]</a>    <span class="k">def</span> <span class="nf">sum_decomposable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Determine whether the permutation is the direct sum of two shorter permutations.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; p = Permutation.random(4).direct_sum(Permutation.random(15))</span>
+<span class="sd">            &gt;&gt;&gt; p.sum_decomposable()</span>
+<span class="sd">            True</span>
+<span class="sd">            &gt;&gt;&gt; p.reverse().sum_decomposable()</span>
+<span class="sd">            False</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">vals</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="c1"># Iterates through the permutation up until the penultimate entry.</span>
+            <span class="n">indices</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+            <span class="n">vals</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">indices</span> <span class="o">==</span> <span class="n">vals</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="Permutation.sum_decomposition"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.sum_decomposition">[docs]</a>    <span class="k">def</span> <span class="nf">sum_decomposition</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Decompose self as a list of sum-indecomposable permutations that sum to self.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; p = Permutation(1) + Permutation(312) + Permutation(21)</span>
+<span class="sd">            &gt;&gt;&gt; p.sum_decomposition()</span>
+<span class="sd">            [1, 3 1 2, 2 1]</span>
+<span class="sd">            &gt;&gt;&gt; p == sum(p.sum_decomposition(), Permutation([]))</span>
+<span class="sd">            True</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="n">indices</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">vals</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="c1"># Iterates through the permutation up until the penultimate entry.</span>
+            <span class="n">indices</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+            <span class="n">vals</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">indices</span> <span class="o">==</span> <span class="n">vals</span><span class="p">:</span>
+                <span class="n">component</span> <span class="o">=</span> <span class="n">Permutation</span><span class="p">(</span><span class="bp">self</span><span class="p">[:</span> <span class="n">idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="n">clean</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">rest</span> <span class="o">=</span> <span class="n">Permutation</span><span class="p">(</span>
+                    <span class="p">(</span><span class="n">val</span> <span class="o">-</span> <span class="n">idx</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">[</span><span class="n">idx</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:]),</span> <span class="n">clean</span><span class="o">=</span><span class="kc">True</span>
+                <span class="p">)</span>
+                <span class="k">return</span> <span class="p">[</span><span class="n">component</span><span class="p">]</span> <span class="o">+</span> <span class="n">rest</span><span class="o">.</span><span class="n">sum_decomposition</span><span class="p">()</span>
+
+        <span class="c1"># If we didn&#39;t return already, then self is sum-indecomposable.</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Permutation.skew_decomposable"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.skew_decomposable">[docs]</a>    <span class="k">def</span> <span class="nf">skew_decomposable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Determine whether the permutation is expressible as the skew sum of</span>
+<span class="sd">        two smaller permutations.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; p = Permutation.random(8).direct_sum(Permutation.random(12))</span>
+<span class="sd">            &gt;&gt;&gt; p.skew_decomposable()</span>
+<span class="sd">            False</span>
+<span class="sd">            &gt;&gt;&gt; p.complement().skew_decomposable()</span>
+<span class="sd">            True</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">vals</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="n">indices</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+            <span class="n">vals</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="n">val</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">indices</span> <span class="o">==</span> <span class="n">vals</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="Permutation.skew_decomposition"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.skew_decomposition">[docs]</a>    <span class="k">def</span> <span class="nf">skew_decomposition</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the list of skew-indecomposable permutations that skew sum to self.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; p = Permutation.random(4) + Permutation.random(15)</span>
+<span class="sd">            &gt;&gt;&gt; p.sum_decomposable()</span>
+<span class="sd">            True</span>
+<span class="sd">            &gt;&gt;&gt; p.reverse().sum_decomposable()</span>
+<span class="sd">            False</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="n">indices</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">vals</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="c1"># Iterates through the permutation up until the penultimate entry.</span>
+            <span class="n">indices</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+            <span class="n">vals</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="n">val</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">indices</span> <span class="o">==</span> <span class="n">vals</span><span class="p">:</span>
+                <span class="n">component</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="n">Permutation</span><span class="p">(</span>
+                        <span class="p">(</span><span class="n">value</span> <span class="o">-</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="n">idx</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">[:</span> <span class="n">idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">clean</span><span class="o">=</span><span class="kc">True</span>
+                    <span class="p">)</span>
+                <span class="p">]</span>
+                <span class="n">rest</span> <span class="o">=</span> <span class="n">Permutation</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">idx</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:],</span> <span class="n">clean</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">component</span> <span class="o">+</span> <span class="n">rest</span><span class="o">.</span><span class="n">skew_decomposition</span><span class="p">()</span>
+
+        <span class="c1"># If we didn&#39;t return already, then self is skew-indecomposable.</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Permutation.descents"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.descents">[docs]</a>    <span class="k">def</span> <span class="nf">descents</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the list of (positions of) descents of the permutation.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; Permutation(42561873).descents()</span>
+<span class="sd">            [0, 3, 5, 6]</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="p">]</span>  <span class="c1"># &gt;= is a bit faster than &gt; for some reason.</span></div>
+
+<div class="viewcode-block" id="Permutation.ascents"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.ascents">[docs]</a>    <span class="k">def</span> <span class="nf">ascents</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the list of (positions of) ascents of the permutation.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; Permutation(42561873).ascents()</span>
+<span class="sd">            [1, 2, 4]</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="p">]</span>  <span class="c1"># &lt;= is a bit faster than &lt; for some reason.</span></div>
+
+<div class="viewcode-block" id="Permutation.peaks"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.peaks">[docs]</a>    <span class="k">def</span> <span class="nf">peaks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the list of (positions of) peaks of the permutation.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; Permutation(2341765).peaks()</span>
+<span class="sd">            [2, 4]</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="p">]</span></div>
+
+<div class="viewcode-block" id="Permutation.valleys"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.valleys">[docs]</a>    <span class="k">def</span> <span class="nf">valleys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the list of (positions of) valleys of the permutation.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; Permutation(3241756).valleys()</span>
+<span class="sd">            [1, 3, 5]</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="p">]</span></div>
+
+<div class="viewcode-block" id="Permutation.ltr_min"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.ltr_min">[docs]</a>    <span class="k">def</span> <span class="nf">ltr_min</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the positions of the left-to-right minima.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; Permutation(35412).ltr_min()</span>
+<span class="sd">            [0, 3]</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">L</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">minval</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">val</span> <span class="o">&lt;</span> <span class="n">minval</span><span class="p">:</span>
+                <span class="n">L</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+                <span class="n">minval</span> <span class="o">=</span> <span class="n">val</span>
+        <span class="k">return</span> <span class="n">L</span></div>
+
+<div class="viewcode-block" id="Permutation.rtl_min"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.rtl_min">[docs]</a>    <span class="k">def</span> <span class="nf">rtl_min</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the positions of the right-to-left minima.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; Permutation(315264).rtl_min()</span>
+<span class="sd">            [5, 3, 1]</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">L</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">minval</span> <span class="o">=</span> <span class="n">n</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="n">val</span> <span class="o">&lt;</span> <span class="n">minval</span><span class="p">:</span>
+                <span class="n">L</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="n">idx</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">minval</span> <span class="o">=</span> <span class="n">val</span>
+        <span class="k">return</span> <span class="n">L</span></div>
+
+<div class="viewcode-block" id="Permutation.ltr_max"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.ltr_max">[docs]</a>    <span class="k">def</span> <span class="nf">ltr_max</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the positions of the left-to-right maxima.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; Permutation(35412).ltr_max()</span>
+<span class="sd">            [0, 1]</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">L</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">maxval</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">val</span> <span class="o">&gt;</span> <span class="n">maxval</span><span class="p">:</span>
+                <span class="n">L</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+                <span class="n">maxval</span> <span class="o">=</span> <span class="n">val</span>
+        <span class="k">return</span> <span class="n">L</span></div>
+
+<div class="viewcode-block" id="Permutation.rtl_max"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.rtl_max">[docs]</a>    <span class="k">def</span> <span class="nf">rtl_max</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the positions of the right-to-left maxima.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; Permutation(35412).rtl_max()</span>
+<span class="sd">            [4, 2, 1]</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">L</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">maxval</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="n">val</span> <span class="o">&gt;</span> <span class="n">maxval</span><span class="p">:</span>
+                <span class="n">L</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="n">idx</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">maxval</span> <span class="o">=</span> <span class="n">val</span>
+        <span class="k">return</span> <span class="n">L</span></div>
+
+<div class="viewcode-block" id="Permutation.inversions"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.inversions">[docs]</a>    <span class="k">def</span> <span class="nf">inversions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the list of inversions of the permutation, i.e., the pairs</span>
+<span class="sd">        (i,j) such that i &lt; j and self(i) &gt; self(j).</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; Permutation(4132).inversions()</span>
+<span class="sd">            [(0, 1), (0, 2), (0, 3), (2, 3)]</span>
+<span class="sd">            &gt;&gt;&gt; Permutation.monotone_increasing(7).inversions()</span>
+<span class="sd">            []</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">L</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">val_i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">val_j</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:],</span> <span class="n">start</span><span class="o">=</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">val_i</span> <span class="o">&gt;=</span> <span class="n">val_j</span>
+        <span class="p">]</span>
+        <span class="k">return</span> <span class="n">L</span></div>
+
+<div class="viewcode-block" id="Permutation.noninversions"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.noninversions">[docs]</a>    <span class="k">def</span> <span class="nf">noninversions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the list of noninversions of the permutation, i.e., the</span>
+<span class="sd">        pairs (i,j) such that i &lt; j and self(i) &lt; self(j).</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; Permutation(4132).noninversions()</span>
+<span class="sd">            [(1, 2), (1, 3)]</span>
+<span class="sd">            &gt;&gt;&gt; Permutation.monotone_decreasing(7).noninversions()</span>
+<span class="sd">            []</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">L</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">val_i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">val_j</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:],</span> <span class="n">start</span><span class="o">=</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">val_i</span> <span class="o">&lt;=</span> <span class="n">val_j</span>
+        <span class="p">]</span>
+        <span class="k">return</span> <span class="n">L</span></div>
+
+<div class="viewcode-block" id="Permutation.breadth"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.breadth">[docs]</a>    <span class="k">def</span> <span class="nf">breadth</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the minimum taxicab distance between any two entries in the permutation.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; Permutation(3142).breadth()</span>
+<span class="sd">            3</span>
+
+<span class="sd">        Todo:</span>
+<span class="sd">            Currently uses the naive algorithm---can be improved, probably.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">min_dist</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">combinations</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)),</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="n">h_dist</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">i</span> <span class="o">-</span> <span class="n">j</span><span class="p">)</span>
+            <span class="n">v_dist</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+            <span class="n">dist</span> <span class="o">=</span> <span class="n">h_dist</span> <span class="o">+</span> <span class="n">v_dist</span>
+            <span class="k">if</span> <span class="n">dist</span> <span class="o">&lt;</span> <span class="n">min_dist</span><span class="p">:</span>
+                <span class="n">min_dist</span> <span class="o">=</span> <span class="n">dist</span>
+        <span class="k">return</span> <span class="n">min_dist</span></div>
+
+<div class="viewcode-block" id="Permutation.bonds"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.bonds">[docs]</a>    <span class="k">def</span> <span class="nf">bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the list of (initial) indices of the bonds of `self`.</span>
+
+<span class="sd">        Notes:</span>
+<span class="sd">            A bond is an interval of size 2.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">L</span> <span class="o">=</span> <span class="p">[</span><span class="n">idx</span> <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="k">if</span> <span class="n">val</span> <span class="o">-</span> <span class="bp">self</span><span class="p">[</span><span class="n">idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span>
+        <span class="k">return</span> <span class="n">L</span></div>
+
+<div class="viewcode-block" id="Permutation.pattern_counts"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.pattern_counts">[docs]</a>    <span class="k">def</span> <span class="nf">pattern_counts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a Counter (dictionary) counting the occurrences of each perm of length `k` in `self`.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; Permutation(1324).pattern_counts(3)</span>
+<span class="sd">            Counter({1 2 3: 2, 1 3 2: 1, 2 1 3: 1})</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">Permutation</span><span class="p">(</span><span class="n">vals</span><span class="p">)</span> <span class="k">for</span> <span class="n">vals</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">combinations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">C</span></div>
+
+<div class="viewcode-block" id="Permutation.max_ascending_run"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.max_ascending_run">[docs]</a>    <span class="k">def</span> <span class="nf">max_ascending_run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the (inital) index and length of a longest ascending run of `self`.</span>
+
+<span class="sd">        Notes:</span>
+<span class="sd">            An ascending run is a contiguous increasing sequence of entries.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">max_idx</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">max_len</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">current_run_max</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">current_run_idx</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">current_run_len</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">val</span> <span class="o">&gt;</span> <span class="n">current_run_max</span><span class="p">:</span>
+                <span class="n">current_run_len</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">current_run_max</span> <span class="o">=</span> <span class="n">val</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">current_run_len</span> <span class="o">&gt;</span> <span class="n">max_len</span><span class="p">:</span>
+                    <span class="n">max_idx</span> <span class="o">=</span> <span class="n">current_run_idx</span>
+                    <span class="n">max_len</span> <span class="o">=</span> <span class="n">current_run_len</span>
+                    <span class="n">current_run_max</span> <span class="o">=</span> <span class="n">val</span>
+                    <span class="n">current_run_idx</span> <span class="o">=</span> <span class="n">idx</span>
+                    <span class="n">current_run_len</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">max_idx</span><span class="p">,</span> <span class="n">max_len</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Permutation.max_descending_run"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.max_descending_run">[docs]</a>    <span class="k">def</span> <span class="nf">max_descending_run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the (inital) index and length of a longest descending run of `self`.</span>
+
+<span class="sd">        Notes:</span>
+<span class="sd">            A descending run is a contiguous decreasing sequence of entries.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">max_idx</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">max_len</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">current_run_min</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">current_run_idx</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">current_run_len</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">val</span> <span class="o">&lt;</span> <span class="n">current_run_min</span><span class="p">:</span>
+                <span class="n">current_run_len</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">current_run_min</span> <span class="o">=</span> <span class="n">val</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">current_run_len</span> <span class="o">&gt;</span> <span class="n">max_len</span><span class="p">:</span>
+                    <span class="n">max_idx</span> <span class="o">=</span> <span class="n">current_run_idx</span>
+                    <span class="n">max_len</span> <span class="o">=</span> <span class="n">current_run_len</span>
+                    <span class="n">current_run_min</span> <span class="o">=</span> <span class="n">val</span>
+                    <span class="n">current_run_idx</span> <span class="o">=</span> <span class="n">idx</span>
+                    <span class="n">current_run_len</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">max_idx</span><span class="p">,</span> <span class="n">max_len</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Permutation.covered_by"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.covered_by">[docs]</a>    <span class="k">def</span> <span class="nf">covered_by</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the set of permutations that `self` is covered by.&quot;&quot;&quot;</span>
+        <span class="n">S</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+                <span class="n">S</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">j</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">val</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">S</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">j</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">S</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">j</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">S</span></div>
+
+<div class="viewcode-block" id="Permutation.covers"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.covers">[docs]</a>    <span class="k">def</span> <span class="nf">covers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the set of permutations that `self` covers.&quot;&quot;&quot;</span>
+        <span class="n">S</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">S</span></div>
+
+<div class="viewcode-block" id="Permutation.upset"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.upset">[docs]</a>    <span class="k">def</span> <span class="nf">upset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">stratified</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the upset of `self` using repeated applications of `covered_by`.</span>
+
+<span class="sd">        Notes:</span>
+<span class="sd">            If `stratified` == True, return the upset as a list `L` such that</span>
+<span class="sd">            `L[i]` is the set of permutations of length `i` that contain `self`.</span>
+
+<span class="sd">        Todo:</span>
+<span class="sd">            Try to compute this using a more clever method. Probably very difficult.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">L</span> <span class="o">=</span> <span class="p">[</span><span class="nb">set</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
+        <span class="n">L</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">set</span><span class="p">([</span><span class="bp">self</span><span class="p">]))</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">height</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">new_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">perm</span> <span class="ow">in</span> <span class="n">L</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
+                <span class="n">new_set</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">perm</span><span class="o">.</span><span class="n">covered_by</span><span class="p">())</span>
+            <span class="n">L</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_set</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">stratified</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">L</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">set</span><span class="p">()</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="o">*</span><span class="n">L</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Permutation.set_up_bounds"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.set_up_bounds">[docs]</a>    <span class="k">def</span> <span class="nf">set_up_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set up the bounds of the permutation for use with checking involvement.&quot;&quot;&quot;</span>
+        <span class="n">L</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
+        <span class="n">upper_bound</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">n</span>
+        <span class="n">lower_bound</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">n</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+            <span class="n">min_above</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="n">max_below</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="n">L</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">L</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="n">L</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">max_below</span><span class="p">:</span>
+                        <span class="n">max_below</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                        <span class="n">lower_bound</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">j</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">L</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">min_above</span> <span class="ow">or</span> <span class="n">min_above</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                        <span class="n">min_above</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                        <span class="n">upper_bound</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">j</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">lower_bound</span><span class="p">,</span> <span class="n">upper_bound</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Permutation.avoids"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.avoids">[docs]</a>    <span class="k">def</span> <span class="nf">avoids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">B</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check if the permutation avoids the pattern `p`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            p (Permutation-like object): permutation to be avoided</span>
+<span class="sd">            lr (int): Require the last entry to be equal to this</span>
+<span class="sd">            B (iterable of permutation-like objects:optional): A collection of permutations to be avoided.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; Permutation(123456).avoids(231)</span>
+<span class="sd">            True</span>
+<span class="sd">            &gt;&gt;&gt; Permutation(123456).avoids(123)</span>
+<span class="sd">            False</span>
+
+<span class="sd">        Todo:</span>
+<span class="sd">            Am I correct on the lr?</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">Permutation</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+            <span class="k">return</span> <span class="ow">not</span> <span class="n">p</span><span class="o">.</span><span class="n">involved_in</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">last_require</span><span class="o">=</span><span class="n">lr</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">B</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="ow">not</span> <span class="n">Permutation</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">involved_in</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">last_require</span><span class="o">=</span><span class="n">lr</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">B</span><span class="p">)</span>
+
+        <span class="c1"># If we&#39;re here, neither a permutation `p` nor a set `B` was provided.</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="Permutation.involves"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.involves">[docs]</a>    <span class="k">def</span> <span class="nf">involves</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check if the permutation contains the pattern `P`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            P (Permutation-like object): Pattern to be contained.</span>
+<span class="sd">            lr (int, optional): Require the last entry to be equal to this.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; Permutation(123456).involves(231)</span>
+<span class="sd">            False</span>
+<span class="sd">            &gt;&gt;&gt; Permutation(123456).involves(123)</span>
+<span class="sd">            True</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Permutation</span><span class="p">(</span><span class="n">P</span><span class="p">)</span><span class="o">.</span><span class="n">involved_in</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">last_require</span><span class="o">=</span><span class="n">lr</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Permutation.involved_in"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.involved_in">[docs]</a>    <span class="k">def</span> <span class="nf">involved_in</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">last_require</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check if `self` is contained as a pattern in `P`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            P (Permutation-like object): Pattern to be contained.</span>
+<span class="sd">            lr (int, optional): Require the last entry to be equal to this.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; Permutation(123).involved_in(31542)</span>
+<span class="sd">            False</span>
+<span class="sd">            &gt;&gt;&gt; Permutation(213).involved_in(54213)</span>
+<span class="sd">            True</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">P</span> <span class="o">=</span> <span class="n">Permutation</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds_set</span><span class="p">:</span>
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lower_bound</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">upper_bound</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_up_bounds</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bounds_set</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">L</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="n">p</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="n">indices</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">n</span>
+
+        <span class="k">if</span> <span class="n">last_require</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">indices</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="k">while</span> <span class="n">indices</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">involvement_check</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">upper_bound</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lower_bound</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span>
+                <span class="p">):</span>
+                    <span class="k">return</span> <span class="kc">True</span>
+                <span class="n">indices</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">last_require</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">indices</span><span class="p">[</span><span class="n">n</span> <span class="o">-</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span> <span class="o">-</span> <span class="n">i</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">involvement_check_final</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">upper_bound</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lower_bound</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">last_require</span>
+            <span class="p">):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">involvement_check</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">upper_bound</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">lower_bound</span><span class="p">,</span>
+                <span class="n">indices</span><span class="p">,</span>
+                <span class="n">P</span><span class="p">,</span>
+                <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-</span> <span class="n">last_require</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Permutation.involvement_check_final"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.involvement_check_final">[docs]</a>    <span class="k">def</span> <span class="nf">involvement_check_final</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">upper_bound</span><span class="p">,</span> <span class="n">lower_bound</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">last_require</span>
+    <span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">last_require</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">involvement_fits</span><span class="p">(</span>
+                <span class="n">upper_bound</span><span class="p">,</span> <span class="n">lower_bound</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="p">):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="Permutation.involvement_check"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.involvement_check">[docs]</a>    <span class="k">def</span> <span class="nf">involvement_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">upper_bound</span><span class="p">,</span> <span class="n">lower_bound</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="nb">next</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">next</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="n">indices</span><span class="p">[</span><span class="nb">next</span><span class="p">]</span> <span class="o">=</span> <span class="n">indices</span><span class="p">[</span><span class="nb">next</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
+
+        <span class="k">while</span> <span class="n">indices</span><span class="p">[</span><span class="nb">next</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">involvement_fits</span><span class="p">(</span>
+                <span class="n">upper_bound</span><span class="p">,</span> <span class="n">lower_bound</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="nb">next</span>
+            <span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">involvement_check</span><span class="p">(</span>
+                <span class="n">upper_bound</span><span class="p">,</span> <span class="n">lower_bound</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="nb">next</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="p">):</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="n">indices</span><span class="p">[</span><span class="nb">next</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="Permutation.involvement_fits"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.involvement_fits">[docs]</a>    <span class="k">def</span> <span class="nf">involvement_fits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">upper_bound</span><span class="p">,</span> <span class="n">lower_bound</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="nb">next</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">lower_bound</span><span class="p">[</span><span class="nb">next</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">or</span> <span class="n">q</span><span class="p">[</span><span class="n">indices</span><span class="p">[</span><span class="nb">next</span><span class="p">]]</span> <span class="o">&gt;</span> <span class="n">q</span><span class="p">[</span><span class="n">indices</span><span class="p">[</span><span class="n">lower_bound</span><span class="p">[</span><span class="nb">next</span><span class="p">]]]</span>
+        <span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
+            <span class="n">upper_bound</span><span class="p">[</span><span class="nb">next</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">or</span> <span class="n">q</span><span class="p">[</span><span class="n">indices</span><span class="p">[</span><span class="nb">next</span><span class="p">]]</span> <span class="o">&lt;</span> <span class="n">q</span><span class="p">[</span><span class="n">indices</span><span class="p">[</span><span class="n">upper_bound</span><span class="p">[</span><span class="nb">next</span><span class="p">]]]</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Permutation.all_intervals"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.all_intervals">[docs]</a>    <span class="k">def</span> <span class="nf">all_intervals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">return_patterns</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="n">blocks</span> <span class="o">=</span> <span class="p">[[],</span> <span class="p">[]]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)):</span>
+            <span class="n">blocks</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">j</span> <span class="p">:</span> <span class="n">j</span> <span class="o">+</span> <span class="n">i</span><span class="p">])</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">j</span> <span class="p">:</span> <span class="n">j</span> <span class="o">+</span> <span class="n">i</span><span class="p">])</span> <span class="o">==</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">blocks</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">return_patterns</span><span class="p">:</span>
+            <span class="n">patterns</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">length</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">blocks</span><span class="p">)):</span>
+                <span class="k">for</span> <span class="n">start_index</span> <span class="ow">in</span> <span class="n">blocks</span><span class="p">[</span><span class="n">length</span><span class="p">]:</span>
+                    <span class="n">patterns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="n">Permutation</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">start_index</span> <span class="p">:</span> <span class="n">start_index</span> <span class="o">+</span> <span class="n">length</span><span class="p">])</span>
+                    <span class="p">)</span>
+            <span class="k">return</span> <span class="n">patterns</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">blocks</span></div>
+
+<div class="viewcode-block" id="Permutation.all_monotone_intervals"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.all_monotone_intervals">[docs]</a>    <span class="k">def</span> <span class="nf">all_monotone_intervals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">with_ones</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return all monotone intervals of size at least 2.</span>
+
+<span class="sd">        If `with_ones == True`, then return all monotone intervals of size at least 1.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">mi</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">difference</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">c_start</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">c_length</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span> <span class="ow">in</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="ow">and</span> <span class="p">(</span>
+                <span class="n">c_length</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span> <span class="o">==</span> <span class="n">difference</span>
+            <span class="p">):</span>
+                <span class="k">if</span> <span class="n">c_length</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">c_start</span> <span class="o">=</span> <span class="n">i</span>
+                <span class="n">c_length</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">difference</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">c_length</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">mi</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">c_start</span><span class="p">,</span> <span class="n">c_start</span> <span class="o">+</span> <span class="n">c_length</span><span class="p">))</span>
+                <span class="n">c_start</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">c_length</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">difference</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">c_length</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">mi</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">c_start</span><span class="p">,</span> <span class="n">c_start</span> <span class="o">+</span> <span class="n">c_length</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">with_ones</span><span class="p">:</span>
+            <span class="n">in_int</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span> <span class="ow">in</span> <span class="n">mi</span><span class="p">:</span>
+                <span class="n">in_int</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">in_int</span><span class="p">:</span>
+                    <span class="n">mi</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">))</span>
+            <span class="n">mi</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">mi</span></div>
+
+<div class="viewcode-block" id="Permutation.monotone_quotient"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.monotone_quotient">[docs]</a>    <span class="k">def</span> <span class="nf">monotone_quotient</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Quotient `self` by its monotone intervals.&quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">Permutation</span><span class="p">(</span>
+            <span class="p">[</span><span class="bp">self</span><span class="p">[</span><span class="n">k</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_monotone_intervals</span><span class="p">(</span><span class="n">with_ones</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Permutation.maximal_interval"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.maximal_interval">[docs]</a>    <span class="k">def</span> <span class="nf">maximal_interval</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Find the biggest interval, and return (i,j) is one is found, where</span>
+<span class="sd">        i is the size of the interval, and j is the index of the first entry</span>
+<span class="sd">        in the interval.</span>
+
+<span class="sd">        Return (0,0) if no interval is found, i.e., if the permutation is simple.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">j</span> <span class="p">:</span> <span class="n">j</span> <span class="o">+</span> <span class="n">i</span><span class="p">])</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">j</span> <span class="p">:</span> <span class="n">j</span> <span class="o">+</span> <span class="n">i</span><span class="p">])</span> <span class="o">==</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Permutation.simple_location"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.simple_location">[docs]</a>    <span class="k">def</span> <span class="nf">simple_location</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Search for an interval, and return (i,j) if one is found, where i is</span>
+<span class="sd">        the size of the interval, and j is the first index of the interval.</span>
+
+<span class="sd">        Return (0,0) if no interval is found, i.e., if the permutation is simple.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mins</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">maxs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))):</span>
+                <span class="n">mins</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">mins</span><span class="p">[</span><span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+                <span class="n">maxs</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">maxs</span><span class="p">[</span><span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">maxs</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="n">mins</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="n">i</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Permutation.decomposition"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.decomposition">[docs]</a>    <span class="k">def</span> <span class="nf">decomposition</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Notes:</span>
+<span class="sd">            ME: I don&#39;t know what this is.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">base</span> <span class="o">=</span> <span class="n">Permutation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">components</span> <span class="o">=</span> <span class="p">[</span><span class="n">Permutation</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">base</span><span class="p">))]</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="n">base</span><span class="o">.</span><span class="n">is_simple</span><span class="p">():</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">base</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">components</span><span class="p">)</span>
+            <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">maximal_interval</span><span class="p">()</span>
+            <span class="k">assert</span> <span class="n">i</span> <span class="o">!=</span> <span class="mi">0</span>
+            <span class="n">interval</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">base</span><span class="p">[</span><span class="n">j</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">j</span><span class="p">])</span>
+            <span class="n">new_base</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">base</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">j</span><span class="p">])</span>
+            <span class="n">new_base</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">base</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+            <span class="n">new_base</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">base</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="n">j</span> <span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">base</span><span class="p">)])</span>
+            <span class="n">new_components</span> <span class="o">=</span> <span class="n">components</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">j</span><span class="p">]</span>
+            <span class="n">new_components</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Permutation</span><span class="p">(</span><span class="n">interval</span><span class="p">))</span>
+            <span class="n">new_components</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">components</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="n">j</span> <span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">base</span><span class="p">)])</span>
+            <span class="n">base</span> <span class="o">=</span> <span class="n">Permutation</span><span class="p">(</span><span class="n">new_base</span><span class="p">)</span>
+            <span class="n">components</span> <span class="o">=</span> <span class="n">new_components</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">components</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Permutation.inflate"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.inflate">[docs]</a>    <span class="k">def</span> <span class="nf">inflate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">components</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Inflate the entries of self by the given components.</span>
+
+<span class="sd">        Notes:</span>
+<span class="sd">            Inflates from the bottom up, keeping track of the vertical shift for</span>
+<span class="sd">            subsequent points.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError if the wrong number of components is given.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">components</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span><span class="si">}</span><span class="s2">.inflate(</span><span class="si">{</span><span class="n">components</span><span class="si">}</span><span class="s2">) is invalid!&quot;</span><span class="p">)</span>
+
+        <span class="n">inflated</span> <span class="o">=</span> <span class="p">[[]]</span> <span class="o">*</span> <span class="n">n</span>
+        <span class="n">vertical_shift</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">component</span> <span class="o">=</span> <span class="n">components</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+            <span class="n">inflated</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">component_value</span> <span class="o">+</span> <span class="n">vertical_shift</span> <span class="k">for</span> <span class="n">component_value</span> <span class="ow">in</span> <span class="n">component</span>
+            <span class="p">]</span>
+            <span class="n">vertical_shift</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">component</span><span class="p">)</span>
+
+        <span class="n">inflated_flat</span> <span class="o">=</span> <span class="p">[</span><span class="n">val</span> <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">inflated</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">component</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">Permutation</span><span class="p">(</span><span class="n">inflated_flat</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Permutation.right_extensions"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.right_extensions">[docs]</a>    <span class="k">def</span> <span class="nf">right_extensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">test</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">basis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the list of right extensions of `self`, only including those</span>
+<span class="sd">        in which the new value comes from `self.insertion_values`.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">test</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">basis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+
+                <span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="kc">True</span>
+
+            <span class="k">else</span><span class="p">:</span>
+
+                <span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="n">p</span><span class="o">.</span><span class="n">avoids</span><span class="p">(</span><span class="n">B</span><span class="o">=</span><span class="n">basis</span><span class="p">)</span>
+
+        <span class="n">L</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">bad_vals</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">new_val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">insertion_values</span><span class="p">:</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="p">[</span><span class="n">val</span> <span class="k">if</span> <span class="n">val</span> <span class="o">&lt;</span> <span class="n">new_val</span> <span class="k">else</span> <span class="n">val</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">]</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_val</span><span class="p">)</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">Permutation</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">clean</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">test</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+                <span class="n">bad_vals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_val</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">L</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+        <span class="n">prev_insertion_values</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">val</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">insertion_values</span> <span class="k">if</span> <span class="n">val</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">bad_vals</span>
+        <span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">L</span><span class="p">:</span>
+            <span class="n">new_val</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">insertion_values_adjusted</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">val</span> <span class="k">if</span> <span class="n">val</span> <span class="o">&lt;</span> <span class="n">new_val</span> <span class="k">else</span> <span class="n">val</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">prev_insertion_values</span>
+            <span class="p">]</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">insertion_values</span> <span class="o">=</span> <span class="n">insertion_values_adjusted</span> <span class="o">+</span> <span class="p">[</span><span class="n">new_val</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">L</span></div>
+
+<div class="viewcode-block" id="Permutation.downset"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.downset">[docs]</a>    <span class="k">def</span> <span class="nf">downset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the downset D of `self` stratified by length.&quot;&quot;&quot;</span>
+        <span class="n">new_perms</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+        <span class="n">downset</span> <span class="o">=</span> <span class="p">[</span><span class="nb">set</span><span class="p">([</span><span class="bp">self</span><span class="p">])]</span>
+
+        <span class="k">for</span> <span class="n">new_length</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+
+            <span class="n">old_perms</span> <span class="o">=</span> <span class="n">new_perms</span>
+            <span class="n">new_perms</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+            <span class="k">for</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">start</span> <span class="ow">in</span> <span class="n">old_perms</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">new_length</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="n">tau</span> <span class="o">=</span> <span class="n">sigma</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">indices</span><span class="o">=</span><span class="n">i</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">tau</span> <span class="ow">in</span> <span class="n">new_perms</span><span class="p">:</span>
+                        <span class="n">new_perms</span><span class="p">[</span><span class="n">tau</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">new_perms</span><span class="p">[</span><span class="n">tau</span><span class="p">],</span> <span class="n">i</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">new_perms</span><span class="p">[</span><span class="n">tau</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+
+            <span class="n">downset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_perms</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">downset</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Permutation.downset_profile"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.downset_profile">[docs]</a>    <span class="k">def</span> <span class="nf">downset_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the downset profile of self.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">            The downset profile is the list of the number of permutations of each</span>
+<span class="sd">            size contained in self.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">new_perms</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+        <span class="c1"># downset = [set([pi])]</span>
+        <span class="n">profile</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">new_perms</span><span class="p">)]</span>
+
+        <span class="k">for</span> <span class="n">new_length</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+
+            <span class="n">old_perms</span> <span class="o">=</span> <span class="n">new_perms</span>
+            <span class="n">new_perms</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+            <span class="k">for</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">start</span> <span class="ow">in</span> <span class="n">old_perms</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">new_length</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="n">tau</span> <span class="o">=</span> <span class="n">sigma</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">indices</span><span class="o">=</span><span class="n">i</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">tau</span> <span class="ow">in</span> <span class="n">new_perms</span><span class="p">:</span>
+                        <span class="n">new_perms</span><span class="p">[</span><span class="n">tau</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">new_perms</span><span class="p">[</span><span class="n">tau</span><span class="p">],</span> <span class="n">i</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">new_perms</span><span class="p">[</span><span class="n">tau</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+
+            <span class="c1"># downset.append(new_perms)</span>
+            <span class="n">profile</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">new_perms</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">profile</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Permutation.symmetries"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.symmetries">[docs]</a>    <span class="k">def</span> <span class="nf">symmetries</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the set of all symmetries of `self`.&quot;&quot;&quot;</span>
+        <span class="n">S</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="bp">self</span><span class="p">])</span>
+        <span class="n">S</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="n">P</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span> <span class="k">for</span> <span class="n">P</span> <span class="ow">in</span> <span class="n">S</span><span class="p">])</span>
+        <span class="n">S</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="n">P</span><span class="o">.</span><span class="n">complement</span><span class="p">()</span> <span class="k">for</span> <span class="n">P</span> <span class="ow">in</span> <span class="n">S</span><span class="p">])</span>
+        <span class="n">S</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="n">P</span><span class="o">.</span><span class="n">inverse</span><span class="p">()</span> <span class="k">for</span> <span class="n">P</span> <span class="ow">in</span> <span class="n">S</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">S</span></div>
+
+<div class="viewcode-block" id="Permutation.is_representative"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.is_representative">[docs]</a>    <span class="k">def</span> <span class="nf">is_representative</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check if `self` is the (lexicographically) least element of its symmetry class.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span> <span class="o">==</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">symmetries</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Permutation.copies"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.copies">[docs]</a>    <span class="k">def</span> <span class="nf">copies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the list of (values corresponding to) copies of `other` in `self`.&quot;&quot;&quot;</span>
+        <span class="n">copies</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">subseq</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">combinations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">other</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">Permutation</span><span class="p">(</span><span class="n">subseq</span><span class="p">)</span> <span class="o">==</span> <span class="n">other</span><span class="p">:</span>
+                <span class="n">copies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">subseq</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">copies</span></div>
+
+<div class="viewcode-block" id="Permutation.contiguous_copies"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.contiguous_copies">[docs]</a>    <span class="k">def</span> <span class="nf">contiguous_copies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the list of (indices corresponding to) immediate copies of `other` in `self`.&quot;&quot;&quot;</span>
+        <span class="n">immediate_copies</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">initial_idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-</span> <span class="n">m</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">Permutation</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">initial_idx</span> <span class="p">:</span> <span class="n">initial_idx</span> <span class="o">+</span> <span class="n">m</span><span class="p">])</span> <span class="o">==</span> <span class="n">other</span><span class="p">:</span>
+                <span class="n">immediate_copies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">initial_idx</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">immediate_copies</span></div>
+
+<div class="viewcode-block" id="Permutation.density_of"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.density_of">[docs]</a>    <span class="k">def</span> <span class="nf">density_of</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pi</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the density of copies of `pi` in `self`.&quot;&quot;&quot;</span>
+        <span class="n">num_copies</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_copies</span><span class="p">(</span><span class="n">pi</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">num_copies</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">comb</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">pi</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Permutation.optimizers"><a class="viewcode-back" href="../../autoapi/permpy/permutation/index.html#permpy.Permutation.optimizers">[docs]</a>    <span class="k">def</span> <span class="nf">optimizers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the list of permutations of length `n` that contain the most possible copies of `self`.&quot;&quot;&quot;</span>
+        <span class="n">max_copies</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">best_perms</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">tau</span> <span class="ow">in</span> <span class="n">Permutation</span><span class="o">.</span><span class="n">gen_all</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="n">num_copies</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tau</span><span class="o">.</span><span class="n">copies</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">num_copies</span> <span class="o">&gt;</span> <span class="n">max_copies</span><span class="p">:</span>
+                <span class="n">max_copies</span> <span class="o">=</span> <span class="n">num_copies</span>
+                <span class="n">best_perms</span> <span class="o">=</span> <span class="p">[</span><span class="n">tau</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">num_copies</span> <span class="o">==</span> <span class="n">max_copies</span><span class="p">:</span>
+                <span class="n">best_perms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tau</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">best_perms</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

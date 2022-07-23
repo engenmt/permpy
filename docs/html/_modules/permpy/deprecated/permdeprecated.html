@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>permpy.deprecated.permdeprecated &mdash; Python  documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/mystnb.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/togglebutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script>let toggleHintShow = 'Click to show';</script>
+        <script>let toggleHintHide = 'Click to hide';</script>
+        <script>let toggleOpenOnPrint = 'true';</script>
+        <script src="../../../_static/togglebutton.js"></script>
+        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autoapi/index.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>permpy.deprecated.permdeprecated</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for permpy.deprecated.permdeprecated</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">functools</span>
+
+
+<div class="viewcode-block" id="deprecated"><a class="viewcode-back" href="../../../autoapi/permpy/deprecated/permdeprecated/index.html#permpy.deprecated.permdeprecated.deprecated">[docs]</a><span class="k">def</span> <span class="nf">deprecated</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This is a decorator that can be used to mark functions</span>
+<span class="sd">    as deprecated. It will result in a warning being emitted</span>
+<span class="sd">    when the function is used.&quot;&quot;&quot;</span>
+
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">new_func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;always&quot;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>  <span class="c1"># turn off filter</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Call to deprecated function </span><span class="si">{</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">,</span>
+            <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;default&quot;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>  <span class="c1"># reset filter</span>
+        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">new_func</span></div>
+
+
+<div class="viewcode-block" id="PermutationDeprecatedMixin"><a class="viewcode-back" href="../../../autoapi/permpy/deprecated/permdeprecated/index.html#permpy.deprecated.permdeprecated.PermutationDeprecatedMixin">[docs]</a><span class="k">class</span> <span class="nc">PermutationDeprecatedMixin</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;A mixin for deprecated methods kept for backward compatability.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="PermutationDeprecatedMixin.all_syms"><a class="viewcode-back" href="../../../autoapi/permpy/deprecated/permdeprecated/index.html#permpy.deprecated.permdeprecated.PermutationDeprecatedMixin.all_syms">[docs]</a>    <span class="nd">@deprecated</span>
+    <span class="k">def</span> <span class="nf">all_syms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">symmetries</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="PermutationDeprecatedMixin.ascent_set"><a class="viewcode-back" href="../../../autoapi/permpy/deprecated/permdeprecated/index.html#permpy.deprecated.permdeprecated.PermutationDeprecatedMixin.ascent_set">[docs]</a>    <span class="nd">@deprecated</span>
+    <span class="k">def</span> <span class="nf">ascent_set</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ascents</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="PermutationDeprecatedMixin.descent_set"><a class="viewcode-back" href="../../../autoapi/permpy/deprecated/permdeprecated/index.html#permpy.deprecated.permdeprecated.PermutationDeprecatedMixin.descent_set">[docs]</a>    <span class="nd">@deprecated</span>
+    <span class="k">def</span> <span class="nf">descent_set</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">descents</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="PermutationDeprecatedMixin.avoids_set"><a class="viewcode-back" href="../../../autoapi/permpy/deprecated/permdeprecated/index.html#permpy.deprecated.permdeprecated.PermutationDeprecatedMixin.avoids_set">[docs]</a>    <span class="nd">@deprecated</span>
+    <span class="k">def</span> <span class="nf">avoids_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">B</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">B</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">Permutation</span><span class="p">):</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="n">Permutation</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="PermutationDeprecatedMixin.buildupset"><a class="viewcode-back" href="../../../autoapi/permpy/deprecated/permdeprecated/index.html#permpy.deprecated.permdeprecated.PermutationDeprecatedMixin.buildupset">[docs]</a>    <span class="nd">@deprecated</span>
+    <span class="k">def</span> <span class="nf">buildupset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">height</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">upset</span><span class="p">(</span><span class="n">height</span><span class="p">,</span> <span class="n">stratified</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PermutationDeprecatedMixin._ascii_plot"><a class="viewcode-back" href="../../../autoapi/permpy/deprecated/permdeprecated/index.html#permpy.deprecated.permdeprecated.PermutationDeprecatedMixin._ascii_plot">[docs]</a>    <span class="nd">@deprecated</span>
+    <span class="k">def</span> <span class="nf">_ascii_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Prints a simple plot of the given Permutation.&quot;&quot;&quot;</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">array</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot; &quot;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="n">array</span><span class="p">[</span><span class="bp">self</span><span class="p">[</span><span class="n">i</span><span class="p">]][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;*&quot;</span>
+        <span class="n">array</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">array</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PermutationDeprecatedMixin.greedy_sum"><a class="viewcode-back" href="../../../autoapi/permpy/deprecated/permdeprecated/index.html#permpy.deprecated.permdeprecated.PermutationDeprecatedMixin.greedy_sum">[docs]</a>    <span class="nd">@deprecated</span>
+    <span class="k">def</span> <span class="nf">greedy_sum</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This provides a sum-decomposition of `self` in which consecutive increasing sum-components are merged.&quot;&quot;&quot;</span>
+        <span class="n">parts</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">sofar</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">sofar</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">-</span> <span class="n">sofar</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Permutation</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+                <span class="k">return</span> <span class="n">parts</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">while</span> <span class="n">sofar</span> <span class="o">+</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">list</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">sofar</span> <span class="p">:</span> <span class="n">sofar</span> <span class="o">+</span> <span class="n">i</span><span class="p">])</span> <span class="o">==</span> <span class="nb">range</span><span class="p">(</span>
+                <span class="n">sofar</span><span class="p">,</span> <span class="n">sofar</span> <span class="o">+</span> <span class="n">i</span>
+            <span class="p">):</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">i</span> <span class="o">-=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Permutation</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="p">)))</span>
+            <span class="n">sofar</span> <span class="o">+=</span> <span class="n">i</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="mi">2</span>
+            <span class="k">while</span> <span class="n">sofar</span> <span class="o">+</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span>
+                <span class="nb">max</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">sofar</span> <span class="p">:</span> <span class="n">sofar</span> <span class="o">+</span> <span class="n">i</span><span class="p">])</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">sofar</span> <span class="p">:</span> <span class="n">sofar</span> <span class="o">+</span> <span class="n">i</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">==</span> <span class="n">i</span>
+                <span class="ow">and</span> <span class="nb">min</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">sofar</span> <span class="p">:</span> <span class="n">sofar</span> <span class="o">+</span> <span class="n">i</span><span class="p">])</span> <span class="o">==</span> <span class="n">sofar</span>
+            <span class="p">):</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">sofar</span> <span class="o">+</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+                <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Permutation</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">sofar</span> <span class="p">:</span> <span class="n">sofar</span> <span class="o">+</span> <span class="n">i</span><span class="p">]))</span>
+            <span class="n">sofar</span> <span class="o">+=</span> <span class="n">i</span>
+        <span class="k">return</span> <span class="n">parts</span></div>
+
+<div class="viewcode-block" id="PermutationDeprecatedMixin.chom_sum"><a class="viewcode-back" href="../../../autoapi/permpy/deprecated/permdeprecated/index.html#permpy.deprecated.permdeprecated.PermutationDeprecatedMixin.chom_sum">[docs]</a>    <span class="nd">@deprecated</span>
+    <span class="k">def</span> <span class="nf">chom_sum</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+        <span class="n">L</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">greedy_sum</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">p</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">inversions</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">L</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">Permutation</span><span class="p">(</span><span class="mi">1</span><span class="p">)]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">L</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">L</span></div>
+
+<div class="viewcode-block" id="PermutationDeprecatedMixin.chom_skew"><a class="viewcode-back" href="../../../autoapi/permpy/deprecated/permdeprecated/index.html#permpy.deprecated.permdeprecated.PermutationDeprecatedMixin.chom_skew">[docs]</a>    <span class="nd">@deprecated</span>
+    <span class="k">def</span> <span class="nf">chom_skew</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span><span class="o">.</span><span class="n">chom_sum</span><span class="p">()]</span></div>
+
+<div class="viewcode-block" id="PermutationDeprecatedMixin.christiecycles"><a class="viewcode-back" href="../../../autoapi/permpy/deprecated/permdeprecated/index.html#permpy.deprecated.permdeprecated.PermutationDeprecatedMixin.christiecycles">[docs]</a>    <span class="nd">@deprecated</span>
+    <span class="k">def</span> <span class="nf">christiecycles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># builds a permutation induced by the black and gray edges separately, and</span>
+        <span class="c1"># counts the number of cycles in their product. used for transpositions</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__len__</span><span class="p">()</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
+        <span class="n">grayperm</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">blackperm</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">ind</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">blackperm</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">q</span><span class="p">[</span><span class="n">ind</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">newperm</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="n">blackperm</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">j</span> <span class="o">=</span> <span class="n">grayperm</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+            <span class="n">newperm</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Permutation</span><span class="p">(</span><span class="n">newperm</span><span class="p">)</span><span class="o">.</span><span class="n">numcycles</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="PermutationDeprecatedMixin.coveredby"><a class="viewcode-back" href="../../../autoapi/permpy/deprecated/permdeprecated/index.html#permpy.deprecated.permdeprecated.PermutationDeprecatedMixin.coveredby">[docs]</a>    <span class="nd">@deprecated</span>
+    <span class="k">def</span> <span class="nf">coveredby</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">covered_by</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="PermutationDeprecatedMixin.children"><a class="viewcode-back" href="../../../autoapi/permpy/deprecated/permdeprecated/index.html#permpy.deprecated.permdeprecated.PermutationDeprecatedMixin.children">[docs]</a>    <span class="nd">@deprecated</span>
+    <span class="k">def</span> <span class="nf">children</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">covers</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="PermutationDeprecatedMixin.fixedptsplusbonds"><a class="viewcode-back" href="../../../autoapi/permpy/deprecated/permdeprecated/index.html#permpy.deprecated.permdeprecated.PermutationDeprecatedMixin.fixedptsplusbonds">[docs]</a>    <span class="nd">@deprecated</span>
+    <span class="k">def</span> <span class="nf">fixedptsplusbonds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fixed_points</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">bonds</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="PermutationDeprecatedMixin.num_immediate_copies_of"><a class="viewcode-back" href="../../../autoapi/permpy/deprecated/permdeprecated/index.html#permpy.deprecated.permdeprecated.PermutationDeprecatedMixin.num_immediate_copies_of">[docs]</a>    <span class="nd">@deprecated</span>
+    <span class="k">def</span> <span class="nf">num_immediate_copies_of</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_contiguous_copies</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PermutationDeprecatedMixin.threepats"><a class="viewcode-back" href="../../../autoapi/permpy/deprecated/permdeprecated/index.html#permpy.deprecated.permdeprecated.PermutationDeprecatedMixin.threepats">[docs]</a>    <span class="nd">@deprecated</span>
+    <span class="k">def</span> <span class="nf">threepats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="p">):</span> <span class="n">count</span> <span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern_counts</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span></div>
+
+<div class="viewcode-block" id="PermutationDeprecatedMixin.fourpats"><a class="viewcode-back" href="../../../autoapi/permpy/deprecated/permdeprecated/index.html#permpy.deprecated.permdeprecated.PermutationDeprecatedMixin.fourpats">[docs]</a>    <span class="nd">@deprecated</span>
+    <span class="k">def</span> <span class="nf">fourpats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="p">):</span> <span class="n">count</span> <span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern_counts</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span></div>
+
+<div class="viewcode-block" id="PermutationDeprecatedMixin.ind2perm"><a class="viewcode-back" href="../../../autoapi/permpy/deprecated/permdeprecated/index.html#permpy.deprecated.permdeprecated.PermutationDeprecatedMixin.ind2perm">[docs]</a>    <span class="nd">@deprecated</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">ind2perm</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">ind_to_perm</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PermutationDeprecatedMixin.perm2ind"><a class="viewcode-back" href="../../../autoapi/permpy/deprecated/permdeprecated/index.html#permpy.deprecated.permdeprecated.PermutationDeprecatedMixin.perm2ind">[docs]</a>    <span class="nd">@deprecated</span>
+    <span class="k">def</span> <span class="nf">perm2ind</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">perm_to_ind</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="PermutationDeprecatedMixin.ind_to_perm"><a class="viewcode-back" href="../../../autoapi/permpy/deprecated/permdeprecated/index.html#permpy.deprecated.permdeprecated.PermutationDeprecatedMixin.ind_to_perm">[docs]</a>    <span class="nd">@deprecated</span>
+    <span class="k">def</span> <span class="nf">ind_to_perm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">perm_to_ind</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="PermutationDeprecatedMixin.listall"><a class="viewcode-back" href="../../../autoapi/permpy/deprecated/permdeprecated/index.html#permpy.deprecated.permdeprecated.PermutationDeprecatedMixin.listall">[docs]</a>    <span class="nd">@deprecated</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">listall</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">list_all</span><span class="p">(</span><span class="n">n</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PermutationDeprecatedMixin.longestrun"><a class="viewcode-back" href="../../../autoapi/permpy/deprecated/permdeprecated/index.html#permpy.deprecated.permdeprecated.PermutationDeprecatedMixin.longestrun">[docs]</a>    <span class="nd">@deprecated</span>
+    <span class="k">def</span> <span class="nf">longestrun</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">len_max_run</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="PermutationDeprecatedMixin.longestrunA"><a class="viewcode-back" href="../../../autoapi/permpy/deprecated/permdeprecated/index.html#permpy.deprecated.permdeprecated.PermutationDeprecatedMixin.longestrunA">[docs]</a>    <span class="nd">@deprecated</span>
+    <span class="k">def</span> <span class="nf">longestrunA</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_ascending_run</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="PermutationDeprecatedMixin.longestrunD"><a class="viewcode-back" href="../../../autoapi/permpy/deprecated/permdeprecated/index.html#permpy.deprecated.permdeprecated.PermutationDeprecatedMixin.longestrunD">[docs]</a>    <span class="nd">@deprecated</span>
+    <span class="k">def</span> <span class="nf">longestrunD</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_descending_run</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="PermutationDeprecatedMixin.ltrmax"><a class="viewcode-back" href="../../../autoapi/permpy/deprecated/permdeprecated/index.html#permpy.deprecated.permdeprecated.PermutationDeprecatedMixin.ltrmax">[docs]</a>    <span class="nd">@deprecated</span>
+    <span class="k">def</span> <span class="nf">ltrmax</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ltr_max</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="PermutationDeprecatedMixin.ltrmin"><a class="viewcode-back" href="../../../autoapi/permpy/deprecated/permdeprecated/index.html#permpy.deprecated.permdeprecated.PermutationDeprecatedMixin.ltrmin">[docs]</a>    <span class="nd">@deprecated</span>
+    <span class="k">def</span> <span class="nf">ltrmin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ltr_min</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="PermutationDeprecatedMixin.rtlmax"><a class="viewcode-back" href="../../../autoapi/permpy/deprecated/permdeprecated/index.html#permpy.deprecated.permdeprecated.PermutationDeprecatedMixin.rtlmax">[docs]</a>    <span class="nd">@deprecated</span>
+    <span class="k">def</span> <span class="nf">rtlmax</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rtl_max</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="PermutationDeprecatedMixin.rtlmin"><a class="viewcode-back" href="../../../autoapi/permpy/deprecated/permdeprecated/index.html#permpy.deprecated.permdeprecated.PermutationDeprecatedMixin.rtlmin">[docs]</a>    <span class="nd">@deprecated</span>
+    <span class="k">def</span> <span class="nf">rtlmin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rtl_min</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="PermutationDeprecatedMixin.num_ltrmin"><a class="viewcode-back" href="../../../autoapi/permpy/deprecated/permdeprecated/index.html#permpy.deprecated.permdeprecated.PermutationDeprecatedMixin.num_ltrmin">[docs]</a>    <span class="nd">@deprecated</span>
+    <span class="k">def</span> <span class="nf">num_ltrmin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_ltr_min</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="PermutationDeprecatedMixin.majorindex"><a class="viewcode-back" href="../../../autoapi/permpy/deprecated/permdeprecated/index.html#permpy.deprecated.permdeprecated.PermutationDeprecatedMixin.majorindex">[docs]</a>    <span class="nd">@deprecated</span>
+    <span class="k">def</span> <span class="nf">majorindex</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">major_index</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="PermutationDeprecatedMixin.min_gapsize"><a class="viewcode-back" href="../../../autoapi/permpy/deprecated/permdeprecated/index.html#permpy.deprecated.permdeprecated.PermutationDeprecatedMixin.min_gapsize">[docs]</a>    <span class="nd">@deprecated</span>
+    <span class="k">def</span> <span class="nf">min_gapsize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">breadth</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="PermutationDeprecatedMixin.occurrences"><a class="viewcode-back" href="../../../autoapi/permpy/deprecated/permdeprecated/index.html#permpy.deprecated.permdeprecated.PermutationDeprecatedMixin.occurrences">[docs]</a>    <span class="nd">@deprecated</span>
+    <span class="k">def</span> <span class="nf">occurrences</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copies</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PermutationDeprecatedMixin.num_cycles"><a class="viewcode-back" href="../../../autoapi/permpy/deprecated/permdeprecated/index.html#permpy.deprecated.permdeprecated.PermutationDeprecatedMixin.num_cycles">[docs]</a>    <span class="nd">@deprecated</span>
+    <span class="k">def</span> <span class="nf">num_cycles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cycle_decomp</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="PermutationDeprecatedMixin.othercycles"><a class="viewcode-back" href="../../../autoapi/permpy/deprecated/permdeprecated/index.html#permpy.deprecated.permdeprecated.PermutationDeprecatedMixin.othercycles">[docs]</a>    <span class="nd">@deprecated</span>
+    <span class="k">def</span> <span class="nf">othercycles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Builds a permutation induced by the black and gray edges separately,</span>
+<span class="sd">        and counts the number of cycles in their product.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__len__</span><span class="p">()</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
+        <span class="n">grayperm</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">+</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="n">blackperm</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">ind</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">blackperm</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">q</span><span class="p">[</span><span class="n">ind</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">newperm</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="n">blackperm</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">j</span> <span class="o">=</span> <span class="n">grayperm</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+            <span class="n">newperm</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Permutation</span><span class="p">(</span><span class="n">newperm</span><span class="p">)</span><span class="o">.</span><span class="n">numcycles</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="PermutationDeprecatedMixin.sumcycles"><a class="viewcode-back" href="../../../autoapi/permpy/deprecated/permdeprecated/index.html#permpy.deprecated.permdeprecated.PermutationDeprecatedMixin.sumcycles">[docs]</a>    <span class="nd">@deprecated</span>
+    <span class="k">def</span> <span class="nf">sumcycles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">othercycles</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">christiecycles</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="PermutationDeprecatedMixin.maxcycles"><a class="viewcode-back" href="../../../autoapi/permpy/deprecated/permdeprecated/index.html#permpy.deprecated.permdeprecated.PermutationDeprecatedMixin.maxcycles">[docs]</a>    <span class="nd">@deprecated</span>
+    <span class="k">def</span> <span class="nf">maxcycles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">othercycles</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">christiecycles</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="PermutationDeprecatedMixin.peak_list"><a class="viewcode-back" href="../../../autoapi/permpy/deprecated/permdeprecated/index.html#permpy.deprecated.permdeprecated.PermutationDeprecatedMixin.peak_list">[docs]</a>    <span class="nd">@deprecated</span>
+    <span class="k">def</span> <span class="nf">peak_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">peaks</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="PermutationDeprecatedMixin.valley_list"><a class="viewcode-back" href="../../../autoapi/permpy/deprecated/permdeprecated/index.html#permpy.deprecated.permdeprecated.PermutationDeprecatedMixin.valley_list">[docs]</a>    <span class="nd">@deprecated</span>
+    <span class="k">def</span> <span class="nf">valley_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">peaks</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="PermutationDeprecatedMixin.plentiful"><a class="viewcode-back" href="../../../autoapi/permpy/deprecated/permdeprecated/index.html#permpy.deprecated.permdeprecated.PermutationDeprecatedMixin.plentiful">[docs]</a>    <span class="nd">@deprecated</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">plentiful</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">gap</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the gap-plentiful permutation of minimal(?) length.&quot;&quot;&quot;</span>
+        <span class="c1"># if gap == 6:</span>
+        <span class="c1">#     return Permutation([5,10,15,2,7,12,17,4,9,14,1,6,11,16,3,8,13])</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">gap</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">d</span> <span class="o">%</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">firsts</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">d</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">d</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">firsts</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">d</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">d</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+
+        <span class="k">def</span> <span class="nf">segment</span><span class="p">(</span><span class="n">first</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">first</span> <span class="o">+</span> <span class="p">(</span><span class="n">d</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">d</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">d</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+
+        <span class="n">segments</span> <span class="o">=</span> <span class="p">[</span><span class="n">segment</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">firsts</span><span class="p">]</span>
+        <span class="n">entries</span> <span class="o">=</span> <span class="p">[</span><span class="n">val</span> <span class="k">for</span> <span class="n">segment</span> <span class="ow">in</span> <span class="n">segments</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">segment</span><span class="p">]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">entries</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">entries</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">entries</span><span class="p">)</span>
+            <span class="n">entries</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">return</span> <span class="n">Permutation</span><span class="p">(</span><span class="n">entries</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PermutationDeprecatedMixin.all_extensions"><a class="viewcode-back" href="../../../autoapi/permpy/deprecated/permdeprecated/index.html#permpy.deprecated.permdeprecated.PermutationDeprecatedMixin.all_extensions">[docs]</a>    <span class="nd">@deprecated</span>
+    <span class="k">def</span> <span class="nf">all_extensions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">covered_by</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="PermutationDeprecatedMixin.all_extensions_track_index"><a class="viewcode-back" href="../../../autoapi/permpy/deprecated/permdeprecated/index.html#permpy.deprecated.permdeprecated.PermutationDeprecatedMixin.all_extensions_track_index">[docs]</a>    <span class="nd">@deprecated</span>
+    <span class="k">def</span> <span class="nf">all_extensions_track_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">track_index</span><span class="p">):</span>
+        <span class="n">L</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="c1"># insert (i-0.5) after entry j (i.e., first when j=0)</span>
+                <span class="n">l</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+                <span class="n">l</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">track_index</span><span class="p">:</span>
+                    <span class="n">L</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">Permutation</span><span class="p">(</span><span class="n">l</span><span class="p">),</span> <span class="n">track_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">L</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">Permutation</span><span class="p">(</span><span class="n">l</span><span class="p">),</span> <span class="n">track_index</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">L</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

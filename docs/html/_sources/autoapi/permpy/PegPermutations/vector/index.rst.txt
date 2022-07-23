@@ -1,0 +1,40 @@
+:py:mod:`permpy.PegPermutations.vector`
+=======================================
+
+.. py:module:: permpy.PegPermutations.vector
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   permpy.PegPermutations.vector.Vector
+
+
+
+
+.. py:class:: Vector
+
+   Bases: :py:obj:`tuple`
+
+   Built-in immutable sequence.
+
+   If no argument is given, the constructor returns an empty tuple.
+   If iterable is specified the tuple is initialized from iterable's items.
+
+   If the argument is a tuple, the return value is the same object.
+
+   .. py:method:: meet(self, other)
+
+
+   .. py:method:: contained_in(self, other)
+
+
+   .. py:method:: norm(self)
+
+
+

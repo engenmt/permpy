@@ -1,0 +1,81 @@
+:py:mod:`permpy.PegPermutations.pegpermset`
+===========================================
+
+.. py:module:: permpy.PegPermutations.pegpermset
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   permpy.PegPermutations.pegpermset.PegPermSet
+
+
+
+
+.. py:class:: PegPermSet(cls, s=[])
+
+   Bases: :py:obj:`permpy.permset.PermSet`
+
+   Represents a set of permutations, and allows statistics to be computed
+   across the set.
+
+   .. py:method:: sortable_by_block_transposition(d)
+      :staticmethod:
+
+
+   .. py:method:: sortable_by_prefix_block_transposition(d)
+      :staticmethod:
+
+
+   .. py:method:: flip_signs(s)
+      :staticmethod:
+
+
+   .. py:method:: sortable_by_reversal(d)
+      :staticmethod:
+
+
+   .. py:method:: sortable_by_prefix_reversal(d)
+      :staticmethod:
+
+
+   .. py:method:: sortable_by_block_interchange(d)
+      :staticmethod:
+
+
+   .. py:method:: sortable_by_cut_and_paste(d)
+      :staticmethod:
+
+
+   .. py:method:: involves_set(self, P)
+
+
+   .. py:method:: sum_gfs_no_basis(self, S, only_clean=False)
+
+
+   .. py:method:: alt_downset(self)
+
+
+   .. py:method:: compactify(self)
+
+
+   .. py:method:: cross_sections(self)
+
+
+   .. py:method:: enumerate(self, cross_sections=None)
+
+
+   .. py:method:: alt_cross_sections(self)
+
+
+   .. py:method:: alt_enumerate(self, cross_sections=None)
+
+      only works when the set is a generating set for sortables and the top layer has all the same length!!!
+
+
+

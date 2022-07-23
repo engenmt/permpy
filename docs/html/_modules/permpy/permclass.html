@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>permpy.permclass &mdash; Python  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/mystnb.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/togglebutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script>let toggleHintShow = 'Click to show';</script>
+        <script>let toggleHintHide = 'Click to hide';</script>
+        <script>let toggleOpenOnPrint = 'true';</script>
+        <script src="../../_static/togglebutton.js"></script>
+        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autoapi/index.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>permpy.permclass</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for permpy.permclass</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">factorial</span>
+
+<span class="kn">from</span> <span class="nn">.permutation</span> <span class="kn">import</span> <span class="n">Permutation</span>
+<span class="kn">from</span> <span class="nn">.permset</span> <span class="kn">import</span> <span class="n">PermSet</span>
+<span class="kn">from</span> <span class="nn">.deprecated.permclassdeprecated</span> <span class="kn">import</span> <span class="n">PermClassDeprecatedMixin</span>
+
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="ClassTooShortError"><a class="viewcode-back" href="../../autoapi/permpy/permclass/index.html#permpy.ClassTooShortError">[docs]</a><span class="k">class</span> <span class="nc">ClassTooShortError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="PermClass"><a class="viewcode-back" href="../../autoapi/permpy/permclass/index.html#permpy.PermClass">[docs]</a><span class="k">class</span> <span class="nc">PermClass</span><span class="p">(</span><span class="n">PermClassDeprecatedMixin</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A minimal Python class representing a Permutation class.</span>
+
+<span class="sd">    Notes:</span>
+<span class="sd">        Relies on the Permutation class being closed downwards, but does not assert this.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">C</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">C</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">C</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+
+<div class="viewcode-block" id="PermClass.__len__"><a class="viewcode-back" href="../../autoapi/permpy/permclass/index.html#permpy.PermClass.__len__">[docs]</a>    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PermClass.__iter__"><a class="viewcode-back" href="../../autoapi/permpy/permclass/index.html#permpy.PermClass.__iter__">[docs]</a>    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PermClass.__getitem__"><a class="viewcode-back" href="../../autoapi/permpy/permclass/index.html#permpy.PermClass.__getitem__">[docs]</a>    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ClassTooShortError</span></div>
+
+<div class="viewcode-block" id="PermClass.__add__"><a class="viewcode-back" href="../../autoapi/permpy/permclass/index.html#permpy.PermClass.__add__">[docs]</a>    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PermClass.__contains__"><a class="viewcode-back" href="../../autoapi/permpy/permclass/index.html#permpy.PermClass.__contains__">[docs]</a>    <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+        <span class="n">p_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">p_length</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_len</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">[</span><span class="n">p_length</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="PermClass.all"><a class="viewcode-back" href="../../autoapi/permpy/permclass/index.html#permpy.PermClass.all">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">all</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">max_length</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the PermClass that contains all permutations up to the given length.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; C = PermClass.all(6)</span>
+<span class="sd">            &gt;&gt;&gt; print([len(S) for S in C])</span>
+<span class="sd">            [1, 1, 2, 6, 24, 120, 720]</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">PermClass</span><span class="p">([</span><span class="n">PermSet</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">length</span><span class="p">)</span> <span class="k">for</span> <span class="n">length</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_length</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)])</span></div>
+
+<div class="viewcode-block" id="PermClass.append"><a class="viewcode-back" href="../../autoapi/permpy/permclass/index.html#permpy.PermClass.append">[docs]</a>    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">S</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_len</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">S</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PermClass.maximally_extend"><a class="viewcode-back" href="../../autoapi/permpy/permclass/index.html#permpy.PermClass.maximally_extend">[docs]</a>    <span class="k">def</span> <span class="nf">maximally_extend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">additional_length</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Extend `self` maximally.</span>
+
+<span class="sd">        Notes: Includes only those permutations whose downsets lie entirely in `self`.</span>
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; C = PermClass.all(4)</span>
+<span class="sd">            &gt;&gt;&gt; C[4].remove(Permutation(1234))</span>
+<span class="sd">            &gt;&gt;&gt; C.maximally_extend(1)</span>
+<span class="sd">            &gt;&gt;&gt; len(C[5]) # All but the 17 permutations covering 1234</span>
+<span class="sd">            103</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">additional_length</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">PermSet</span><span class="p">(</span>
+                    <span class="n">p</span>
+                    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">Permutation</span><span class="o">.</span><span class="n">gen_all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_len</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">covers</span><span class="p">()</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">max_len</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
+<div class="viewcode-block" id="PermClass.filter_by"><a class="viewcode-back" href="../../autoapi/permpy/permclass/index.html#permpy.PermClass.filter_by">[docs]</a>    <span class="k">def</span> <span class="nf">filter_by</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">property</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Modify `self` by removing those permutations that do not satisfy the `property``.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; C = PermClass.all(6)</span>
+<span class="sd">            &gt;&gt;&gt; p = Permutation(21)</span>
+<span class="sd">            &gt;&gt;&gt; C.filter_by(lambda q: p not in q)</span>
+<span class="sd">            &gt;&gt;&gt; all(len(S) == 1 for S in C)</span>
+<span class="sd">            True</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">length</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">length</span><span class="p">]):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">property</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="p">[</span><span class="n">length</span><span class="p">]</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">p</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PermClass.filtered_by"><a class="viewcode-back" href="../../autoapi/permpy/permclass/index.html#permpy.PermClass.filtered_by">[docs]</a>    <span class="k">def</span> <span class="nf">filtered_by</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">property</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a copy of `self` that has been filtered using the `property`.&quot;&quot;&quot;</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">C</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="nb">property</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">C</span></div>
+
+<div class="viewcode-block" id="PermClass.guess_basis"><a class="viewcode-back" href="../../autoapi/permpy/permclass/index.html#permpy.PermClass.guess_basis">[docs]</a>    <span class="k">def</span> <span class="nf">guess_basis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">6</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Guess a basis for the class up to &quot;max_length&quot; by iteratively</span>
+<span class="sd">        generating the class with basis elements known so far (initially the</span>
+<span class="sd">        empty set) and adding elements that should be avoided to the basis.</span>
+
+<span class="sd">        Search mode goes up to the max length in the class and prints out the</span>
+<span class="sd">        number of basis elements of each length on the way.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; p = Permutation(12)</span>
+<span class="sd">            &gt;&gt;&gt; C = PermClass.all(8)</span>
+<span class="sd">            &gt;&gt;&gt; C.filter_by(lambda q: p not in q) # Class of decreasing permutations</span>
+<span class="sd">            &gt;&gt;&gt; C.guess_basis() == PermSet(p)</span>
+<span class="sd">            True</span>
+<span class="sd">            &gt;&gt;&gt; D = C.sum_closure() # Class of layered permutations</span>
+<span class="sd">            &gt;&gt;&gt; D.guess_basis() == PermSet([Permutation(312), Permutation(231)])</span>
+<span class="sd">            True</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="p">(</span>
+            <span class="n">max_length</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_len</span>
+        <span class="p">),</span> <span class="s2">&quot;The class is not big enough to check that far!&quot;</span>
+
+        <span class="c1"># Find the first length at which perms are missing.</span>
+        <span class="k">for</span> <span class="n">length</span><span class="p">,</span> <span class="n">S</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">S</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">factorial</span><span class="p">(</span><span class="n">length</span><span class="p">):</span>
+                <span class="n">start_length</span> <span class="o">=</span> <span class="n">length</span>
+                <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># If we&#39;re here, then `self` is the class of all permutations.</span>
+            <span class="k">return</span> <span class="n">PermSet</span><span class="p">()</span>
+
+        <span class="c1"># Add missing perms of minimum length to basis.</span>
+        <span class="n">missing</span> <span class="o">=</span> <span class="n">PermSet</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">start_length</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="p">[</span><span class="n">start_length</span><span class="p">]</span>
+        <span class="n">basis</span> <span class="o">=</span> <span class="n">missing</span>
+
+        <span class="n">length</span> <span class="o">=</span> <span class="n">start_length</span>
+        <span class="n">current</span> <span class="o">=</span> <span class="n">PermSet</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">current</span> <span class="o">=</span> <span class="n">current</span><span class="o">.</span><span class="n">right_extensions</span><span class="p">(</span><span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">)</span>
+
+        <span class="c1"># Go up in length, adding missing perms at each step.</span>
+        <span class="k">while</span> <span class="n">length</span> <span class="o">&lt;</span> <span class="n">max_length</span><span class="p">:</span>
+            <span class="n">length</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">current</span> <span class="o">=</span> <span class="n">current</span><span class="o">.</span><span class="n">right_extensions</span><span class="p">(</span><span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">perm</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">current</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">perm</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">[</span><span class="n">length</span><span class="p">]:</span>
+                    <span class="n">basis</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">perm</span><span class="p">)</span>
+                    <span class="n">current</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">perm</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">basis</span></div>
+
+<div class="viewcode-block" id="PermClass.union"><a class="viewcode-back" href="../../autoapi/permpy/permclass/index.html#permpy.PermClass.union">[docs]</a>    <span class="k">def</span> <span class="nf">union</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the union of the two permutation classes.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">PermClass</span><span class="p">([</span><span class="n">S_1</span> <span class="o">+</span> <span class="n">S_2</span> <span class="k">for</span> <span class="n">S_1</span><span class="p">,</span> <span class="n">S_2</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)])</span></div>
+
+<div class="viewcode-block" id="PermClass.heatmap"><a class="viewcode-back" href="../../autoapi/permpy/permclass/index.html#permpy.PermClass.heatmap">[docs]</a>    <span class="k">def</span> <span class="nf">heatmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">permset</span> <span class="o">=</span> <span class="n">PermSet</span><span class="p">(</span>
+            <span class="nb">set</span><span class="p">()</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="p">)</span>
+        <span class="p">)</span>  <span class="c1"># Collect all perms in self into one PermSet</span>
+        <span class="n">permset</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PermClass.skew_closure"><a class="viewcode-back" href="../../autoapi/permpy/permclass/index.html#permpy.PermClass.skew_closure">[docs]</a>    <span class="k">def</span> <span class="nf">skew_closure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_len</span><span class="o">=</span><span class="mi">8</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the skew closure of `self`.</span>
+<span class="sd">        Notes:</span>
+<span class="sd">            This could be done constructively.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; p = Permutation(21)</span>
+<span class="sd">            &gt;&gt;&gt; C = PermClass.all(8)</span>
+<span class="sd">            &gt;&gt;&gt; C.filter_by(lambda q: p not in q) # Class of increasing permutations</span>
+<span class="sd">            &gt;&gt;&gt; D = C.skew_closure(max_len=7)</span>
+<span class="sd">            &gt;&gt;&gt; len(D[7]) == 64</span>
+<span class="sd">            True</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="n">max_len</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_len</span><span class="p">,</span> <span class="s2">&quot;Can&#39;t make a skew-closure of that size!&quot;</span>
+        <span class="n">L</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">length</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_len</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">new_set</span> <span class="o">=</span> <span class="n">PermSet</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">Permutation</span><span class="o">.</span><span class="n">gen_all</span><span class="p">(</span><span class="n">length</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">skew_decomposition</span><span class="p">())):</span>
+                    <span class="n">new_set</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+            <span class="n">L</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_set</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">PermClass</span><span class="p">(</span><span class="n">L</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PermClass.sum_closure"><a class="viewcode-back" href="../../autoapi/permpy/permclass/index.html#permpy.PermClass.sum_closure">[docs]</a>    <span class="k">def</span> <span class="nf">sum_closure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_len</span><span class="o">=</span><span class="mi">8</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the sum closure of `self`.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; p = Permutation(12)</span>
+<span class="sd">            &gt;&gt;&gt; C = PermClass.all(8)</span>
+<span class="sd">            &gt;&gt;&gt; C.filter_by(lambda q: p not in q) # Class of decreasing permutations</span>
+<span class="sd">            &gt;&gt;&gt; D = C.sum_closure(max_len=7)</span>
+<span class="sd">            &gt;&gt;&gt; len(D[7]) == 64</span>
+<span class="sd">            True</span>
+
+<span class="sd">        Todo:</span>
+<span class="sd">            Implement constructively.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="n">max_len</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_len</span><span class="p">,</span> <span class="s2">&quot;Can&#39;t make a sum-closure of that size!&quot;</span>
+        <span class="n">L</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">length</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_len</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">new_set</span> <span class="o">=</span> <span class="n">PermSet</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">Permutation</span><span class="o">.</span><span class="n">gen_all</span><span class="p">(</span><span class="n">length</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">sum_decomposition</span><span class="p">())):</span>
+                    <span class="n">new_set</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+            <span class="n">L</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_set</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">PermClass</span><span class="p">(</span><span class="n">L</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
