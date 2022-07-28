@@ -18,7 +18,9 @@ class PermClass(PermClassDeprecatedMixin):
     """A minimal Python class representing a Permutation class.
 
     Notes:
-        Relies on the Permutation class being closed downwards, but does not assert this.
+        This class assumes the Permutation class is closed downwards but
+            does not assert this fact.
+
     """
 
     def __init__(self, C):
@@ -48,14 +50,7 @@ class PermClass(PermClassDeprecatedMixin):
 
     @classmethod
     def all(cls, max_length):
-        """Return the PermClass that contains all permutations up to the given length.
-
-        Examples:
-            >>> C = PermClass.all(6)
-            >>> print([len(S) for S in C])
-            [1, 1, 2, 6, 24, 120, 720]
-
-        """
+        """Return the PermClass containing all permutations up to the given length."""
         return PermClass([PermSet.all(length) for length in range(max_length + 1)])
 
     def append(self, S):
@@ -65,13 +60,8 @@ class PermClass(PermClassDeprecatedMixin):
     def maximally_extend(self, additional_length=1):
         """Extend `self` maximally.
 
-        Notes: Includes only those permutations whose downsets lie entirely in `self`.
-        Examples:
-            >>> C = PermClass.all(4)
-            >>> C[4].remove(Permutation(1234))
-            >>> C.maximally_extend(1)
-            >>> len(C[5]) # All but the 17 permutations covering 1234
-            103
+        Notes:
+            Includes only those permutations whose downsets lie entirely in `self`.
 
         """
         for _ in range(additional_length):
@@ -85,16 +75,7 @@ class PermClass(PermClassDeprecatedMixin):
             self.max_len += 1
 
     def filter_by(self, property):
-        """Modify `self` by removing those permutations that do not satisfy the `property``.
-
-        Examples:
-            >>> C = PermClass.all(6)
-            >>> p = Permutation(21)
-            >>> C.filter_by(lambda q: p not in q)
-            >>> all(len(S) == 1 for S in C)
-            True
-
-        """
+        """Modify `self` by removing permutations that do not satisfy the `property`."""
         for length in range(len(self)):
             for p in list(self[length]):
                 if not property(p):
@@ -113,16 +94,6 @@ class PermClass(PermClassDeprecatedMixin):
 
         Search mode goes up to the max length in the class and prints out the
         number of basis elements of each length on the way.
-
-        Examples:
-            >>> p = Permutation(12)
-            >>> C = PermClass.all(8)
-            >>> C.filter_by(lambda q: p not in q) # Class of decreasing permutations
-            >>> C.guess_basis() == PermSet(p)
-            True
-            >>> D = C.sum_closure() # Class of layered permutations
-            >>> D.guess_basis() == PermSet([Permutation(312), Permutation(231)])
-            True
 
         """
         assert (
@@ -170,16 +141,9 @@ class PermClass(PermClassDeprecatedMixin):
 
     def skew_closure(self, max_len=8):
         """Return the skew closure of `self`.
-        Notes:
-            This could be done constructively.
 
-        Examples:
-            >>> p = Permutation(21)
-            >>> C = PermClass.all(8)
-            >>> C.filter_by(lambda q: p not in q) # Class of increasing permutations
-            >>> D = C.skew_closure(max_len=7)
-            >>> len(D[7]) == 64
-            True
+        Todo:
+            Implement constructively.
 
         """
         assert max_len <= self.max_len, "Can't make a skew-closure of that size!"
@@ -195,14 +159,6 @@ class PermClass(PermClassDeprecatedMixin):
 
     def sum_closure(self, max_len=8):
         """Return the sum closure of `self`.
-
-        Examples:
-            >>> p = Permutation(12)
-            >>> C = PermClass.all(8)
-            >>> C.filter_by(lambda q: p not in q) # Class of decreasing permutations
-            >>> D = C.sum_closure(max_len=7)
-            >>> len(D[7]) == 64
-            True
 
         Todo:
             Implement constructively.

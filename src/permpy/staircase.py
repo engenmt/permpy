@@ -68,18 +68,7 @@ def gen_weak_compositions(n, k):
 
 
 def gen_interval_divisions(m, k, shift=0, reverse=False):
-    """Generate all ways of splitting the interval `[1, m]` shifted up by `shift` into `k` pieces.
-
-    Example:
-        >>> list(gen_interval_divisions(4, 2))
-        [
-            [ ()          , (0, 1, 2, 3) ],
-            [ (0,)        ,    (1, 2, 3) ],
-            [ (0, 1)      ,       (2, 3) ],
-            [ (0, 1, 2)   ,          (3,)],
-            [ (0, 1, 2, 3),            ()]
-        ]
-    """
+    """Generate all ways of splitting the interval `[1, m]` shifted up by `shift` into `k` pieces."""
     if reverse:
         direction = -1
     else:

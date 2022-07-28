@@ -41,10 +41,6 @@ class PermutationMiscMixin:
         """Return the cycle decomposition of the permutation.
         Return as a list of cycles, each of which is represented as a list.
 
-        Examples:
-                >>> Permutation(53814276).cycle_decomp()
-                [[4, 3, 0], [6], [7, 5, 1, 2]]
-
         """
         not_seen = set(self)
         cycles = []

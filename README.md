@@ -52,6 +52,12 @@ $ python -m poetry build
 $ python -m poetry publish
 ```
 
+## Test Instructions
+
+To run tests, run
+```bash
+$ python -m pytest tests/
+
 To build and install locally, run
 ```bash
 $ python -m poetry install

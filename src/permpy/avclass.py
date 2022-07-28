@@ -7,24 +7,7 @@ from .permclass import PermClass
 
 
 class AvClass(PermClass):
-    """An object representing an avoidance class.
-
-    Notes:
-        Does not contain the empty permutation.
-
-    Examples:
-        >>> B = [123]
-        >>> A = AvClass(B, max_len=4)
-        >>> for S in A:
-        ...    print(S)
-        ...
-        Set of 1 permutations
-        Set of 1 permutations
-        Set of 2 permutations
-        Set of 5 permutations
-        Set of 14 permutations
-
-    """
+    """An object representing an avoidance class."""
 
     def __init__(self, basis, max_len=8):
 

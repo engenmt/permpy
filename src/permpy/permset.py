@@ -31,14 +31,7 @@ class PermSet(set, PermSetDeprecatedMixin):
             super().__init__(s)
 
     def __add__(self, other):
-        """Return the union of the two permutation sets.
-
-        Examples:
-            >>> S = PermSet.all(3) + PermSet.all(4)
-            >>> S
-            Set of 30 permutations
-
-        """
+        """Return the union of the two permutation sets."""
         return PermSet(super().__or__(other))
 
     def __or__(self, other):
@@ -46,14 +39,7 @@ class PermSet(set, PermSetDeprecatedMixin):
         return self + other
 
     def __sub__(self, other):
-        """Return the union of the two permutation sets.
-
-        Examples:
-            >>> S = PermSet.all(3) - PermSet(Permutation(123))
-            >>> len(S)
-            5
-
-        """
+        """Return the union of the two permutation sets."""
         return PermSet(super().__sub__(other))
 
     @classmethod
@@ -63,11 +49,6 @@ class PermSet(set, PermSetDeprecatedMixin):
         Args:
             length (int): the length of the permutations
 
-        Examples:
-            >>> p = Permutation(12); q = Permutation(21)
-            >>> PermSet.all(2) == PermSet([p, q])
-            True
-
         """
         return PermSet(Permutation.gen_all(length))
 
@@ -76,14 +57,7 @@ class PermSet(set, PermSetDeprecatedMixin):
         return self + other
 
     def get_random(self):
-        """Return a random element from the set.
-
-        Examples:
-            >>> p = PermSet.all(4).get_random()
-            >>> p in PermSet.all(4) and len(p) == 4
-            True
-
-        """
+        """Return a random element from the set."""
         return random.sample(self, 1)[0]
 
     def by_length(self):
@@ -99,11 +73,6 @@ class PermSet(set, PermSetDeprecatedMixin):
         Args:
             length (int): length of permutations to be returned
 
-        Examples:
-            >>> S = PermSet.all(4) + PermSet.all(3)
-            >>> S.get_length(3) == PermSet.all(3)
-            True
-
         """
         return PermSet(p for p in self if len(p) == length)
 
@@ -114,6 +83,7 @@ class PermSet(set, PermSetDeprecatedMixin):
     def minimal_elements(self):
         """Return the elements of `self` that are minimal with respect to the
         permutation pattern order.
+
         """
 
         shortest_len = min(len(p) for p in self)
@@ -241,6 +211,7 @@ class PermSet(set, PermSetDeprecatedMixin):
 
         Args:
             only_length (int:optional):  If given, restrict to the permutations of this length.
+
         """
         if not mpl_imported:
             raise NotImplementedError(
