@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>permpy.permmisc &mdash; Python  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/mystnb.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/togglebutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script>let toggleHintShow = 'Click to show';</script>
+        <script>let toggleHintHide = 'Click to hide';</script>
+        <script>let toggleOpenOnPrint = 'true';</script>
+        <script src="../../_static/togglebutton.js"></script>
+        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autoapi/index.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>permpy.permmisc</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for permpy.permmisc</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+    <span class="n">mpl_imported</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">mpl_imported</span> <span class="o">=</span> <span class="kc">False</span>
+
+
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">gcd</span>
+
+
+<div class="viewcode-block" id="lcm"><a class="viewcode-back" href="../../autoapi/permpy/permmisc/index.html#permpy.permmisc.lcm">[docs]</a><span class="k">def</span> <span class="nf">lcm</span><span class="p">(</span><span class="n">L</span><span class="p">):</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">L</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">*=</span> <span class="n">val</span> <span class="o">//</span> <span class="n">gcd</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="PermutationMiscMixin"><a class="viewcode-back" href="../../autoapi/permpy/permmisc/index.html#permpy.permmisc.PermutationMiscMixin">[docs]</a><span class="k">class</span> <span class="nc">PermutationMiscMixin</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Contains various functions for Permutation to inherit.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="PermutationMiscMixin.one_cycles"><a class="viewcode-back" href="../../autoapi/permpy/permmisc/index.html#permpy.permmisc.PermutationMiscMixin.one_cycles">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">one_cycles</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generate those permutations of length n that consist of one cycle.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">pi</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">permutations</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)):</span>
+            <span class="n">cycle</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">pi</span><span class="p">)</span>
+            <span class="n">tau</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
+            <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cycle</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="n">tau</span><span class="p">[</span><span class="n">val</span><span class="p">]</span> <span class="o">=</span> <span class="n">cycle</span><span class="p">[</span><span class="n">idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">tau</span><span class="p">[</span><span class="n">cycle</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">cycle</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">yield</span> <span class="p">(</span><span class="n">Permutation</span><span class="p">(</span><span class="n">tau</span><span class="p">),</span> <span class="n">cycle</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PermutationMiscMixin.cycle_decomp"><a class="viewcode-back" href="../../autoapi/permpy/permmisc/index.html#permpy.permmisc.PermutationMiscMixin.cycle_decomp">[docs]</a>    <span class="k">def</span> <span class="nf">cycle_decomp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the cycle decomposition of the permutation.</span>
+<span class="sd">        Return as a list of cycles, each of which is represented as a list.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">                &gt;&gt;&gt; Permutation(53814276).cycle_decomp()</span>
+<span class="sd">                [[4, 3, 0], [6], [7, 5, 1, 2]]</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">not_seen</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">cycles</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">not_seen</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">not_seen</span><span class="p">)</span>
+            <span class="n">cyc</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="p">]</span>
+            <span class="n">not_seen</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">a</span><span class="p">]</span>
+            <span class="k">while</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">not_seen</span><span class="p">:</span>
+                <span class="n">not_seen</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+                <span class="n">cyc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+                <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">b</span><span class="p">]</span>
+            <span class="n">cycles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cyc</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cycles</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="PermutationMiscMixin.cycles"><a class="viewcode-back" href="../../autoapi/permpy/permmisc/index.html#permpy.permmisc.PermutationMiscMixin.cycles">[docs]</a>    <span class="k">def</span> <span class="nf">cycles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the cycle notation representation of the permutation.&quot;&quot;&quot;</span>
+        <span class="n">cycle_list</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;( &quot;</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">x</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">cyc</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; )&quot;</span> <span class="k">for</span> <span class="n">cyc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cycle_decomp</span><span class="p">()</span>
+        <span class="p">]</span>
+        <span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cycle_list</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PermutationMiscMixin.order"><a class="viewcode-back" href="../../autoapi/permpy/permmisc/index.html#permpy.permmisc.PermutationMiscMixin.order">[docs]</a>    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the group-theotric order of self.&quot;&quot;&quot;</span>
+        <span class="n">L</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">cycle</span><span class="p">)</span> <span class="k">for</span> <span class="n">cycle</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cycle_decomp</span><span class="p">()]</span>
+        <span class="k">return</span> <span class="n">lcm</span><span class="p">(</span><span class="n">L</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PermutationMiscMixin.children"><a class="viewcode-back" href="../../autoapi/permpy/permmisc/index.html#permpy.permmisc.PermutationMiscMixin.children">[docs]</a>    <span class="k">def</span> <span class="nf">children</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return all patterns contained in self of length one less than the permutation.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">covers</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="PermutationMiscMixin.shrink_by_one"><a class="viewcode-back" href="../../autoapi/permpy/permmisc/index.html#permpy.permmisc.PermutationMiscMixin.shrink_by_one">[docs]</a>    <span class="k">def</span> <span class="nf">shrink_by_one</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return all patterns contained in self of length one less than the permutation.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">covers</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="PermutationMiscMixin.all_right_extensions"><a class="viewcode-back" href="../../autoapi/permpy/permmisc/index.html#permpy.permmisc.PermutationMiscMixin.all_right_extensions">[docs]</a>    <span class="k">def</span> <span class="nf">all_right_extensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_length</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">S</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">l</span> <span class="o">==</span> <span class="n">max_length</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">S</span>
+
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_extensions</span><span class="p">():</span>
+            <span class="n">S</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+            <span class="n">S</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">all_right_extensions</span><span class="p">(</span><span class="n">max_length</span><span class="p">,</span> <span class="n">l</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">S</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">S</span></div>
+
+<div class="viewcode-block" id="PermutationMiscMixin.sum_indecomposable_sequence"><a class="viewcode-back" href="../../autoapi/permpy/permmisc/index.html#permpy.permmisc.PermutationMiscMixin.sum_indecomposable_sequence">[docs]</a>    <span class="k">def</span> <span class="nf">sum_indecomposable_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">S</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">downset</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="nb">len</span><span class="p">([</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">S</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">==</span> <span class="n">i</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">p</span><span class="o">.</span><span class="n">sum_decomposable</span><span class="p">()])</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">max</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">S</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="p">]</span></div>
+
+    <span class="k">def</span> <span class="nf">contains_locations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Q</span><span class="p">):</span>
+        <span class="n">locs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">sublocs</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">combinations</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)),</span> <span class="nb">len</span><span class="p">(</span><span class="n">Q</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">subloc</span> <span class="ow">in</span> <span class="n">sublocs</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">Permutation</span><span class="p">([</span><span class="bp">self</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">subloc</span><span class="p">])</span> <span class="o">==</span> <span class="n">Q</span><span class="p">:</span>
+                <span class="n">locs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">subloc</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">locs</span>
+
+    <span class="k">def</span> <span class="nf">rank_val</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">([</span><span class="n">j</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span> <span class="k">if</span> <span class="bp">self</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+
+    <span class="k">def</span> <span class="nf">rtlmax_ltrmin_decomposition</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">P</span> <span class="o">=</span> <span class="n">Permutation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">num_layers</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">layers</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">P</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">num_layers</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">positions</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">P</span><span class="o">.</span><span class="n">rtlmax</span><span class="p">()</span> <span class="o">+</span> <span class="n">P</span><span class="o">.</span><span class="n">ltrmin</span><span class="p">())))</span>
+            <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">positions</span><span class="p">)</span>
+            <span class="n">P</span> <span class="o">=</span> <span class="n">Permutation</span><span class="p">([</span><span class="n">P</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">P</span><span class="p">))</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">positions</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">layers</span>
+
+<div class="viewcode-block" id="PermutationMiscMixin.contains_locations"><a class="viewcode-back" href="../../autoapi/permpy/permmisc/index.html#permpy.permmisc.PermutationMiscMixin.contains_locations">[docs]</a>    <span class="k">def</span> <span class="nf">contains_locations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Q</span><span class="p">):</span>
+        <span class="n">locs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">sublocs</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">combinations</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)),</span> <span class="nb">len</span><span class="p">(</span><span class="n">Q</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">subloc</span> <span class="ow">in</span> <span class="n">sublocs</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">Permutation</span><span class="p">([</span><span class="bp">self</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">subloc</span><span class="p">])</span> <span class="o">==</span> <span class="n">Q</span><span class="p">:</span>
+                <span class="n">locs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">subloc</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">locs</span></div>
+
+<div class="viewcode-block" id="PermutationMiscMixin.rank_val"><a class="viewcode-back" href="../../autoapi/permpy/permmisc/index.html#permpy.permmisc.PermutationMiscMixin.rank_val">[docs]</a>    <span class="k">def</span> <span class="nf">rank_val</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">([</span><span class="n">j</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span> <span class="k">if</span> <span class="bp">self</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span></div>
+
+<div class="viewcode-block" id="PermutationMiscMixin.rank_encoding"><a class="viewcode-back" href="../../autoapi/permpy/permmisc/index.html#permpy.permmisc.PermutationMiscMixin.rank_encoding">[docs]</a>    <span class="k">def</span> <span class="nf">rank_encoding</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">rank_val</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))]</span></div>
+
+<div class="viewcode-block" id="PermutationMiscMixin.rtlmax_ltrmin_decomposition"><a class="viewcode-back" href="../../autoapi/permpy/permmisc/index.html#permpy.permmisc.PermutationMiscMixin.rtlmax_ltrmin_decomposition">[docs]</a>    <span class="k">def</span> <span class="nf">rtlmax_ltrmin_decomposition</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">P</span> <span class="o">=</span> <span class="n">Permutation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">layers</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">P</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">positions</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">P</span><span class="o">.</span><span class="n">rtlmax</span><span class="p">()</span> <span class="o">+</span> <span class="n">P</span><span class="o">.</span><span class="n">ltrmin</span><span class="p">())))</span>
+            <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">positions</span><span class="p">)</span>
+            <span class="n">P</span> <span class="o">=</span> <span class="n">Permutation</span><span class="p">([</span><span class="n">P</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">P</span><span class="p">))</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">positions</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">layers</span></div>
+
+<div class="viewcode-block" id="PermutationMiscMixin.rtlmin_ltrmax_decomposition"><a class="viewcode-back" href="../../autoapi/permpy/permmisc/index.html#permpy.permmisc.PermutationMiscMixin.rtlmin_ltrmax_decomposition">[docs]</a>    <span class="k">def</span> <span class="nf">rtlmin_ltrmax_decomposition</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">P</span> <span class="o">=</span> <span class="n">Permutation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">layers</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">P</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">positions</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">P</span><span class="o">.</span><span class="n">rtlmax</span><span class="p">()</span> <span class="o">+</span> <span class="n">P</span><span class="o">.</span><span class="n">ltrmin</span><span class="p">())))</span>
+            <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">positions</span><span class="p">)</span>
+            <span class="n">P</span> <span class="o">=</span> <span class="n">Permutation</span><span class="p">([</span><span class="n">P</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">P</span><span class="p">))</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">positions</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">layers</span></div>
+
+<div class="viewcode-block" id="PermutationMiscMixin.dec_bonds"><a class="viewcode-back" href="../../autoapi/permpy/permmisc/index.html#permpy.permmisc.PermutationMiscMixin.dec_bonds">[docs]</a>    <span class="k">def</span> <span class="nf">dec_bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="PermutationMiscMixin.inc_bonds"><a class="viewcode-back" href="../../autoapi/permpy/permmisc/index.html#permpy.permmisc.PermutationMiscMixin.inc_bonds">[docs]</a>    <span class="k">def</span> <span class="nf">inc_bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="PermutationMiscMixin.contract_inc_bonds"><a class="viewcode-back" href="../../autoapi/permpy/permmisc/index.html#permpy.permmisc.PermutationMiscMixin.contract_inc_bonds">[docs]</a>    <span class="k">def</span> <span class="nf">contract_inc_bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">P</span> <span class="o">=</span> <span class="n">Permutation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">while</span> <span class="n">P</span><span class="o">.</span><span class="n">num_inc_bonds</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">P</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">P</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">P</span> <span class="o">=</span> <span class="n">Permutation</span><span class="p">(</span><span class="n">P</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">P</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:])</span>
+                    <span class="k">break</span>
+        <span class="k">return</span> <span class="n">P</span></div>
+
+<div class="viewcode-block" id="PermutationMiscMixin.contract_dec_bonds"><a class="viewcode-back" href="../../autoapi/permpy/permmisc/index.html#permpy.permmisc.PermutationMiscMixin.contract_dec_bonds">[docs]</a>    <span class="k">def</span> <span class="nf">contract_dec_bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">P</span> <span class="o">=</span> <span class="n">Permutation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">while</span> <span class="n">P</span><span class="o">.</span><span class="n">num_dec_bonds</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">P</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">P</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">P</span> <span class="o">=</span> <span class="n">Permutation</span><span class="p">(</span><span class="n">P</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">P</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:])</span>
+                    <span class="k">break</span>
+        <span class="k">return</span> <span class="n">P</span></div>
+
+<div class="viewcode-block" id="PermutationMiscMixin.contract_bonds"><a class="viewcode-back" href="../../autoapi/permpy/permmisc/index.html#permpy.permmisc.PermutationMiscMixin.contract_bonds">[docs]</a>    <span class="k">def</span> <span class="nf">contract_bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">P</span> <span class="o">=</span> <span class="n">Permutation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">while</span> <span class="n">P</span><span class="o">.</span><span class="n">num_bonds</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">P</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">P</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">P</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">P</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">P</span> <span class="o">=</span> <span class="n">Permutation</span><span class="p">(</span><span class="n">P</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">P</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:])</span>
+                    <span class="k">break</span>
+        <span class="k">return</span> <span class="n">P</span></div>
+
+<div class="viewcode-block" id="PermutationMiscMixin.plot"><a class="viewcode-back" href="../../autoapi/permpy/permmisc/index.html#permpy.permmisc.PermutationMiscMixin.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_mpl</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Draw a matplotlib plot of the permutation. Can be used for both</span>
+<span class="sd">        quick visualization, or to build a larger figure. Unrecognized</span>
+<span class="sd">        arguments are passed as options to the axes object to allow for</span>
+<span class="sd">        customization (i.e., setting a figure title, or setting labels on the</span>
+<span class="sd">        axes). Falls back to an ascii_plot if matplotlib isn&#39;t found, or if</span>
+<span class="sd">        use_mpl is set to False.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">mpl_imported</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">use_mpl</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ascii_plot</span><span class="p">()</span>
+        <span class="n">xs</span> <span class="o">=</span> <span class="p">[</span><span class="n">idx</span> <span class="o">+</span> <span class="n">Permutation</span><span class="o">.</span><span class="n">_BASE</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))]</span>
+        <span class="n">ys</span> <span class="o">=</span> <span class="p">[</span><span class="n">val</span> <span class="o">+</span> <span class="n">Permutation</span><span class="o">.</span><span class="n">_BASE</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ax</span><span class="p">:</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">)</span>
+        <span class="n">ax_settings</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;xticks&quot;</span><span class="p">:</span> <span class="n">xs</span><span class="p">,</span>
+            <span class="s2">&quot;yticks&quot;</span><span class="p">:</span> <span class="n">ys</span><span class="p">,</span>
+            <span class="s2">&quot;xticklabels&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;yticklabels&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;xlim&quot;</span><span class="p">:</span> <span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="s2">&quot;ylim&quot;</span><span class="p">:</span> <span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">ys</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">ys</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+        <span class="p">}</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="o">**</span><span class="n">ax_settings</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s2">&quot;equal&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">fname</span><span class="p">:</span>
+            <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span>
+            <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">ax</span></div>
+
+<div class="viewcode-block" id="PermutationMiscMixin._show"><a class="viewcode-back" href="../../autoapi/permpy/permmisc/index.html#permpy.permmisc.PermutationMiscMixin._show">[docs]</a>    <span class="k">def</span> <span class="nf">_show</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;linux2&quot;</span><span class="p">:</span>
+            <span class="n">opencmd</span> <span class="o">=</span> <span class="s2">&quot;gnome-open&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">opencmd</span> <span class="o">=</span> <span class="s2">&quot;open&quot;</span>
+
+        <span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="sa">r</span><span class="s2">&quot;\documentclass</span><span class="si">{standalone}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="sa">r</span><span class="s2">&quot;\usepackage</span><span class="si">{tikz}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="sa">r</span><span class="s2">&quot;\begin</span><span class="si">{document}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">to_tikz</span><span class="p">(),</span>
+                <span class="sa">r</span><span class="s2">&quot;\end</span><span class="si">{document}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="nb">dir</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;t_</span><span class="si">{</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">9999</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;mkdir </span><span class="si">{</span><span class="nb">dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">dir</span><span class="si">}</span><span class="s2">/t.tex&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+
+        <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="s2">&quot;pdflatex&quot;</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">&quot;-output-directory=</span><span class="si">{</span><span class="nb">dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">dir</span><span class="si">}</span><span class="s2">/t.tex&quot;</span><span class="p">,</span>
+            <span class="p">],</span>
+            <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+            <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="c1"># os.system(&#39;pdflatex -output-directory=t_&#39;+str(dname)+&#39; t_&#39;+str(dname)+&#39;/t.tex&#39;)</span>
+        <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">opencmd</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">dir</span><span class="si">}</span><span class="s2">/t.pdf&quot;</span><span class="p">],</span>
+            <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+            <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">!=</span> <span class="s2">&quot;linux2&quot;</span><span class="p">:</span>
+            <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span><span class="s2">&quot;rm&quot;</span><span class="p">,</span> <span class="s2">&quot;-r&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">dir</span><span class="si">}</span><span class="s2">/&quot;</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="PermutationMiscMixin.to_tikz"><a class="viewcode-back" href="../../autoapi/permpy/permmisc/index.html#permpy.permmisc.PermutationMiscMixin.to_tikz">[docs]</a>    <span class="k">def</span> <span class="nf">to_tikz</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a pure-tikz simple plot of `self`.&quot;&quot;&quot;</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="sa">r</span><span class="s2">&quot;\begin</span><span class="si">{tikzpicture}</span><span class="s2">[scale=.3,baseline=(current bounding box.center)]&quot;</span><span class="p">,</span>
+                <span class="sa">rf</span><span class="s2">&quot;\draw[ultra thick] (1,0) -- (</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">,0);&quot;</span><span class="p">,</span>
+                <span class="sa">rf</span><span class="s2">&quot;\draw[ultra thick] (0,1) -- (0,</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">);&quot;</span><span class="p">,</span>
+                <span class="sa">r</span><span class="s2">&quot;\foreach \x in {1,...,&quot;</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="sa">r</span><span class="s2">&quot;} {&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="sa">r</span><span class="s2">&quot;\draw[thick] (\x,.09)--(\x,-.5);&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="sa">r</span><span class="s2">&quot;\draw[thick] (.09,\x)--(-.5,\x);&quot;</span><span class="p">,</span>
+                <span class="sa">r</span><span class="s2">&quot;}&quot;</span><span class="p">,</span>
+            <span class="p">]</span>
+            <span class="o">+</span> <span class="p">[</span>
+                <span class="sa">rf</span><span class="s2">&quot;\draw[fill=black] (</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">e</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">) circle (5pt);&quot;</span>
+                <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="n">s</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="sa">r</span><span class="s2">&quot;\end</span><span class="si">{tikzpicture}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="n">s</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

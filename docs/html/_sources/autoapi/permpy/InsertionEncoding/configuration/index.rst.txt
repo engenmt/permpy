@@ -1,0 +1,72 @@
+:py:mod:`permpy.InsertionEncoding.configuration`
+================================================
+
+.. py:module:: permpy.InsertionEncoding.configuration
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   permpy.InsertionEncoding.configuration.Configuration
+
+
+
+
+.. py:class:: Configuration(t, basis=set(), childtype='?')
+
+   Bases: :py:obj:`tuple`
+
+   Built-in immutable sequence.
+
+   If no argument is given, the constructor returns an empty tuple.
+   If iterable is specified the tuple is initialized from iterable's items.
+
+   If the argument is a tuple, the return value is the same object.
+
+   .. py:attribute:: _basis
+      
+
+      
+
+   .. py:attribute:: _type
+      :annotation: = 
+
+      
+
+   .. py:attribute:: _children_computed
+      :annotation: = False
+
+      
+
+   .. py:attribute:: _children
+      
+
+      
+
+   .. py:method:: num_slots(self)
+
+
+   .. py:method:: slot_locs(self)
+
+
+   .. py:method:: children(self)
+
+
+   .. py:method:: is_permutation(self)
+
+
+   .. py:method:: to_perm(self)
+
+
+   .. py:method:: has_valid_filling(self, C=[])
+
+
+   .. py:method:: valid_children(self, C=[])
+
+
+

@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>permpy.geometricgridclass &mdash; Python  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/mystnb.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/togglebutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script>let toggleHintShow = 'Click to show';</script>
+        <script>let toggleHintHide = 'Click to hide';</script>
+        <script>let toggleOpenOnPrint = 'true';</script>
+        <script src="../../_static/togglebutton.js"></script>
+        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autoapi/index.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>permpy.geometricgridclass</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for permpy.geometricgridclass</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">combinations</span>
+
+<span class="kn">from</span> <span class="nn">.permutation</span> <span class="kn">import</span> <span class="n">Permutation</span>
+<span class="kn">from</span> <span class="nn">.permset</span> <span class="kn">import</span> <span class="n">PermSet</span>
+<span class="kn">from</span> <span class="nn">.permclass</span> <span class="kn">import</span> <span class="n">PermClass</span>
+
+
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="BadMatrixException"><a class="viewcode-back" href="../../autoapi/permpy/geometricgridclass/index.html#permpy.geometricgridclass.BadMatrixException">[docs]</a><span class="k">class</span> <span class="nc">BadMatrixException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="BadWordException"><a class="viewcode-back" href="../../autoapi/permpy/geometricgridclass/index.html#permpy.geometricgridclass.BadWordException">[docs]</a><span class="k">class</span> <span class="nc">BadWordException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="GeometricGridClass"><a class="viewcode-back" href="../../autoapi/permpy/index.html#permpy.geometricgridclass.GeometricGridClass">[docs]</a><span class="k">class</span> <span class="nc">GeometricGridClass</span><span class="p">(</span><span class="n">PermClass</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">generate</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            M (list of lists of ints): A 2D matrix to build the GGC from.</span>
+<span class="sd">                Goes from left-to-right, bottom-to-top. That is, M[0] is the </span>
+<span class="sd">                leftmost column, and M[0][0] is the lowest entry of this column.</span>
+<span class="sd">                Entries should be -1, 0, +1, or 2. A 0 represents an empty cell,</span>
+<span class="sd">                and a 2 represents a cell that has at most one point in it.</span>
+<span class="sd">                Otherwise, a +1 represents an increasing cell, and </span>
+<span class="sd">                a -1 represents a decreasing cell.</span>
+<span class="sd">            col (list of ints, optional): A vector representing the orientation</span>
+<span class="sd">                of the columns. Entries should be +1 or -1. If col[i] is +1,</span>
+<span class="sd">                then the i&#39;th column is oriented from left to right, and </span>
+<span class="sd">                if col[i] is -1, then it is oriented from right to left.</span>
+<span class="sd">            row (list of ints, optional): A vector representing the orientation</span>
+<span class="sd">                of the rows. Entries should be +1 or -1. If row[j] is +1,</span>
+<span class="sd">                then the j&#39;th row is oriented from bottom to top, and </span>
+<span class="sd">                if row[j] is -1, then it is oriented from top to bottom.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; M = [[1, 0, 0], \</span>
+<span class="sd">                     [1, 1, 0], \</span>
+<span class="sd">                     [0, 1, 1]] # Partial increasing staircase.</span>
+<span class="sd">            &gt;&gt;&gt; G = GeometricGridClass(M) # This will the same as Av(321) until length 9.</span>
+<span class="sd">            &gt;&gt;&gt; print([len(S) for S in G])</span>
+<span class="sd">            [1, 1, 2, 5, 14, 42, 132, 429, 1430]</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">M</span> <span class="o">=</span> <span class="n">M</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">col</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">row</span> <span class="o">=</span> <span class="n">col</span><span class="p">,</span> <span class="n">row</span>
+
+        <span class="k">if</span> <span class="n">col</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">row</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">compute_signs</span><span class="p">()</span>
+
+        <span class="c1"># Our alphabet consists of Cartesian coordinates of cells</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alphabet</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="n">col_idx</span><span class="p">,</span> <span class="n">row_idx</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">col_idx</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">row_idx</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">col</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">val</span>
+        <span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">dots</span> <span class="o">=</span> <span class="p">[(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">alphabet</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="n">y</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">]</span>
+
+        <span class="c1"># We will only use words that do _not_ contain these as factors.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">commuting_pairs</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">pair</span>
+            <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">combinations</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alphabet</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>  <span class="c1"># Each pair of letters</span>
+            <span class="k">if</span> <span class="nb">all</span><span class="p">(</span>
+                <span class="n">coord_1</span> <span class="o">!=</span> <span class="n">coord_2</span> <span class="k">for</span> <span class="n">coord_1</span><span class="p">,</span> <span class="n">coord_2</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">pair</span><span class="p">)</span>
+            <span class="p">)</span>  <span class="c1"># where all coordinates differ</span>
+        <span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">generate</span><span class="p">:</span>
+            <span class="n">L</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_perms</span><span class="p">(</span><span class="n">max_length</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">L</span> <span class="o">=</span> <span class="p">[</span><span class="n">PermSet</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_length</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+
+        <span class="n">PermClass</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">L</span><span class="p">)</span>
+
+<div class="viewcode-block" id="GeometricGridClass.find_word_for_perm"><a class="viewcode-back" href="../../autoapi/permpy/index.html#permpy.geometricgridclass.GeometricGridClass.find_word_for_perm">[docs]</a>    <span class="k">def</span> <span class="nf">find_word_for_perm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+
+        <span class="n">all_words</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alphabet_indices</span><span class="p">,</span> <span class="n">repeat</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">all_words</span><span class="p">:</span>
+            <span class="n">perm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dig_word_to_perm</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">perm</span> <span class="o">==</span> <span class="n">p</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">word</span></div>
+
+<div class="viewcode-block" id="GeometricGridClass.compute_signs"><a class="viewcode-back" href="../../autoapi/permpy/index.html#permpy.geometricgridclass.GeometricGridClass.compute_signs">[docs]</a>    <span class="k">def</span> <span class="nf">compute_signs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Meaning col = [1, -1, 1] and row = [1, -1].</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; M = [[ 1, 0], [ 0, 1], [ 1,-1]]</span>
+<span class="sd">            &gt;&gt;&gt; G = GeometricGridClass(M, generate=False)</span>
+<span class="sd">            &gt;&gt;&gt; G.col</span>
+<span class="sd">            [1, -1, 1]</span>
+<span class="sd">            &gt;&gt;&gt; G.row</span>
+<span class="sd">            [1, -1]</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">col_signs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">col</span> <span class="ow">or</span> <span class="p">[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">))]</span>
+        <span class="n">row_signs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">row</span> <span class="ow">or</span> <span class="p">[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">[</span><span class="mi">0</span><span class="p">]))]</span>
+
+        <span class="n">unsigned_vals</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">2</span><span class="p">,</span>
+        <span class="p">}</span>  <span class="c1"># These represent empty cells and point-cells respectively</span>
+
+        <span class="k">for</span> <span class="n">col_idx</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">val</span> <span class="ow">in</span> <span class="n">unsigned_vals</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">col</span><span class="p">):</span>
+                <span class="c1"># This column has no entries that need a sign, so we set it arbitrarily.</span>
+                <span class="n">col_signs</span><span class="p">[</span><span class="n">col_idx</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="k">for</span> <span class="n">row_idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">row_signs</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">col</span><span class="p">[</span><span class="n">row_idx</span><span class="p">]</span> <span class="ow">in</span> <span class="n">unsigned_vals</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">):</span>
+                <span class="c1"># This row has no entries that need a sign, so we set it arbitrarily.</span>
+                <span class="n">row_signs</span><span class="p">[</span><span class="n">row_idx</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="k">while</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">all</span><span class="p">(</span><span class="n">col_signs</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="n">row_signs</span><span class="p">)):</span>
+            <span class="c1"># This loop will continue until all col_signs and row_signs are non-zero</span>
+            <span class="c1"># It will make at most one &quot;arbitrary&quot; column assignment per loop.</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Starting loop again.&quot;</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">self.M = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">col_signs = </span><span class="si">{</span><span class="n">col_signs</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">row_signs = </span><span class="si">{</span><span class="n">row_signs</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">choice_made</span> <span class="o">=</span> <span class="kc">False</span>
+
+            <span class="k">for</span> <span class="n">col_idx</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">col_signs</span><span class="p">[</span><span class="n">col_idx</span><span class="p">]:</span>
+                    <span class="c1"># This column has a sign already.</span>
+                    <span class="k">continue</span>
+
+                <span class="k">for</span> <span class="n">row_idx</span><span class="p">,</span> <span class="p">(</span><span class="n">row_sign</span><span class="p">,</span> <span class="n">entry</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">row_signs</span><span class="p">,</span> <span class="n">col</span><span class="p">)):</span>
+                    <span class="k">if</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">unsigned_vals</span><span class="p">:</span>
+                        <span class="k">continue</span>
+
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">row_sign</span><span class="p">:</span>
+                        <span class="k">continue</span>
+
+                    <span class="c1"># If we&#39;re here, then:</span>
+                    <span class="c1"># - there&#39;s a signed entry in entry = self.M[col_idx][row_idx]</span>
+                    <span class="c1"># - row_sign = row_signs[row_idx] is defined.</span>
+                    <span class="n">col_signs</span><span class="p">[</span><span class="n">col_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">entry</span> <span class="o">*</span> <span class="n">row_sign</span>
+                    <span class="k">break</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># If we&#39;re here, then col_signs[col_idx] is undefined.</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">choice_made</span><span class="p">:</span>
+                        <span class="c1"># Make our arbitrary choice.</span>
+                        <span class="n">col_signs</span><span class="p">[</span><span class="n">col_idx</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                        <span class="n">choice_made</span> <span class="o">=</span> <span class="kc">True</span>
+
+                <span class="k">if</span> <span class="n">col_signs</span><span class="p">[</span><span class="n">col_idx</span><span class="p">]:</span>
+                    <span class="k">for</span> <span class="n">row_idx</span><span class="p">,</span> <span class="n">entry</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">col</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">unsigned_vals</span><span class="p">:</span>
+                            <span class="k">continue</span>
+                        <span class="k">if</span> <span class="n">row_signs</span><span class="p">[</span><span class="n">row_idx</span><span class="p">]:</span>
+                            <span class="k">assert</span> <span class="p">(</span>
+                                <span class="n">row_signs</span><span class="p">[</span><span class="n">row_idx</span><span class="p">]</span> <span class="o">==</span> <span class="n">entry</span> <span class="o">*</span> <span class="n">col_signs</span><span class="p">[</span><span class="n">col_idx</span><span class="p">]</span>
+                            <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;The signs are all messed up now: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">col_signs</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">row_signs</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">col_idx</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">row_idx</span><span class="si">}</span><span class="s2">)&quot;</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">row_signs</span><span class="p">[</span><span class="n">row_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">entry</span> <span class="o">*</span> <span class="n">col_signs</span><span class="p">[</span><span class="n">col_idx</span><span class="p">]</span>
+
+        <span class="c1"># This verifies that everything is consistent.</span>
+        <span class="k">for</span> <span class="n">col_idx</span><span class="p">,</span> <span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">col_sign</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">,</span> <span class="n">col_signs</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">row_idx</span><span class="p">,</span> <span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">row_sign</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">row_signs</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="n">entry</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">unsigned_vals</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">entry</span> <span class="o">!=</span> <span class="n">col_sign</span> <span class="o">*</span> <span class="n">row_sign</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="n">BadMatrixException</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;Signs can&#39;t be computed for this matrix: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="si">}</span><span class="s2">&quot;</span>
+                        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">col</span> <span class="o">=</span> <span class="n">col_signs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">row</span> <span class="o">=</span> <span class="n">row_signs</span></div>
+
+<div class="viewcode-block" id="GeometricGridClass.build_perms"><a class="viewcode-back" href="../../autoapi/permpy/index.html#permpy.geometricgridclass.GeometricGridClass.build_perms">[docs]</a>    <span class="k">def</span> <span class="nf">build_perms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_length</span><span class="p">):</span>
+
+        <span class="n">L</span> <span class="o">=</span> <span class="p">[</span><span class="n">PermSet</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">length</span><span class="p">)</span> <span class="k">for</span> <span class="n">length</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">)]</span>
+        <span class="c1"># Include all the length-0 and length-1 perms.</span>
+
+        <span class="k">for</span> <span class="n">length</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">max_length</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="c1"># Try all words of length &#39;length&#39; with alphabet equal to the cell alphabet of M.</span>
+            <span class="n">this_length</span> <span class="o">=</span> <span class="n">PermSet</span><span class="p">()</span>
+
+            <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alphabet</span><span class="p">,</span> <span class="n">repeat</span><span class="o">=</span><span class="n">length</span><span class="p">):</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dig_word_to_perm</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">p</span><span class="p">:</span>
+                    <span class="n">this_length</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+            <span class="n">L</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">this_length</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">L</span></div>
+
+<div class="viewcode-block" id="GeometricGridClass.dig_word_to_perm"><a class="viewcode-back" href="../../autoapi/permpy/index.html#permpy.geometricgridclass.GeometricGridClass.dig_word_to_perm">[docs]</a>    <span class="k">def</span> <span class="nf">dig_word_to_perm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">word</span><span class="p">,</span> <span class="n">ignore_bad</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ignore_bad</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">letter</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dots</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">word</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">letter</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_valid_word</span><span class="p">(</span><span class="n">word</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="c1"># Let&#39;s build a permutation in the Geometric Grid Class.</span>
+        <span class="c1"># Imagine each &quot;signed&quot; cell having a line segment at 45º either</span>
+        <span class="c1"># oriented up-and-to-the-right if the cell has a positive sign or</span>
+        <span class="c1"># oriented down-and-to-the-right if the cell has a negative sign with</span>
+        <span class="c1"># len(word)+1 open slots on it.</span>
+        <span class="n">points</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">word</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span>
+        <span class="k">for</span> <span class="n">position</span><span class="p">,</span> <span class="p">(</span><span class="n">letter_x</span><span class="p">,</span> <span class="n">letter_y</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">word</span><span class="p">):</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">col</span><span class="p">[</span><span class="n">letter_x</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">x_point</span> <span class="o">=</span> <span class="n">letter_x</span> <span class="o">*</span> <span class="n">height</span> <span class="o">+</span> <span class="n">position</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">x_point</span> <span class="o">=</span> <span class="p">(</span><span class="n">letter_x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">height</span> <span class="o">-</span> <span class="n">position</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">row</span><span class="p">[</span><span class="n">letter_y</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">y_point</span> <span class="o">=</span> <span class="n">letter_y</span> <span class="o">*</span> <span class="n">height</span> <span class="o">+</span> <span class="n">position</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">y_point</span> <span class="o">=</span> <span class="p">(</span><span class="n">letter_y</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">height</span> <span class="o">-</span> <span class="n">position</span>
+
+            <span class="n">points</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">x_point</span><span class="p">,</span> <span class="n">y_point</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">Permutation</span><span class="p">([</span><span class="n">y</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">points</span><span class="p">)])</span></div>
+
+<div class="viewcode-block" id="GeometricGridClass.is_valid_word"><a class="viewcode-back" href="../../autoapi/permpy/index.html#permpy.geometricgridclass.GeometricGridClass.is_valid_word">[docs]</a>    <span class="k">def</span> <span class="nf">is_valid_word</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">word</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">all</span><span class="p">(</span>
+            <span class="n">word</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">commuting_pairs</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">word</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,90 @@
+:py:mod:`permpy.InsertionEncoding.insertionscheme`
+==================================================
+
+.. py:module:: permpy.InsertionEncoding.insertionscheme
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   permpy.InsertionEncoding.insertionscheme.InsertionScheme
+
+
+
+
+.. py:class:: InsertionScheme(basis, quiet=False)
+
+   .. py:attribute:: _tree
+      
+
+      
+
+   .. py:attribute:: _basis
+      :annotation: = []
+
+      
+
+   .. py:attribute:: _max_basis_length
+      :annotation: = 0
+
+      
+
+   .. py:attribute:: _automaton
+      
+
+      
+
+   .. py:attribute:: _root
+      
+
+      
+
+   .. py:attribute:: _configs_checked
+      
+
+      
+
+   .. py:attribute:: _automaton_ready
+      :annotation: = False
+
+      
+
+   .. py:attribute:: _has_inssch
+      :annotation: = False
+
+      
+
+   .. py:attribute:: _reductions
+      
+
+      
+
+   .. py:attribute:: _class
+      :annotation: = []
+
+      
+
+   .. py:method:: has_inssch(self)
+
+
+   .. py:method:: follow_reduce(self, config)
+
+
+   .. py:method:: build_rules(self, verbose=True, make_class=False, class_bound=100)
+
+
+   .. py:method:: standardize_perms(self)
+
+
+   .. py:method:: check_isomorphism(self, c1, c2, depth, make_class=False, class_bound=100)
+
+
+   .. py:method:: gf(self, verbose=False, show_series=False)
+
+
+

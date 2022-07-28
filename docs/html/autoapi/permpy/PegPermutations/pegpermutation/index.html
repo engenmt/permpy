@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>permpy.PegPermutations.pegpermutation &mdash; Python  documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/mystnb.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/togglebutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script>let toggleHintShow = 'Click to show';</script>
+        <script>let toggleHintHide = 'Click to hide';</script>
+        <script>let toggleOpenOnPrint = 'true';</script>
+        <script src="../../../../_static/togglebutton.js"></script>
+        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="permpy.PegPermutations.vector" href="../vector/index.html" />
+    <link rel="prev" title="permpy.PegPermutations.pegpermset" href="../pegpermset/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../changelog.html">Changelog</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy</span></code></a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../../index.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../../InsertionEncoding/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy.InsertionEncoding</span></code></a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy.PegPermutations</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../RestrictedContainer/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy.RestrictedContainer</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../deprecated/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy.deprecated</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../index.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../index.html#package-contents">Package Contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">API Reference</a> &raquo;</li>
+          <li><a href="../../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy</span></code></a> &raquo;</li>
+          <li><a href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy.PegPermutations</span></code></a> &raquo;</li>
+      <li><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy.PegPermutations.pegpermutation</span></code></li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/autoapi/permpy/PegPermutations/pegpermutation/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-permpy.PegPermutations.pegpermutation">
+<span id="permpy-pegpermutations-pegpermutation"></span><h1><a class="reference internal" href="#module-permpy.PegPermutations.pegpermutation" title="permpy.PegPermutations.pegpermutation"><code class="xref py py-mod docutils literal notranslate"><span class="pre">permpy.PegPermutations.pegpermutation</span></code></a><a class="headerlink" href="#module-permpy.PegPermutations.pegpermutation" title="Permalink to this heading"></a></h1>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Permalink to this heading"></a></h2>
+<section id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#permpy.PegPermutations.pegpermutation.PegPermutation" title="permpy.PegPermutations.pegpermutation.PegPermutation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PegPermutation</span></code></a></p></td>
+<td><p>Class for representing permutations as immutable 0-indexed tuples.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Permalink to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#permpy.PegPermutations.pegpermutation.powerset" title="permpy.PegPermutations.pegpermutation.powerset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">powerset</span></code></a>(iterable)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt class="sig sig-object py" id="permpy.PegPermutations.pegpermutation.powerset">
+<span class="sig-prename descclassname"><span class="pre">permpy.PegPermutations.pegpermutation.</span></span><span class="sig-name descname"><span class="pre">powerset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterable</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#permpy.PegPermutations.pegpermutation.powerset" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="permpy.PegPermutations.pegpermutation.PegPermutation">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">permpy.PegPermutations.pegpermutation.</span></span><span class="sig-name descname"><span class="pre">PegPermutation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#permpy.PegPermutations.pegpermutation.PegPermutation" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../../permutation/index.html#permpy.permutation.Permutation" title="permpy.permutation.Permutation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">permpy.permutation.Permutation</span></code></a></p>
+<p>Class for representing permutations as immutable 0-indexed tuples.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="permpy.PegPermutations.pegpermutation.PegPermutation.allowable_signs">
+<span class="sig-name descname"><span class="pre">allowable_signs</span></span><a class="headerlink" href="#permpy.PegPermutations.pegpermutation.PegPermutation.allowable_signs" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.PegPermutations.pegpermutation.PegPermutation.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#permpy.PegPermutations.pegpermutation.PegPermutation.__repr__" title="Permalink to this definition"></a></dt>
+<dd><p>Return a string representation of the permutation depending on the
+chosen representation (<cite>Permutation._REPR</cite>).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.PegPermutations.pegpermutation.PegPermutation.__hash__">
+<span class="sig-name descname"><span class="pre">__hash__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#permpy.PegPermutations.pegpermutation.PegPermutation.__hash__" title="Permalink to this definition"></a></dt>
+<dd><p>Return hash(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.PegPermutations.pegpermutation.PegPermutation.__eq__">
+<span class="sig-name descname"><span class="pre">__eq__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#permpy.PegPermutations.pegpermutation.PegPermutation.__eq__" title="Permalink to this definition"></a></dt>
+<dd><p>Return self==value.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.PegPermutations.pegpermutation.PegPermutation.num_signs">
+<span class="sig-name descname"><span class="pre">num_signs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#permpy.PegPermutations.pegpermutation.PegPermutation.num_signs" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.PegPermutations.pegpermutation.PegPermutation.sign_subset">
+<span class="sig-name descname"><span class="pre">sign_subset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">P</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#permpy.PegPermutations.pegpermutation.PegPermutation.sign_subset" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.PegPermutations.pegpermutation.PegPermutation.filling_vector">
+<span class="sig-name descname"><span class="pre">filling_vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#permpy.PegPermutations.pegpermutation.PegPermutation.filling_vector" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.PegPermutations.pegpermutation.PegPermutation.all_dotted_monotone_intervals">
+<span class="sig-name descname"><span class="pre">all_dotted_monotone_intervals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#permpy.PegPermutations.pegpermutation.PegPermutation.all_dotted_monotone_intervals" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.PegPermutations.pegpermutation.PegPermutation.is_compact">
+<span class="sig-name descname"><span class="pre">is_compact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#permpy.PegPermutations.pegpermutation.PegPermutation.is_compact" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.PegPermutations.pegpermutation.PegPermutation.is_compact_and_clean">
+<span class="sig-name descname"><span class="pre">is_compact_and_clean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#permpy.PegPermutations.pegpermutation.PegPermutation.is_compact_and_clean" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.PegPermutations.pegpermutation.PegPermutation.clean_basis">
+<span class="sig-name descname"><span class="pre">clean_basis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#permpy.PegPermutations.pegpermutation.PegPermutation.clean_basis" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.PegPermutations.pegpermutation.PegPermutation.split">
+<span class="sig-name descname"><span class="pre">split</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#permpy.PegPermutations.pegpermutation.PegPermutation.split" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.PegPermutations.pegpermutation.PegPermutation.clean">
+<span class="sig-name descname"><span class="pre">clean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#permpy.PegPermutations.pegpermutation.PegPermutation.clean" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.PegPermutations.pegpermutation.PegPermutation.downset">
+<span class="sig-name descname"><span class="pre">downset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#permpy.PegPermutations.pegpermutation.PegPermutation.downset" title="Permalink to this definition"></a></dt>
+<dd><p>Return the downset D of <cite>self</cite> stratified by length.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.PegPermutations.pegpermutation.PegPermutation.shrink_by_one">
+<span class="sig-name descname"><span class="pre">shrink_by_one</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#permpy.PegPermutations.pegpermutation.PegPermutation.shrink_by_one" title="Permalink to this definition"></a></dt>
+<dd><p>Return all patterns contained in self of length one less than the permutation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.PegPermutations.pegpermutation.PegPermutation.csgf">
+<span class="sig-name descname"><span class="pre">csgf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#permpy.PegPermutations.pegpermutation.PegPermutation.csgf" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.PegPermutations.pegpermutation.PegPermutation.reverse">
+<span class="sig-name descname"><span class="pre">reverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#permpy.PegPermutations.pegpermutation.PegPermutation.reverse" title="Permalink to this definition"></a></dt>
+<dd><p>Return the reverse of the permutation.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Permutation</span><span class="p">(</span><span class="mi">2314</span><span class="p">)</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span> <span class="o">==</span> <span class="n">Permutation</span><span class="p">(</span><span class="mi">4132</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.PegPermutations.pegpermutation.PegPermutation.involved_in">
+<span class="sig-name descname"><span class="pre">involved_in</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">P</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#permpy.PegPermutations.pegpermutation.PegPermutation.involved_in" title="Permalink to this definition"></a></dt>
+<dd><p>Check if <cite>self</cite> is contained as a pattern in <cite>P</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>P</strong> (<em>Permutation-like object</em>) – Pattern to be contained.</p></li>
+<li><p><strong>lr</strong> (<em>int</em><em>, </em><em>optional</em>) – Require the last entry to be equal to this.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Permutation</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span><span class="o">.</span><span class="n">involved_in</span><span class="p">(</span><span class="mi">31542</span><span class="p">)</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Permutation</span><span class="p">(</span><span class="mi">213</span><span class="p">)</span><span class="o">.</span><span class="n">involved_in</span><span class="p">(</span><span class="mi">54213</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.PegPermutations.pegpermutation.PegPermutation.involvement_check">
+<span class="sig-name descname"><span class="pre">involvement_check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upper_bound</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lower_bound</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">next</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#permpy.PegPermutations.pegpermutation.PegPermutation.involvement_check" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="permpy.PegPermutations.pegpermutation.PegPermutation.involvement_fits">
+<span class="sig-name descname"><span class="pre">involvement_fits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upper_bound</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lower_bound</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">next</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#permpy.PegPermutations.pegpermutation.PegPermutation.involvement_fits" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../pegpermset/index.html" class="btn btn-neutral float-left" title="permpy.PegPermutations.pegpermset" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../vector/index.html" class="btn btn-neutral float-right" title="permpy.PegPermutations.vector" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

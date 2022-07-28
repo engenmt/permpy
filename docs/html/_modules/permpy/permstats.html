@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>permpy.permstats &mdash; Python  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/mystnb.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/togglebutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script>let toggleHintShow = 'Click to show';</script>
+        <script>let toggleHintHide = 'Click to hide';</script>
+        <script>let toggleOpenOnPrint = 'true';</script>
+        <script src="../../_static/togglebutton.js"></script>
+        <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autoapi/index.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>permpy.permstats</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for permpy.permstats</h1><div class="highlight"><pre>
+<div class="viewcode-block" id="PermutationStatsMixin"><a class="viewcode-back" href="../../autoapi/permpy/permstats/index.html#permpy.permstats.PermutationStatsMixin">[docs]</a><span></span><span class="k">class</span> <span class="nc">PermutationStatsMixin</span><span class="p">:</span>
+<div class="viewcode-block" id="PermutationStatsMixin.num_fixed_points"><a class="viewcode-back" href="../../autoapi/permpy/permstats/index.html#permpy.permstats.PermutationStatsMixin.num_fixed_points">[docs]</a>    <span class="k">def</span> <span class="nf">num_fixed_points</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fixed_points</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="PermutationStatsMixin.num_descents"><a class="viewcode-back" href="../../autoapi/permpy/permstats/index.html#permpy.permstats.PermutationStatsMixin.num_descents">[docs]</a>    <span class="k">def</span> <span class="nf">num_descents</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">descents</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="PermutationStatsMixin.num_ascents"><a class="viewcode-back" href="../../autoapi/permpy/permstats/index.html#permpy.permstats.PermutationStatsMixin.num_ascents">[docs]</a>    <span class="k">def</span> <span class="nf">num_ascents</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ascents</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="PermutationStatsMixin.num_peaks"><a class="viewcode-back" href="../../autoapi/permpy/permstats/index.html#permpy.permstats.PermutationStatsMixin.num_peaks">[docs]</a>    <span class="k">def</span> <span class="nf">num_peaks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">peaks</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="PermutationStatsMixin.num_valleys"><a class="viewcode-back" href="../../autoapi/permpy/permstats/index.html#permpy.permstats.PermutationStatsMixin.num_valleys">[docs]</a>    <span class="k">def</span> <span class="nf">num_valleys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">valleys</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="PermutationStatsMixin.num_ltr_min"><a class="viewcode-back" href="../../autoapi/permpy/permstats/index.html#permpy.permstats.PermutationStatsMixin.num_ltr_min">[docs]</a>    <span class="k">def</span> <span class="nf">num_ltr_min</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ltr_min</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="PermutationStatsMixin.num_rtl_min"><a class="viewcode-back" href="../../autoapi/permpy/permstats/index.html#permpy.permstats.PermutationStatsMixin.num_rtl_min">[docs]</a>    <span class="k">def</span> <span class="nf">num_rtl_min</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rtl_min</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="PermutationStatsMixin.num_ltr_max"><a class="viewcode-back" href="../../autoapi/permpy/permstats/index.html#permpy.permstats.PermutationStatsMixin.num_ltr_max">[docs]</a>    <span class="k">def</span> <span class="nf">num_ltr_max</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ltr_max</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="PermutationStatsMixin.num_rtl_max"><a class="viewcode-back" href="../../autoapi/permpy/permstats/index.html#permpy.permstats.PermutationStatsMixin.num_rtl_max">[docs]</a>    <span class="k">def</span> <span class="nf">num_rtl_max</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rtl_max</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="PermutationStatsMixin.num_rtlmin_ltrmax_layers"><a class="viewcode-back" href="../../autoapi/permpy/permstats/index.html#permpy.permstats.PermutationStatsMixin.num_rtlmin_ltrmax_layers">[docs]</a>    <span class="k">def</span> <span class="nf">num_rtlmin_ltrmax_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rtlmin_ltrmax_decomposition</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="PermutationStatsMixin.num_rtlmax_ltrmin_layers"><a class="viewcode-back" href="../../autoapi/permpy/permstats/index.html#permpy.permstats.PermutationStatsMixin.num_rtlmax_ltrmin_layers">[docs]</a>    <span class="k">def</span> <span class="nf">num_rtlmax_ltrmin_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rtlmax_ltrmin_decomposition</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="PermutationStatsMixin.trivial"><a class="viewcode-back" href="../../autoapi/permpy/permstats/index.html#permpy.permstats.PermutationStatsMixin.trivial">[docs]</a>    <span class="k">def</span> <span class="nf">trivial</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">0</span></div>
+
+<div class="viewcode-block" id="PermutationStatsMixin.num_inversions"><a class="viewcode-back" href="../../autoapi/permpy/permstats/index.html#permpy.permstats.PermutationStatsMixin.num_inversions">[docs]</a>    <span class="k">def</span> <span class="nf">num_inversions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inversions</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="PermutationStatsMixin.num_noninversions"><a class="viewcode-back" href="../../autoapi/permpy/permstats/index.html#permpy.permstats.PermutationStatsMixin.num_noninversions">[docs]</a>    <span class="k">def</span> <span class="nf">num_noninversions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">noninversions</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="PermutationStatsMixin.major_index"><a class="viewcode-back" href="../../autoapi/permpy/permstats/index.html#permpy.permstats.PermutationStatsMixin.major_index">[docs]</a>    <span class="k">def</span> <span class="nf">major_index</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the major index of `self`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">descents</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="PermutationStatsMixin.len_max_run"><a class="viewcode-back" href="../../autoapi/permpy/permstats/index.html#permpy.permstats.PermutationStatsMixin.len_max_run">[docs]</a>    <span class="k">def</span> <span class="nf">len_max_run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the length of the longest monotone contiguous subsequence of entries.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_ascending_run</span><span class="p">()[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_descending_run</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="PermutationStatsMixin.is_involution"><a class="viewcode-back" href="../../autoapi/permpy/permstats/index.html#permpy.permstats.PermutationStatsMixin.is_involution">[docs]</a>    <span class="k">def</span> <span class="nf">is_involution</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Determine if the permutation is an involution, i.e., is equal to it&#39;s own inverse.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">idx</span> <span class="o">!=</span> <span class="bp">self</span><span class="p">[</span><span class="n">val</span><span class="p">]:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="PermutationStatsMixin.is_increasing"><a class="viewcode-back" href="../../autoapi/permpy/permstats/index.html#permpy.permstats.PermutationStatsMixin.is_increasing">[docs]</a>    <span class="k">def</span> <span class="nf">is_increasing</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Determine if the permutation is increasing.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; p = Permutation.random(10)</span>
+<span class="sd">            &gt;&gt;&gt; (p * p.inverse()).is_increasing()</span>
+<span class="sd">            True</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="n">idx</span> <span class="o">==</span> <span class="n">val</span> <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="PermutationStatsMixin.is_decreasing"><a class="viewcode-back" href="../../autoapi/permpy/permstats/index.html#permpy.permstats.PermutationStatsMixin.is_decreasing">[docs]</a>    <span class="k">def</span> <span class="nf">is_decreasing</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Determine if the permutation is increasing.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; p = Permutation(range(10,0,-1))</span>
+<span class="sd">            &gt;&gt;&gt; p.is_decreasing()</span>
+<span class="sd">            True</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="n">idx</span> <span class="o">==</span> <span class="n">val</span> <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span></div>
+
+<div class="viewcode-block" id="PermutationStatsMixin.is_identity"><a class="viewcode-back" href="../../autoapi/permpy/permstats/index.html#permpy.permstats.PermutationStatsMixin.is_identity">[docs]</a>    <span class="k">def</span> <span class="nf">is_identity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Wrapper for is_increasing.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_increasing</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="PermutationStatsMixin.is_simple"><a class="viewcode-back" href="../../autoapi/permpy/permstats/index.html#permpy.permstats.PermutationStatsMixin.is_simple">[docs]</a>    <span class="k">def</span> <span class="nf">is_simple</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Determine if `self` is simple.</span>
+
+<span class="sd">        Todo:</span>
+<span class="sd">            Implement this better, if possible.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">simple_location</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span></div>
+
+<div class="viewcode-block" id="PermutationStatsMixin.is_strongly_simple"><a class="viewcode-back" href="../../autoapi/permpy/permstats/index.html#permpy.permstats.PermutationStatsMixin.is_strongly_simple">[docs]</a>    <span class="k">def</span> <span class="nf">is_strongly_simple</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_simple</span><span class="p">()</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">([</span><span class="n">p</span><span class="o">.</span><span class="n">is_simple</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">()])</span></div>
+
+<div class="viewcode-block" id="PermutationStatsMixin.num_bonds"><a class="viewcode-back" href="../../autoapi/permpy/permstats/index.html#permpy.permstats.PermutationStatsMixin.num_bonds">[docs]</a>    <span class="k">def</span> <span class="nf">num_bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bonds</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="PermutationStatsMixin.num_inc_bonds"><a class="viewcode-back" href="../../autoapi/permpy/permstats/index.html#permpy.permstats.PermutationStatsMixin.num_inc_bonds">[docs]</a>    <span class="k">def</span> <span class="nf">num_inc_bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inc_bonds</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="PermutationStatsMixin.num_dec_bonds"><a class="viewcode-back" href="../../autoapi/permpy/permstats/index.html#permpy.permstats.PermutationStatsMixin.num_dec_bonds">[docs]</a>    <span class="k">def</span> <span class="nf">num_dec_bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dec_bonds</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="PermutationStatsMixin.num_copies"><a class="viewcode-back" href="../../autoapi/permpy/permstats/index.html#permpy.permstats.PermutationStatsMixin.num_copies">[docs]</a>    <span class="k">def</span> <span class="nf">num_copies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the number of copies of `other` in `self`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">copies</span><span class="p">(</span><span class="n">other</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="PermutationStatsMixin.num_contiguous_copies_of"><a class="viewcode-back" href="../../autoapi/permpy/permstats/index.html#permpy.permstats.PermutationStatsMixin.num_contiguous_copies_of">[docs]</a>    <span class="k">def</span> <span class="nf">num_contiguous_copies_of</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the number of contiguous copies of `other` in `self`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">contiguous_copies</span><span class="p">(</span><span class="n">other</span><span class="p">))</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

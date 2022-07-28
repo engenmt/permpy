@@ -1,0 +1,161 @@
+:py:mod:`permpy.permclass`
+==========================
+
+.. py:module:: permpy.permclass
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   permpy.permclass.PermClass
+
+
+
+
+.. py:exception:: ClassTooShortError
+
+   Bases: :py:obj:`Exception`
+
+   Common base class for all non-exit exceptions.
+
+
+.. py:class:: PermClass(C)
+
+   Bases: :py:obj:`permpy.deprecated.permclassdeprecated.PermClassDeprecatedMixin`
+
+   A minimal Python class representing a Permutation class.
+
+   .. rubric:: Notes
+
+   Relies on the Permutation class being closed downwards, but does not assert this.
+
+   .. py:method:: __len__(self)
+
+
+   .. py:method:: __iter__(self)
+
+
+   .. py:method:: __getitem__(self, idx)
+
+
+   .. py:method:: __add__(self, other)
+
+
+   .. py:method:: __contains__(self, p)
+
+
+   .. py:method:: all(cls, max_length)
+      :classmethod:
+
+      Return the PermClass that contains all permutations up to the given length.
+
+      .. rubric:: Examples
+
+      >>> C = PermClass.all(6)
+      >>> print([len(S) for S in C])
+      [1, 1, 2, 6, 24, 120, 720]
+
+
+   .. py:method:: append(self, S)
+
+
+   .. py:method:: maximally_extend(self, additional_length=1)
+
+      Extend `self` maximally.
+
+      Notes: Includes only those permutations whose downsets lie entirely in `self`.
+      .. rubric:: Examples
+
+      >>> C = PermClass.all(4)
+      >>> C[4].remove(Permutation(1234))
+      >>> C.maximally_extend(1)
+      >>> len(C[5]) # All but the 17 permutations covering 1234
+      103
+
+
+   .. py:method:: filter_by(self, property)
+
+      Modify `self` by removing those permutations that do not satisfy the `property``.
+
+      .. rubric:: Examples
+
+      >>> C = PermClass.all(6)
+      >>> p = Permutation(21)
+      >>> C.filter_by(lambda q: p not in q)
+      >>> all(len(S) == 1 for S in C)
+      True
+
+
+   .. py:method:: filtered_by(self, property)
+
+      Return a copy of `self` that has been filtered using the `property`.
+
+
+   .. py:method:: guess_basis(self, max_length=6)
+
+      Guess a basis for the class up to "max_length" by iteratively
+      generating the class with basis elements known so far (initially the
+      empty set) and adding elements that should be avoided to the basis.
+
+      Search mode goes up to the max length in the class and prints out the
+      number of basis elements of each length on the way.
+
+      .. rubric:: Examples
+
+      >>> p = Permutation(12)
+      >>> C = PermClass.all(8)
+      >>> C.filter_by(lambda q: p not in q) # Class of decreasing permutations
+      >>> C.guess_basis() == PermSet(p)
+      True
+      >>> D = C.sum_closure() # Class of layered permutations
+      >>> D.guess_basis() == PermSet([Permutation(312), Permutation(231)])
+      True
+
+
+   .. py:method:: union(self, other)
+
+      Return the union of the two permutation classes.
+
+
+   .. py:method:: heatmap(self, **kwargs)
+
+
+   .. py:method:: skew_closure(self, max_len=8)
+
+      Return the skew closure of `self`.
+      .. rubric:: Notes
+
+      This could be done constructively.
+
+      .. rubric:: Examples
+
+      >>> p = Permutation(21)
+      >>> C = PermClass.all(8)
+      >>> C.filter_by(lambda q: p not in q) # Class of increasing permutations
+      >>> D = C.skew_closure(max_len=7)
+      >>> len(D[7]) == 64
+      True
+
+
+   .. py:method:: sum_closure(self, max_len=8)
+
+      Return the sum closure of `self`.
+
+      .. rubric:: Examples
+
+      >>> p = Permutation(12)
+      >>> C = PermClass.all(8)
+      >>> C.filter_by(lambda q: p not in q) # Class of decreasing permutations
+      >>> D = C.sum_closure(max_len=7)
+      >>> len(D[7]) == 64
+      True
+
+      .. todo:: Implement constructively.
+
+
+

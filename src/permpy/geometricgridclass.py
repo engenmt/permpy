@@ -21,7 +21,7 @@ class BadWordException(Exception):
 class GeometricGridClass(PermClass):
     def __init__(self, M, col=None, row=None, max_length=8, generate=True):
         """
-
+        
         Args:
             M (list of lists of ints): A 2D matrix to build the GGC from.
                 Goes from left-to-right, bottom-to-top. That is, M[0] is the

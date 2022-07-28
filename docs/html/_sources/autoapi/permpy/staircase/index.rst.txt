@@ -1,0 +1,88 @@
+:py:mod:`permpy.staircase`
+==========================
+
+.. py:module:: permpy.staircase
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   permpy.staircase.pretty_out
+   permpy.staircase.gen_compositions
+   permpy.staircase.gen_weak_compositions
+   permpy.staircase.gen_interval_divisions
+   permpy.staircase.all_vertical_extensions
+   permpy.staircase.all_horizontal_extensions
+   permpy.staircase.inverse
+   permpy.staircase.first_two_cells
+   permpy.staircase.add_two_cells
+
+
+
+.. py:function:: pretty_out(pi, k, vert_line=True, by_lines=False, width=2)
+
+   Return a nice string to visualize `pi`.
+   If `by_lines == True`, then will return the list of strings by line,
+   in case you want to append some stuff to each line.
+
+
+
+.. py:function:: gen_compositions(n, k=0)
+
+   Generate all compositions (as lists) of `n` into `k` parts.
+   If `k == 0`, then generate all compositions of `n`.
+
+
+
+.. py:function:: gen_weak_compositions(n, k)
+
+   Generate all weak compositions (as lists) of `n` into `k` parts.
+
+
+.. py:function:: gen_interval_divisions(m, k, shift=0, reverse=False)
+
+   Generate all ways of splitting the interval `[1, m]` shifted up by `shift` into `k` pieces.
+
+   .. rubric:: Example
+
+   >>> list(gen_interval_divisions(4, 2))
+   [
+       [ ()          , (0, 1, 2, 3) ],
+       [ (0,)        ,    (1, 2, 3) ],
+       [ (0, 1)      ,       (2, 3) ],
+       [ (0, 1, 2)   ,          (3,)],
+       [ (0, 1, 2, 3),            ()]
+   ]
+
+
+.. py:function:: all_vertical_extensions(pi, m, k, verbose=False)
+
+   Given a permutation `pi`, generate all ways to add an increasing sequence
+   of length `m` above its right `k` points.
+
+
+
+.. py:function:: all_horizontal_extensions(pi, m, k, verbose=False)
+
+   Given a permutation `pi`, generate all ways to add an decreasing sequence
+   of length `m` to the right of its upper `k` points.
+
+
+
+.. py:function:: inverse(pi)
+
+
+.. py:function:: first_two_cells(n)
+
+   Return the set of initial configurations of points in the first two cells.
+
+
+.. py:function:: add_two_cells(R, n)
+
+
