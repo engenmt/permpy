@@ -19,12 +19,12 @@ Todo:
 class Permutation(
     tuple, PermutationStatsMixin, PermutationMiscMixin, PermutationDeprecatedMixin
 ):
-    """Class for representing permutations as immutable 0-indexed tuples."""
+    """A permutation, represented as an immutable 0-indexed tuple."""
 
-    # static class variable, controls permutation representation
+    # Controls permutation representation
     _REPR = "oneline"
 
-    # default to displaying permutations as 1-based
+    # Default to displaying permutations as 1-based
     _BASE = 1
 
     lower_bound = []
