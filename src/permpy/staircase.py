@@ -9,18 +9,16 @@ def pretty_out(pi, k, vert_line=True, by_lines=False, width=2):
     in case you want to append some stuff to each line.
 
     """
-    print(pi, k)
     lines = []
     n = len(pi)
 
-    max_width = len(str(n + 1))  # This is the width of each value.
-    if max_width > width:
-        width = max_width
+    min_width = len(str(n + 1))
+    width = max(min_width, width)
 
-    blank = " " * width
     for val in range(n)[::-1]:
-        idx = pi.index(val)
-        line = blank * (idx) + str(val + 1).rjust(width) + blank * (n - idx - 1)
+        idx = pi.index(val) + 1
+        prefix = f"{val+1:>width*idx}"
+        line = f"{prefix:<width*n}"
         lines.append(line)
 
     if vert_line:
@@ -52,13 +50,13 @@ def gen_compositions(n, k=0):
                 yield c
     else:
         if k == 1:
-            yield [n]
+            yield (n,)
         elif n == k:
-            yield [1] * n
+            yield tuple(1 for _ in range(n))
         else:
             for i in range(1, n - k + 2):
                 for c in gen_compositions(n - i, k - 1):
-                    yield c + [i]
+                    yield c + (i,)
 
 
 def gen_weak_compositions(n, k):
