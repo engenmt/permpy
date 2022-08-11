@@ -59,7 +59,7 @@ def pretty_out(pi, k=0, width=2, vert_line=False, horiz_line=False):
     if vert_line:
         if k == 0:
             for idx in range(n):
-                lines[idx] += " |"
+                lines[idx] += f"{'|':>{width}}"
         else:
             for idx, line in enumerate(lines):
                 prefix = line[: -width * k]
