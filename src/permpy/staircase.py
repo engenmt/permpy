@@ -1,14 +1,59 @@
 from __future__ import print_function
 
-from itertools import combinations_with_replacement as cwr
+from .permutation import Permutation
+from .permset import PermSet
+from .utils import gen_interval_divisions
 
 
-def pretty_out(pi, k, vert_line=True, by_lines=False, width=2):
-    """Return a nice string to visualize `pi`.
-    If `by_lines == True`, then will return the list of strings by line,
-    in case you want to append some stuff to each line.
+class MonotoneStaircase:
+    def __init__(self, cells, n=0, begin_east=True):
+        self.cells = cells
+        self.n = n
+        self.next_cell_east = begin_east  # Otherwise, North
+        self.generate()
 
-    """
+    def generate(self):
+        self.perms = {Permutation(): 0}
+        for cell_orientation in self.cells:
+            if self.next_cell_east:
+                self.add_cell_east(cell_orientation)
+            else:
+                self.add_cell_north(cell_orientation)
+            self.next_cell_east = not self.next_cell_east
+
+        self.perm_class = [PermSet() for _ in range(self.n + 1)]
+        for perm in self.perms:
+            self.perm_class[len(perm)].add(perm)
+
+    def add_cell_east(self, cell_orientation):
+        decreasing = cell_orientation == -1
+        perms_new = {}
+        for perm, k in self.perms.items():
+            for m in range(self.n - len(perm) + 1):
+                for perm_new in all_horizontal_extensions(
+                    perm, m, k, decreasing=decreasing
+                ):
+                    # Keep the partial gridding that places the maximum number of points
+                    # in the final cell, as it has the most descendents.
+                    perms_new[perm_new] = max(perms_new.get(perm_new, 0), m)
+        self.perms = perms_new
+
+    def add_cell_north(self, cell_orientation):
+        decreasing = cell_orientation == -1
+        perms_new = {}
+        for perm, k in self.perms.items():
+            for m in range(self.n - len(perm) + 1):
+                for perm_new in all_vertical_extensions(
+                    perm, m, k, decreasing=decreasing
+                ):
+                    # Keep the partial gridding that places the maximum number of points
+                    # in the final cell, as it has the most descendents.
+                    perms_new[perm_new] = max(perms_new.get(perm_new, 0), m)
+        self.perms = perms_new
+
+
+def pretty_out(pi, k=0, width=2, vert_line=False, horiz_line=False):
+    """Return a string to visualize `pi`."""
     lines = []
     n = len(pi)
 
@@ -17,8 +62,8 @@ def pretty_out(pi, k, vert_line=True, by_lines=False, width=2):
 
     for val in range(n)[::-1]:
         idx = pi.index(val) + 1
-        prefix = f"{val+1:>width*idx}"
-        line = f"{prefix:<width*n}"
+        prefix = f"{val+1:>{width*idx}}"
+        line = f"{prefix:<{width*n}}"
         lines.append(line)
 
     if vert_line:
@@ -26,61 +71,17 @@ def pretty_out(pi, k, vert_line=True, by_lines=False, width=2):
             for idx in range(n):
                 lines[idx] += " |"
         else:
-            for idx in range(n):
-                lines[idx] = lines[idx][: -width * k] + " |" + lines[idx][-width * k :]
-    else:
+            for idx, line in enumerate(lines):
+                prefix = line[: -width * k]
+                suffix = line[-width * k :]
+                lines[idx] = f"{prefix}{'|':>{width}}{suffix}"
+    elif horiz_line:
         lines.insert(k, "-" * (width * n))
 
-    if by_lines:
-        return lines
-    else:
-        return "\n".join(lines)
+    return "\n".join(lines)
 
 
-def gen_compositions(n, k=0):
-    """Generate all compositions (as lists) of `n` into `k` parts.
-    If `k == 0`, then generate all compositions of `n`.
-
-    """
-    assert n >= k, f"Need weight to be at least length: {n} ≥ {k}"
-
-    if k == 0:
-        for i in range(1, n + 1):
-            for c in gen_compositions(n, i):
-                yield c
-    else:
-        if k == 1:
-            yield (n,)
-        elif n == k:
-            yield tuple(1 for _ in range(n))
-        else:
-            for i in range(1, n - k + 2):
-                for c in gen_compositions(n - i, k - 1):
-                    yield c + (i,)
-
-
-def gen_weak_compositions(n, k):
-    """Generate all weak compositions (as lists) of `n` into `k` parts."""
-    for c in gen_compositions(n + k, k):
-        yield [part - 1 for part in c]
-
-
-def gen_interval_divisions(m, k, shift=0, reverse=False):
-    """Generate all ways of splitting the interval `[1, m]` shifted up by `shift` into `k` pieces."""
-    if reverse:
-        direction = -1
-    else:
-        direction = +1
-
-    L = range(shift, shift + m)[::direction]
-    for c in cwr(range(m + 1), k - 1):
-        # For each choice of divisions...
-
-        c = (0,) + c + (m,)
-        yield [tuple(val for val in L[c[i] : c[i + 1]]) for i in range(k)]
-
-
-def all_vertical_extensions(pi, m, k, verbose=False):
+def all_vertical_extensions(pi, m, k, verbose=False, decreasing=False):
     """Given a permutation `pi`, generate all ways to add an increasing sequence
     of length `m` above its right `k` points.
 
@@ -100,7 +101,7 @@ def all_vertical_extensions(pi, m, k, verbose=False):
         print(f"prefix = {prefix}")
         print(f"suffix = {suffix}")
 
-    for uppers in gen_interval_divisions(m, k + 1, shift=n):
+    for uppers in gen_interval_divisions(m, k + 1, shift=n, reverse=decreasing):
         new_suffix = sum([uppers[i] + (suffix[i],) for i in range(k)], ()) + uppers[-1]
 
         if verbose:
@@ -110,7 +111,7 @@ def all_vertical_extensions(pi, m, k, verbose=False):
         yield prefix + new_suffix
 
 
-def all_horizontal_extensions(pi, m, k, verbose=False):
+def all_horizontal_extensions(pi, m, k, verbose=False, decreasing=True):
     """Given a permutation `pi`, generate all ways to add an decreasing sequence
     of length `m` to the right of its upper `k` points.
 
@@ -131,7 +132,7 @@ def all_horizontal_extensions(pi, m, k, verbose=False):
         print(f"prefix = {prefix}")
         print(f"suffix = {suffix}")
 
-    for uppers in gen_interval_divisions(m, k + 1, shift=n, reverse=True):
+    for uppers in gen_interval_divisions(m, k + 1, shift=n, reverse=decreasing):
         new_suffix = sum([uppers[i] + (suffix[i],) for i in range(k)], ()) + uppers[-1]
 
         if verbose:
