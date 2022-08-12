@@ -1,90 +1,80 @@
 from __future__ import print_function
 
-from itertools import combinations_with_replacement as cwr
+from .permutation import Permutation
+from .permset import PermSet
+from .permclass import PermClass
+from .utils import gen_interval_divisions
 
 
-def pretty_out(pi, k, vert_line=True, by_lines=False, width=2):
-    """Return a nice string to visualize `pi`.
-    If `by_lines == True`, then will return the list of strings by line,
-    in case you want to append some stuff to each line.
+class MonotoneStaircase(PermClass):
+    def __init__(self, cells, n=0, begin_east=True):
+        self.cells = cells
+        self.n = n
+        self.next_cell_east = begin_east  # Otherwise, North
+        super().__init__(self._generate())
 
-    """
-    print(pi, k)
+    def _generate(self):
+        self.perms = {Permutation(): 0}
+        for cell_orientation in self.cells:
+            self.add_cell(
+                is_east=self.next_cell_east, cell_orientation=cell_orientation
+            )
+            self.next_cell_east = not self.next_cell_east
+
+        perm_class = [PermSet() for _ in range(self.n + 1)]
+        for perm in self.perms:
+            perm_class[len(perm)].add(perm)
+        return perm_class
+
+    def add_cell(self, is_east, cell_orientation):
+        all_relevant_extensions = (
+            all_vertical_extensions if is_east else all_horizontal_extensions
+        )
+        is_decreasing = cell_orientation == -1
+        perms_new = {}
+        for perm, k in self.perms.items():
+            for m in range(self.n - len(perm) + 1):
+                for perm_new in all_relevant_extensions(
+                    perm, m, k, decreasing=is_decreasing
+                ):
+                    # Keep the partial gridding that places the maximum number of points
+                    # in the final cell, as it has the most descendents.
+                    perms_new[perm_new] = max(perms_new.get(perm_new, 0), m)
+        self.perms = perms_new
+
+
+def pretty_out(pi, k=0, width=2, vert_line=False, horiz_line=False):
+    """Return a string to visualize `pi`."""
     lines = []
     n = len(pi)
 
-    max_width = len(str(n + 1))  # This is the width of each value.
-    if max_width > width:
-        width = max_width
+    min_width = len(str(n + 1))
+    width = max(min_width, width)
 
-    blank = " " * width
     for val in range(n)[::-1]:
-        idx = pi.index(val)
-        line = blank * (idx) + str(val + 1).rjust(width) + blank * (n - idx - 1)
+        idx = pi.index(val) + 1
+        prefix = f"{val+1:>{width*idx}}"
+        line = f"{prefix:<{width*n}}"
         lines.append(line)
 
     if vert_line:
         if k == 0:
             for idx in range(n):
-                lines[idx] += " |"
+                lines[idx] += f"{'|':>{width}}"
         else:
-            for idx in range(n):
-                lines[idx] = lines[idx][: -width * k] + " |" + lines[idx][-width * k :]
-    else:
+            for idx, line in enumerate(lines):
+                prefix = line[: -width * k]
+                suffix = line[-width * k :]
+                lines[idx] = f"{prefix}{'|':>{width}}{suffix}"
+    elif horiz_line:
         lines.insert(k, "-" * (width * n))
 
-    if by_lines:
-        return lines
-    else:
-        return "\n".join(lines)
+    return "\n".join(lines)
 
 
-def gen_compositions(n, k=0):
-    """Generate all compositions (as lists) of `n` into `k` parts.
-    If `k == 0`, then generate all compositions of `n`.
-
-    """
-    assert n >= k, f"Need weight to be at least length: {n} ≥ {k}"
-
-    if k == 0:
-        for i in range(1, n + 1):
-            for c in gen_compositions(n, i):
-                yield c
-    else:
-        if k == 1:
-            yield [n]
-        elif n == k:
-            yield [1] * n
-        else:
-            for i in range(1, n - k + 2):
-                for c in gen_compositions(n - i, k - 1):
-                    yield c + [i]
-
-
-def gen_weak_compositions(n, k):
-    """Generate all weak compositions (as lists) of `n` into `k` parts."""
-    for c in gen_compositions(n + k, k):
-        yield [part - 1 for part in c]
-
-
-def gen_interval_divisions(m, k, shift=0, reverse=False):
-    """Generate all ways of splitting the interval `[1, m]` shifted up by `shift` into `k` pieces."""
-    if reverse:
-        direction = -1
-    else:
-        direction = +1
-
-    L = range(shift, shift + m)[::direction]
-    for c in cwr(range(m + 1), k - 1):
-        # For each choice of divisions...
-
-        c = (0,) + c + (m,)
-        yield [tuple(val for val in L[c[i] : c[i + 1]]) for i in range(k)]
-
-
-def all_vertical_extensions(pi, m, k, verbose=False):
-    """Given a permutation `pi`, generate all ways to add an increasing sequence
-    of length `m` above its right `k` points.
+def all_vertical_extensions(pi, m, k, decreasing=False):
+    """Generate all ways to add a monotone sequence of length m above
+    the rightmost k points of pi.
 
     """
     n = len(pi)
@@ -97,92 +87,22 @@ def all_vertical_extensions(pi, m, k, verbose=False):
         prefix = pi[:-k]
         suffix = pi[-k:]
 
-    if verbose:
-        print(f"Vertically extending (pi, m, k) = {(pi, m, k)}")
-        print(f"prefix = {prefix}")
-        print(f"suffix = {suffix}")
+    for uppers in gen_interval_divisions(m, k + 1, shift=n, reverse=decreasing):
+        new_suffix = (
+            sum(
+                [upper + (suffix_val,) for upper, suffix_val in zip(uppers, suffix)], ()
+            )
+            + uppers[-1]
+        )
 
-    for uppers in gen_interval_divisions(m, k + 1, shift=n):
-        new_suffix = sum([uppers[i] + (suffix[i],) for i in range(k)], ()) + uppers[-1]
-
-        if verbose:
-            print(f"uppers = {uppers:20}, new_suffix = {new_suffix:20}")
-            print(f"Yielding {prefix + new_suffix}.")
-
-        yield prefix + new_suffix
+        yield Permutation(prefix + new_suffix)
 
 
-def all_horizontal_extensions(pi, m, k, verbose=False):
-    """Given a permutation `pi`, generate all ways to add an decreasing sequence
-    of length `m` to the right of its upper `k` points.
+def all_horizontal_extensions(pi, m, k, decreasing=True):
+    """Generate all ways to add a monotone sequence of length m to the right of
+    the uppermost k points of pi.
 
     """
 
-    tau = inverse(pi)
-    n = len(tau)
-
-    if k == 0:
-        prefix = tau
-        suffix = ()
-    else:
-        prefix = tau[:-k]
-        suffix = tau[-k:]
-
-    if verbose:
-        print(f"Horizontally extending (pi, m, k) = {(pi,m,k)}")
-        print(f"prefix = {prefix}")
-        print(f"suffix = {suffix}")
-
-    for uppers in gen_interval_divisions(m, k + 1, shift=n, reverse=True):
-        new_suffix = sum([uppers[i] + (suffix[i],) for i in range(k)], ()) + uppers[-1]
-
-        if verbose:
-            print(f"uppers = {uppers:20}, new_suffix = {new_suffix:20}")
-            print(f"Yielding the inverse of {prefix + new_suffix}.")
-
-        yield inverse(prefix + new_suffix)
-
-
-def inverse(pi):
-    q = tuple(pi.index(val) for val in range(len(pi)))
-    return q
-
-
-def first_two_cells(n):
-    """Return the set of initial configurations of points in the first two cells."""
-
-    initial = ((), 0)
-    R = set([initial])  # The set containing the empty tuple.
-
-    S = set()
-
-    for pi, k in R:
-        for m in range(0, n + 1):
-            S.update((tau, m) for tau in all_vertical_extensions(pi, m, k))
-
-    T = set()
-
-    for pi, k in S:
-        if k == 0 and len(pi) != 0:
-            T.add((pi, 0))
-        else:
-            for m in range(0, n - len(pi) + 1):
-                T.update((tau, m) for tau in all_horizontal_extensions(pi, m, k))
-
-    return T
-
-
-def add_two_cells(R, n):
-    S = set()
-    for pi, k in R:
-        S.add((pi, 0))
-        for m in range(1, n - len(pi) + 1):
-            S.update((tau, m) for tau in all_vertical_extensions(pi, m, k))
-
-    T = set()
-    for pi, k in S:
-        T.add((pi, 0))
-        for m in range(1, n - len(pi) + 1):
-            T.update((tau, m) for tau in all_horizontal_extensions(pi, m, k))
-
-    return T
+    for tau in all_vertical_extensions(pi.inverse(), m, k, decreasing=decreasing):
+        yield tau.inverse()
