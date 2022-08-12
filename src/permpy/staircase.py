@@ -73,8 +73,8 @@ def pretty_out(pi, k=0, width=2, vert_line=False, horiz_line=False):
 
 
 def all_vertical_extensions(pi, m, k, decreasing=False):
-    """Given a permutation `pi`, generate all ways to add an increasing sequence
-    of length `m` above its right `k` points.
+    """Generate all ways to add a monotone sequence of length m above
+    the rightmost k points of pi.
 
     """
     n = len(pi)
@@ -99,8 +99,8 @@ def all_vertical_extensions(pi, m, k, decreasing=False):
 
 
 def all_horizontal_extensions(pi, m, k, decreasing=True):
-    """Generate all ways to add an decreasing sequence of length m to the right of
-    the upper k points of pi.
+    """Generate all ways to add a monotone sequence of length m to the right of
+    the uppermost k points of pi.
 
     """
 
