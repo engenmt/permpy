@@ -11,9 +11,9 @@ class MonotoneStaircase(PermClass):
         self.cells = cells
         self.n = n
         self.next_cell_east = begin_east  # Otherwise, North
-        self.generate()
+        super().__init__(self._generate())
 
-    def generate(self):
+    def _generate(self):
         self.perms = {Permutation(): 0}
         for cell_orientation in self.cells:
             self.add_cell(
@@ -21,9 +21,10 @@ class MonotoneStaircase(PermClass):
             )
             self.next_cell_east = not self.next_cell_east
 
-        self.perm_class = [PermSet() for _ in range(self.n + 1)]
+        perm_class = [PermSet() for _ in range(self.n + 1)]
         for perm in self.perms:
-            self.perm_class[len(perm)].add(perm)
+            perm_class[len(perm)].add(perm)
+        return perm_class
 
     def add_cell(self, is_east, cell_orientation):
         all_relevant_extensions = (
@@ -98,8 +99,8 @@ def all_vertical_extensions(pi, m, k, decreasing=False):
 
 
 def all_horizontal_extensions(pi, m, k, decreasing=True):
-    """Given a permutation `pi`, generate all ways to add an decreasing sequence
-    of length `m` to the right of its upper `k` points.
+    """Generate all ways to add an decreasing sequence of length m to the right of
+    the upper k points of pi.
 
     """
 
