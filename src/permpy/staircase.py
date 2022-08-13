@@ -78,6 +78,9 @@ def all_vertical_extensions(pi, m, k, decreasing=False):
 
     """
     n = len(pi)
+    if m == 0:
+        yield pi
+        return
 
     # Split pi on its last k elements.
     if k == 0:
@@ -87,6 +90,7 @@ def all_vertical_extensions(pi, m, k, decreasing=False):
         prefix = pi[:-k]
         suffix = pi[-k:]
 
+    print(f"{pi=}, {m=}, {k=}", flush=True)
     for uppers in gen_interval_divisions(m, k + 1, shift=n, reverse=decreasing):
         new_suffix = (
             sum(
@@ -94,8 +98,9 @@ def all_vertical_extensions(pi, m, k, decreasing=False):
             )
             + uppers[-1]
         )
-
-        yield Permutation(prefix + new_suffix)
+        q = Permutation(prefix + new_suffix)
+        print(f"\t{uppers=} -> {q=}", flush=True)
+        yield q
 
 
 def all_horizontal_extensions(pi, m, k, decreasing=True):

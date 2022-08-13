@@ -1,6 +1,22 @@
 from permpy.permutation import Permutation
 from permpy.permset import PermSet
-from permpy.staircase import MonotoneStaircase
+from permpy.staircase import MonotoneStaircase, all_vertical_extensions
+
+
+def test_all_vertical_extensions():
+    cases = {
+        (Permutation(1), 1, 0): {12},
+        (Permutation(1), 1, 1): {12, 21},
+        (Permutation(1), 2, 0): {123},
+        (Permutation(1), 2, 1): {123, 213, 231},
+    }  # pi, m, k
+    for case, expected in cases.items():
+        expected = set(Permutation(p) for p in expected)
+        result = set(all_vertical_extensions(*case))
+        assert result == expected, (
+            f"all_vertical_extensions(*{case}) returned {result},"
+            f" but it should have retured {expected}."
+        )
 
 
 def test_one_cell_enumeration():
