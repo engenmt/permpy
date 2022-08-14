@@ -72,7 +72,7 @@ def pretty_out(pi, k=0, width=2, vert_line=False, horiz_line=False):
     return "\n".join(lines)
 
 
-def all_vertical_extensions(pi, m, k, decreasing=False):
+def all_vertical_extensions(pi, m, k, decreasing):
     """Generate all ways to add a monotone sequence of length m above
     the rightmost k points of pi.
 
@@ -82,28 +82,27 @@ def all_vertical_extensions(pi, m, k, decreasing=False):
         yield pi
         return
 
-    # Split pi on its last k elements.
     if k == 0:
-        prefix = pi
-        suffix = ()
-    else:
-        prefix = pi[:-k]
-        suffix = pi[-k:]
-
-    print(f"{pi=}, {m=}, {k=}", flush=True)
-    for uppers in gen_interval_divisions(m, k + 1, shift=n, reverse=decreasing):
-        new_suffix = (
-            sum(
-                [upper + (suffix_val,) for upper, suffix_val in zip(uppers, suffix)], ()
-            )
-            + uppers[-1]
+        addition = (
+            Permutation.monotone_decreasing(m)
+            if decreasing
+            else Permutation.monotone_increasing(m)
         )
-        q = Permutation(prefix + new_suffix)
-        print(f"\t{uppers=} -> {q=}", flush=True)
-        yield q
+        yield pi + addition
+        return
+
+    prefix = list(pi[:-k])
+    suffix = pi[-k:]
+
+    for uppers in gen_interval_divisions(m, k + 1, shift=n, reverse=decreasing):
+        new_suffix = list(uppers[0])
+        for suffix_val, upper in zip(suffix, uppers[1:]):
+            new_suffix.append(suffix_val)
+            new_suffix.extend(upper)
+        yield Permutation(prefix + new_suffix)
 
 
-def all_horizontal_extensions(pi, m, k, decreasing=True):
+def all_horizontal_extensions(pi, m, k, decreasing):
     """Generate all ways to add a monotone sequence of length m to the right of
     the uppermost k points of pi.
 
