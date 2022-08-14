@@ -45,12 +45,11 @@ def gen_weak_compositions(n, k):
 
 def gen_interval_divisions(m, k, shift=0, reverse=False):
     """Generate all ways of splitting the interval `[1, m]` shifted up by `shift` into `k` pieces."""
+    # L is the complete list of values to return
     if reverse:
-        direction = -1
+        L = range(shift + m - 1, shift - 1, -1)
     else:
-        direction = +1
-
-    L = range(shift, shift + m)[::direction]
+        L = range(shift, shift + m)
     for c in combinations_with_replacement(range(m + 1), k - 1):
         # For each choice of divisions...
 
