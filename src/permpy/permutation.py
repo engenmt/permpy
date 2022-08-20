@@ -389,7 +389,7 @@ class Permutation(
             q[val] = idx
         return Permutation(q, clean=True)
 
-    def pretty_out(self, width=2):
+    def pretty_out(self, width=None):
         """Return a nice string to visualize `self`.
 
         Notes:
@@ -400,7 +400,11 @@ class Permutation(
         lines = []
         n = len(self)
 
-        width = max(width, len(str(n)))  # This is the width of each value.
+        min_width = len(str(n))
+        if width is None:
+            width = min_width
+        elif width < min_width:
+            raise Exception("Width provided is too small!")
 
         for val in range(n - 1, -1, -1):
             idx = self.index(val)
