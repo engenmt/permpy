@@ -52,6 +52,16 @@ def test_guess_basis():
     )
 
 
+def test_enumeration():
+    A = PermClass.all(8)
+    expected = [1, 1, 2, 6, 24, 120, 720, 5040, 40320]
+    result = A.enumeration
+    assert result == expected, (
+        f"PermClass.all(8).enumeration returned {result},"
+        f" but it should have returned {expected}."
+    )
+
+
 def test_skew_closure():
     p = Permutation(21)
     C = PermClass.all(8)
