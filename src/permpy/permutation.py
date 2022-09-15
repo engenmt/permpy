@@ -161,6 +161,20 @@ class Permutation(
         p = cls(result, clean=True)
         return p
 
+    @classmethod
+    def symmetries(self):
+        """Return the list of all symmetries of a permutation as functions."""
+        return [
+            lambda p: p,
+            lambda p: p.reverse(),
+            lambda p: p.complement(),
+            lambda p: p.inverse(),
+            lambda p: p.inverse().reverse(),
+            lambda p: p.inverse().complement(),
+            lambda p: p.complement().reverse(),
+            lambda p: p.complement().reverse().inverse(),
+        ]
+
     # overloaded built in functions:
     def __new__(cls, p=None, n=None, clean=False):
         """Create a new permutation object. Supports a variety of creation
@@ -1066,17 +1080,15 @@ class Permutation(
 
         return profile[::-1]
 
-    def symmetries(self):
-        """Return the set of all symmetries of `self`."""
-        S = set([self])
-        S.update([P.reverse() for P in S])
-        S.update([P.complement() for P in S])
-        S.update([P.inverse() for P in S])
-        return S
+    def all_symmetries(self):
+        """Return the set of all symmetries of self."""
+        return set([symmetry(self) for symmetry in Permutation.symmetries()])
 
     def is_representative(self):
         """Check if `self` is the (lexicographically) least element of its symmetry class."""
-        return self == sorted(self.symmetries())[0]
+        return (
+            self == sorted(self.all_symmetries(), key=tuple)[0]
+        )  # Use tuple sorting as __lt__ is for containment
 
     def copies(self, other):
         """Return the list of (values corresponding to) copies of `other` in `self`."""
