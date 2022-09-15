@@ -102,14 +102,6 @@ def test_call():
     assert val == expected, f"Called Perm({p})({idx}), got {val} instead of {expected}!"
 
 
-def test_is_representative():
-    for n in range(8):
-        for p in Perm.gen_all(n):
-            if p.is_representative():
-                expected = Perm.identity(n)
-                assert p == expected, f"Perm({p}).is_representative() returned True!"
-
-
 def test_containment():
     containments = [
         (Perm(1), Perm(21)),
