@@ -4,7 +4,7 @@ from permpy import PermClass, PermSet, Permutation
 def test_all():
     C = PermClass.all(6)
     expected = [1, 1, 2, 6, 24, 120, 720]
-    result = [len(S) for S in C]
+    result = C.enumeration
     assert (
         result == expected
     ), "PermClass.all(6) does not contain all permutations up to length 6!"
@@ -49,6 +49,16 @@ def test_guess_basis():
     assert D.guess_basis() == PermSet([Permutation(312), Permutation(231)]), (
         "PermClass.guess_basis guessed incorrectly"
         " on the class of layered permutations."
+    )
+
+
+def test_enumeration():
+    A = PermClass.all(8)
+    expected = [1, 1, 2, 6, 24, 120, 720, 5040, 40320]
+    result = A.enumeration
+    assert result == expected, (
+        f"PermClass.all(8).enumeration returned {result},"
+        f" but it should have returned {expected}."
     )
 
 

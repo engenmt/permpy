@@ -48,6 +48,10 @@ class PermClass(PermClassDeprecatedMixin):
             return False
         return p in self[p_length]
 
+    @property
+    def enumeration(self):
+        return [len(perm_set) for perm_set in self]
+
     @classmethod
     def all(cls, max_length):
         """Return the PermClass containing all permutations up to the given length."""
