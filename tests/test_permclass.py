@@ -4,7 +4,7 @@ from permpy import PermClass, PermSet, Permutation
 def test_all():
     C = PermClass.all(6)
     expected = [1, 1, 2, 6, 24, 120, 720]
-    result = [len(S) for S in C]
+    result = C.enumeration
     assert (
         result == expected
     ), "PermClass.all(6) does not contain all permutations up to length 6!"

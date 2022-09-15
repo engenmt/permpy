@@ -51,13 +51,12 @@ def test_one_cell_enumeration():
             assert (
                 len(M) == N + 1
             ), "MonotoneStaircase has the incorrect length after generation!"
-            for n, perm_set in enumerate(M[1:], start=1):
-                result = len(perm_set)
-                expected = count(n)
-                assert result == expected, (
-                    f"MonotoneStaircase({cells})[{n}] has {result} permutations,"
-                    f" but it should have {expected}!"
-                )
+            result = M.enumeration
+            expected = [count(n) for n in range(N + 1)]
+            assert result == expected, (
+                f"MonotoneStaircase({cells}).enumeration returned {result},"
+                f" but it should have {expected}!"
+            )
 
 
 def test_one_cell_basis():
@@ -92,13 +91,12 @@ def test_two_cells_enumeration():
             assert (
                 len(M) == N + 1
             ), "MonotoneStaircase has the incorrect length after generation!"
-            for n, perm_set in enumerate(M[1:], start=1):
-                result = len(perm_set)
-                expected = count(n)
-                assert result == expected, (
-                    f"MonotoneStaircase({cells})[{n}] has {result} permutations,"
-                    f" but it should have {expected}!"
-                )
+            result = M.enumeration
+            expected = [1] + [count(n) for n in range(1, N + 1)]
+            assert result == expected, (
+                f"MonotoneStaircase({cells}).enumeration returned {result},"
+                f" but it should have {expected}!"
+            )
 
 
 def test_two_cells_basis():
@@ -133,16 +131,14 @@ def test_three_cells_enumeration():
         (+1, +1, -1): [1, 1, 2, 6, 19, 58, 170, 483, 1342],
         (+1, +1, +1): [1, 1, 2, 5, 14, 42, 128, 384, 1123],
     }
-    for cells, count in cases.items():
+    for cells, expected in cases.items():
         for begin_east in [False, True]:
             M = MonotoneStaircase(cells, n=N, begin_east=begin_east)
-            for n, perm_set in enumerate(M[1:], start=1):
-                result = len(perm_set)
-                expected = count[n]
-                assert result == expected, (
-                    f"MonotoneStaircase({cells})[{n}] has {result} permutations,"
-                    f" but it should have {expected}!"
-                )
+            result = M.enumeration
+            assert result == expected, (
+                f"MonotoneStaircase({cells}).enumeration returned {result},"
+                f" but it should have {expected}!"
+            )
 
 
 def test_three_cells_basis():
@@ -181,12 +177,10 @@ def test_negative_staircase_enumeration():
         7: [1, 1, 2, 6, 23, 100, 451, 2032, 9079],
         8: [1, 1, 2, 6, 23, 100, 451, 2032, 9086],
     }
-    for num_cells, count in cases.items():
+    for num_cells, expected in cases.items():
         M = MonotoneStaircase([-1] * num_cells, n=N, begin_east=True)
-        for n, perm_set in enumerate(M[1:], start=1):
-            result = len(perm_set)
-            expected = count[n]
-            assert result == expected, (
-                f"NegativeStaircase({num_cells})[{n}] has {result} permutations,"
-                f" but it should have {expected}!"
-            )
+        result = M.enumeration
+        assert result == expected, (
+            f"NegativeStaircase({num_cells}).enumeration returned {result},"
+            f" but it should have {expected}!"
+        )
