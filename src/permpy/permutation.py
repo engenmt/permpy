@@ -1046,7 +1046,7 @@ class Permutation(
                     else:
                         new_perms[tau] = i
 
-            downset.append(new_perms)
+            downset.append(set(new_perms))
 
         return downset[::-1]
 
