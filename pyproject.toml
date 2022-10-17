@@ -3,7 +3,7 @@ profile = "black"
 
 [tool.poetry]
 name = "permpy"
-version = "0.2.7"
+version = "0.2.8"
 description = "A package for analyzing permutation patterns."
 authors = ["Michael Engen", "Cheyne Homberger", "Jay Pantone"]
 license = "MIT"
