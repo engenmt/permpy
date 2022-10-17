@@ -399,6 +399,21 @@ def test_pattern_counts():
     )
 
 
+def test_downset():
+    p = Perm(2413)
+    expected = [
+        {Perm()},
+        {Perm(1)},
+        {Perm(12), Perm(21)},
+        {Perm(312), Perm(132), Perm(213), Perm(231)},
+        {Perm(2413)},
+    ]
+    result = p.downset()
+    assert result == expected, (
+        f"Perm({p}).downset() returned {result}," f" but it should return {expected}."
+    )
+
+
 def test_avoids():
     cases = [
         (Perm(123456), 231, True),
