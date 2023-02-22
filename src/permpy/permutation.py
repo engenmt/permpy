@@ -595,14 +595,16 @@ class Permutation(
 
     def breadth(self):
         """Return the minimum taxicab distance among pairs of entries in the permutation."""
-
         min_dist = len(self)
-        for i, j in itertools.combinations(range(len(self)), 2):
-            h_dist = abs(i - j)
-            v_dist = abs(self[i] - self[j])
-            dist = h_dist + v_dist
-            if dist < min_dist:
-                min_dist = dist
+        for idx_west, val_west in enumerate(self):
+            for delta_x, val_east in enumerate(
+                self[idx_west + 1 : idx_west + min_dist - 1], start=1
+            ):
+                dist = delta_x + abs(val_west - val_east)
+                if dist < min_dist:
+                    if dist == 2:
+                        return dist
+                    min_dist = dist
         return min_dist
 
     def bonds(self):
