@@ -602,6 +602,8 @@ class Permutation(
             ):
                 dist = delta_x + abs(val_west - val_east)
                 if dist < min_dist:
+                    # The minimum breadth attained by a permutation is 2,
+                    # so no smaller breadth will be found.
                     if dist == 2:
                         return dist
                     min_dist = dist
