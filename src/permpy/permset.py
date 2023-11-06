@@ -58,7 +58,7 @@ class PermSet(set, PermSetDeprecatedMixin):
 
     def get_random(self):
         """Return a random element from the set."""
-        return random.sample(self, 1)[0]
+        return random.sample(list(self), 1)[0]
 
     def by_length(self):
         """Return a dictionary stratifying the permutations in `self`."""

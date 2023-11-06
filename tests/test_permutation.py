@@ -40,7 +40,7 @@ def test_direct_sum():
         (q, q): Perm(31247568),
         (q, r): Perm(31245),
     }
-    for ((r, s), intended) in cases.items():
+    for (r, s), intended in cases.items():
         direct_sum = r + s
         assert direct_sum == intended, (
             f"Expected the direct sum of {r} and {s} to be {intended},"
@@ -59,7 +59,7 @@ def test_skew_sum():
         (q, q): Perm(75683124),
         (q, r): Perm(42351),
     }
-    for ((r, s), intended) in cases.items():
+    for (r, s), intended in cases.items():
         skew_sum = r - s
         assert skew_sum == intended, (
             f"Expected the skew sum of {r} and {s} to be {intended},"
@@ -120,7 +120,7 @@ def test_containment():
 def test_pow():
     p = Perm(12345)
     for n in range(-5, 0, 5):
-        result = p ** n
+        result = p**n
         assert p == result, (
             f"The identity permutation raised to the power {n}"
             f" resulted in {result}, not the identity permutation."
@@ -129,7 +129,7 @@ def test_pow():
     q = Perm(41352)
     powers = [Perm(12345), q, Perm(54321), Perm(25314), Perm(12345)]
     for exp, val in enumerate(powers):
-        assert q ** exp == val, f"Perm({q})^{exp} should be {val}, but it's {q**exp}!"
+        assert q**exp == val, f"Perm({q})^{exp} should be {val}, but it's {q**exp}!"
 
 
 def test_perm_to_ind():
@@ -433,3 +433,14 @@ def test_involved_in():
         assert (
             result == expected
         ), f"Perm({p}).involved_in({q}) is {result}, but it should be {expected}."
+
+
+def test_involved_in():
+    cases = [
+        (Perm(123), [set([Perm()]), set([Perm(1)]), set([Perm(12)]), set([Perm(123)])]),
+    ]
+    for perm, expected in cases:
+        result = perm.downset()
+        assert (
+            result == expected
+        ), f"Perm({perm}).downset() is {result}, but it should be {expected}."
