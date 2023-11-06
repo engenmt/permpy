@@ -1049,11 +1049,11 @@ class Permutation(
                     else:
                         new_perms[tau] = i
 
-            downset.append(set(new_perms))
+            downset.append(set(new_perms.keys()))
 
         return downset[::-1]
 
-    def downset_profile(self):
+    def downset_profile(self, min_length=0):
         """Return the downset profile of self.
 
         Notes
@@ -1065,7 +1065,7 @@ class Permutation(
         # downset = [set([pi])]
         profile = [len(new_perms)]
 
-        for new_length in range(len(self) - 1, -1, -1):
+        for new_length in range(len(self) - 1, min_length - 1, -1):
             old_perms = new_perms
             new_perms = dict()
 
@@ -1077,7 +1077,6 @@ class Permutation(
                     else:
                         new_perms[tau] = i
 
-            # downset.append(new_perms)
             profile.append(len(new_perms))
 
         return profile[::-1]

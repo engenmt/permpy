@@ -172,7 +172,7 @@ class PermSet(set, PermSetDeprecatedMixin):
 
         return upset
 
-    def downset(self):
+    def downset(self, min_size):
         """Return the downset of `self` as a list."""
         bottom_edge = PermSet()
         bottom_edge.update(self)
