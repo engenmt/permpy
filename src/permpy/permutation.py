@@ -894,7 +894,7 @@ class Permutation(
 
         if with_ones:
             in_int = []
-            for (start, end) in mi:
+            for start, end in mi:
                 in_int.extend(range(start, end + 1))
             for i in range(len(self)):
                 if i not in in_int:
@@ -1032,13 +1032,12 @@ class Permutation(
 
         return L
 
-    def downset(self):
+    def downset(self, min_length=0):
         """Return the downset D of `self` stratified by length."""
         new_perms = {self: 0}
         downset = [set([self])]
 
-        for new_length in range(len(self) - 1, -1, -1):
-
+        for new_length in range(len(self) - 1, min_length - 1, -1):
             old_perms = new_perms
             new_perms = dict()
 
@@ -1067,7 +1066,6 @@ class Permutation(
         profile = [len(new_perms)]
 
         for new_length in range(len(self) - 1, -1, -1):
-
             old_perms = new_perms
             new_perms = dict()
 
