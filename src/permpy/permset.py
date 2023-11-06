@@ -92,13 +92,16 @@ class PermSet(set, PermSetDeprecatedMixin):
 
         return shortest_perms + S.minimal_elements()
 
-    def symmetries(self):
-        """Return the PermSet of all symmetries of all permutations in `self`."""
-        S = set(self)
-        S.update([p.reverse() for p in S])
-        S.update([p.complement() for p in S])
-        S.update([p.inverse() for p in S])
-        return PermSet(S)
+    def all_symmetries(self):
+        """Return the list of PermSets that are symmetries of self."""
+        symmetries = Permutation.symmetries()
+        return [PermSet(symmetry(p) for p in self) for symmetry in symmetries]
+
+    def is_representative(self):
+        representative = sorted(
+            self.all_symmetries(), key=lambda S: sorted(tuple(p) for p in S)
+        )[0]
+        return self == representative
 
     def covers(self):
         """Return those permutations that `self` covers."""
