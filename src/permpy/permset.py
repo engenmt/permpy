@@ -58,7 +58,7 @@ class PermSet(set, PermSetDeprecatedMixin):
 
     def get_random(self):
         """Return a random element from the set."""
-        return random.sample(list(self), 1)[0]
+        return random.sample(self, 1)[0]
 
     def by_length(self):
         """Return a dictionary stratifying the permutations in `self`."""
@@ -169,7 +169,7 @@ class PermSet(set, PermSetDeprecatedMixin):
 
         return upset
 
-    def downset(self):
+    def downset(self, min_size):
         """Return the downset of `self` as a list."""
         bottom_edge = PermSet()
         bottom_edge.update(self)
