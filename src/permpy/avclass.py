@@ -44,7 +44,6 @@ class AvClass(PermClass):
                 the ultimate PermSet. In this context, we generally can.
 
         """
-        logging.debug(f"Calling extend_by_one({self}, trust={trust})")
         self.append(self[-1].right_extensions(basis=self.basis, trust=trust))
 
     def extend_to_length(self, length, trust=True):
