@@ -172,22 +172,18 @@ class PermSet(set, PermSetDeprecatedMixin):
 
         return upset
 
-    def downset(self, min_size):
+    def downset(self, min_length=0):
         """Return the downset of `self` as a list."""
         bottom_edge = PermSet()
         bottom_edge.update(self)
 
         max_len = max(len(p) for p in self)
-        levels = [PermSet() for _ in range(max_len + 1)]
+        downset = [PermSet() for _ in range(max_len + 1)]
         for p in self:
-            levels[len(p)].add(p)
+            downset[len(p)].add(p)
 
-        downset = [None for _ in range(max_len + 1)]
-
-        for n in range(max_len, -1, -1):
-            upper = downset[n] + levels[n]
-            lower = upper.covers()
-            downset[n - 1] = lower
+        for n in range(max_len, min_length - 1, -1):
+            downset[n - 1].update(downset[n].covers())
 
         return downset
 
