@@ -9,7 +9,7 @@ class PermSetDeprecatedMixin:
 
     @deprecated
     def all_syms(self):
-        return self.symmetries()
+        return self.all_symmetries()
 
     @deprecated
     def extensions(self, test):
